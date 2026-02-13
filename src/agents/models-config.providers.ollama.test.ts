@@ -2,7 +2,11 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { resolveImplicitProviders, resolveOllamaApiBase } from "./models-config.providers.js";
+import {
+	formatOllamaDiscoveryDebugContext,
+	resolveImplicitProviders,
+	resolveOllamaApiBase,
+} from "./models-config.providers.js";
 
 describe("resolveOllamaApiBase", () => {
 	it("returns default localhost base when no configured URL is provided", () => {
@@ -59,6 +63,26 @@ describe("resolveOllamaApiBase", () => {
 				process.env.OLLAMA_API_BASE_URL = previousBaseUrl;
 			}
 		}
+	});
+});
+
+describe("formatOllamaDiscoveryDebugContext", () => {
+	it("includes remote host and api key presence", () => {
+		expect(
+			formatOllamaDiscoveryDebugContext({
+				apiBase: "https://ollama.example.com:11434",
+				hasApiKey: true,
+			}),
+		).toBe("host=ollama.example.com:11434 apiKeySet=true");
+	});
+
+	it("reports invalid urls safely", () => {
+		expect(
+			formatOllamaDiscoveryDebugContext({
+				apiBase: "not-a-url",
+				hasApiKey: false,
+			}),
+		).toBe("host=invalid-url apiKeySet=false");
 	});
 });
 

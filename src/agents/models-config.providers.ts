@@ -128,23 +128,43 @@ export function resolveOllamaApiBase(configuredBaseUrl?: string): string {
 	return trimmed.replace(/\/v1$/i, "");
 }
 
-async function discoverOllamaModels(baseUrl?: string): Promise<ModelDefinitionConfig[]> {
+export function formatOllamaDiscoveryDebugContext(params: {
+	apiBase: string;
+	hasApiKey: boolean;
+}): string {
+	let host = "unknown";
+	try {
+		host = new URL(params.apiBase).host || "unknown";
+	} catch {
+		host = "invalid-url";
+	}
+	return `host=${host} apiKeySet=${params.hasApiKey ? "true" : "false"}`;
+}
+
+async function discoverOllamaModels(
+	baseUrl?: string,
+	opts?: { hasApiKey?: boolean },
+): Promise<ModelDefinitionConfig[]> {
 	// Skip Ollama discovery in test environments
 	if (process.env.VITEST || process.env.NODE_ENV === "test") {
 		return [];
 	}
 	try {
 		const apiBase = resolveOllamaApiBase(baseUrl);
+		const debugContext = formatOllamaDiscoveryDebugContext({
+			apiBase,
+			hasApiKey: opts?.hasApiKey ?? false,
+		});
 		const response = await fetch(`${apiBase}/api/tags`, {
 			signal: AbortSignal.timeout(5000),
 		});
 		if (!response.ok) {
-			console.warn(`Failed to discover Ollama models: ${response.status}`);
+			console.warn(`Failed to discover Ollama models (${debugContext}): ${response.status}`);
 			return [];
 		}
 		const data = (await response.json()) as OllamaTagsResponse;
 		if (!data.models || data.models.length === 0) {
-			console.warn("No Ollama models found on local instance");
+			console.warn(`No Ollama models found (${debugContext})`);
 			return [];
 		}
 		return data.models.map((model) => {
@@ -167,7 +187,12 @@ async function discoverOllamaModels(baseUrl?: string): Promise<ModelDefinitionCo
 			};
 		});
 	} catch (error) {
-		console.warn(`Failed to discover Ollama models: ${String(error)}`);
+		const apiBase = resolveOllamaApiBase(baseUrl);
+		const debugContext = formatOllamaDiscoveryDebugContext({
+			apiBase,
+			hasApiKey: opts?.hasApiKey ?? false,
+		});
+		console.warn(`Failed to discover Ollama models (${debugContext}): ${String(error)}`);
 		return [];
 	}
 }
@@ -464,8 +489,13 @@ async function buildVeniceProvider(): Promise<ProviderConfig> {
 	};
 }
 
-async function buildOllamaProvider(configuredBaseUrl?: string): Promise<ProviderConfig> {
-	const models = await discoverOllamaModels(configuredBaseUrl);
+async function buildOllamaProvider(
+	configuredBaseUrl?: string,
+	opts?: { hasApiKey?: boolean },
+): Promise<ProviderConfig> {
+	const models = await discoverOllamaModels(configuredBaseUrl, {
+		hasApiKey: opts?.hasApiKey ?? false,
+	});
 	const implicitBaseUrl = `${resolveOllamaApiBase()}/v1`;
 	return {
 		baseUrl: configuredBaseUrl ?? implicitBaseUrl,
@@ -605,7 +635,10 @@ export async function resolveImplicitProviders(params: {
 		resolveApiKeyFromProfiles({ provider: "ollama", store: authStore });
 	if (ollamaKey) {
 		const ollamaBaseUrl = params.explicitProviders?.ollama?.baseUrl;
-		providers.ollama = { ...(await buildOllamaProvider(ollamaBaseUrl)), apiKey: ollamaKey };
+		providers.ollama = {
+			...(await buildOllamaProvider(ollamaBaseUrl, { hasApiKey: Boolean(ollamaKey) })),
+			apiKey: ollamaKey,
+		};
 	}
 
 	const togetherKey =
