@@ -42,28 +42,40 @@ export function resolveControlUiRepoRoot(
 		return null;
 	}
 	const normalized = path.resolve(argv1);
-	const parts = normalized.split(path.sep);
-	const srcIndex = parts.lastIndexOf("src");
-	if (srcIndex !== -1) {
-		const root = parts.slice(0, srcIndex).join(path.sep);
-		if (fs.existsSync(path.join(root, "ui", "vite.config.ts"))) {
-			return root;
+	const candidates = [normalized];
+	try {
+		const resolved = fs.realpathSync(normalized);
+		if (resolved !== normalized) {
+			candidates.push(resolved);
 		}
+	} catch {
+		// Keep normalized path as fallback.
 	}
 
-	let dir = path.dirname(normalized);
-	for (let i = 0; i < 8; i++) {
-		if (
-			fs.existsSync(path.join(dir, "package.json")) &&
-			fs.existsSync(path.join(dir, "ui", "vite.config.ts"))
-		) {
-			return dir;
+	for (const candidate of candidates) {
+		const parts = candidate.split(path.sep);
+		const srcIndex = parts.lastIndexOf("src");
+		if (srcIndex !== -1) {
+			const root = parts.slice(0, srcIndex).join(path.sep);
+			if (fs.existsSync(path.join(root, "ui", "vite.config.ts"))) {
+				return root;
+			}
 		}
-		const parent = path.dirname(dir);
-		if (parent === dir) {
-			break;
+
+		let dir = path.dirname(candidate);
+		for (let i = 0; i < 8; i++) {
+			if (
+				fs.existsSync(path.join(dir, "package.json")) &&
+				fs.existsSync(path.join(dir, "ui", "vite.config.ts"))
+			) {
+				return dir;
+			}
+			const parent = path.dirname(dir);
+			if (parent === dir) {
+				break;
+			}
+			dir = parent;
 		}
-		dir = parent;
 	}
 
 	return null;
