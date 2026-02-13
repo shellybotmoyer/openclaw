@@ -1,9 +1,9 @@
 ---
-summary: "Install OpenClaw — installer script, npm/pnpm, from source, Docker, and more"
+summary: "Install OpenClaw — installer script, npm/bun, from source, Docker, and more"
 read_when:
-  - You need an install method other than the Getting Started quickstart
-  - You want to deploy to a cloud platform
-  - You need to update, migrate, or uninstall
+   - You need an install method other than the Getting Started quickstart
+   - You want to deploy to a cloud platform
+   - You need to update, migrate, or uninstall
 title: "Install"
 ---
 
@@ -15,7 +15,7 @@ Already followed [Getting Started](/start/getting-started)? You're all set — t
 
 - **[Node 22+](/install/node)** (the [installer script](#install-methods) will install it if missing)
 - macOS, Linux, or Windows
-- `pnpm` only if you build from source
+- `bun` only if you build from source
 
 <Note>
 On Windows, we strongly recommend running OpenClaw under [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install).
@@ -65,7 +65,7 @@ The **installer script** is the recommended way to install OpenClaw. It handles 
 
   </Accordion>
 
-  <Accordion title="npm / pnpm" icon="package">
+  <Accordion title="npm / bun" icon="package">
     If you already have Node 22+ and prefer to manage the install yourself:
 
     <Tabs>
@@ -85,15 +85,15 @@ The **installer script** is the recommended way to install OpenClaw. It handles 
           If you see `sharp: Please add node-gyp to your dependencies`, either install build tooling (macOS: Xcode CLT + `npm install -g node-gyp`) or use the env var above.
         </Accordion>
       </Tab>
-      <Tab title="pnpm">
+      <Tab title="bun">
         ```bash
-        pnpm add -g openclaw@latest
-        pnpm approve-builds -g        # approve openclaw, node-llama-cpp, sharp, etc.
+        bun add -g openclaw@latest
+        bun pm trust -g        # approve openclaw, node-llama-cpp, sharp, etc.
         openclaw onboard --install-daemon
         ```
 
         <Note>
-        pnpm requires explicit approval for packages with build scripts. After the first install shows the "Ignored build scripts" warning, run `pnpm approve-builds -g` and select the listed packages.
+        bun requires explicit approval for packages with build scripts. After the first install shows the "Ignored build scripts" warning, run `bun pm trust -g` and select the listed packages.
         </Note>
       </Tab>
     </Tabs>
@@ -110,19 +110,19 @@ The **installer script** is the recommended way to install OpenClaw. It handles 
         ```bash
         git clone https://github.com/openclaw/openclaw.git
         cd openclaw
-        pnpm install
-        pnpm ui:build
-        pnpm build
+        bun install
+        bun run ui:build
+        bun run build
         ```
       </Step>
       <Step title="Link the CLI">
         Make the `openclaw` command available globally:
 
         ```bash
-        pnpm link --global
+        bun link --global
         ```
 
-        Alternatively, skip the link and run commands via `pnpm openclaw ...` from inside the repo.
+        Alternatively, skip the link and run commands via `bun run openclaw ...` from inside the repo.
       </Step>
       <Step title="Run onboarding">
         ```bash

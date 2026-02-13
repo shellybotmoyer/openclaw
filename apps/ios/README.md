@@ -29,14 +29,14 @@ If your Gateway has the `device-pair` plugin installed:
 Prereqs:
 
 - Xcode (current stable)
-- `pnpm`
+- `bun`
 - `xcodegen`
 
 From the repo root:
 
 ```bash
-pnpm install
-pnpm ios:open
+bun install
+bun run ios:open
 ```
 
 Then in Xcode:
@@ -50,7 +50,7 @@ If you're using a personal Apple Development team, you may need to change the bu
 ## Build From CLI
 
 ```bash
-pnpm ios:build
+bun run ios:build
 ```
 
 ## Tests

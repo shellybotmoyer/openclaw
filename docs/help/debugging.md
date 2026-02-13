@@ -1,9 +1,9 @@
 ---
 summary: "Debugging tools: watch mode, raw model streams, and tracing reasoning leakage"
 read_when:
-  - You need to inspect raw model output for reasoning leakage
-  - You want to run the Gateway in watch mode while iterating
-  - You need a repeatable debugging workflow
+   - You need to inspect raw model output for reasoning leakage
+   - You want to run the Gateway in watch mode while iterating
+   - You need a repeatable debugging workflow
 title: "Debugging"
 ---
 
@@ -34,7 +34,7 @@ Examples:
 For fast iteration, run the gateway under the file watcher:
 
 ```bash
-pnpm gateway:watch --force
+bun run gateway:watch --force
 ```
 
 This maps to:
@@ -59,11 +59,11 @@ debugging. There are **two** `--dev` flags:
 Recommended flow (dev profile + dev bootstrap):
 
 ```bash
-pnpm gateway:dev
+bun run gateway:dev
 OPENCLAW_PROFILE=dev openclaw tui
 ```
 
-If you don’t have a global install yet, run the CLI via `pnpm openclaw ...`.
+If you don’t have a global install yet, run the CLI via `bun run openclaw ...`.
 
 What this does:
 
@@ -85,7 +85,7 @@ What this does:
 Reset flow (fresh start):
 
 ```bash
-pnpm gateway:dev:reset
+bun run gateway:dev:reset
 ```
 
 Note: `--dev` is a **global** profile flag and gets eaten by some runners.
@@ -113,13 +113,13 @@ This is the best way to see whether reasoning is arriving as plain text deltas
 Enable it via CLI:
 
 ```bash
-pnpm gateway:watch --force --raw-stream
+bun run gateway:watch --force --raw-stream
 ```
 
 Optional path override:
 
 ```bash
-pnpm gateway:watch --force --raw-stream --raw-stream-path ~/.openclaw/logs/raw-stream.jsonl
+bun run gateway:watch --force --raw-stream --raw-stream-path ~/.openclaw/logs/raw-stream.jsonl
 ```
 
 Equivalent env vars:

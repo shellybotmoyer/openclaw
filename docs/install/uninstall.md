@@ -1,8 +1,8 @@
 ---
 summary: "Uninstall OpenClaw completely (CLI, service, state, workspace)"
 read_when:
-  - You want to remove OpenClaw from a machine
-  - The gateway service is still running after uninstall
+   - You want to remove OpenClaw from a machine
+   - The gateway service is still running after uninstall
 title: "Uninstall"
 ---
 
@@ -60,7 +60,7 @@ rm -rf ~/.openclaw/workspace
 
 ```bash
 npm rm -g openclaw
-pnpm remove -g openclaw
+bun remove -g openclaw
 bun remove -g openclaw
 ```
 
@@ -114,10 +114,10 @@ If you used a profile, delete the matching task name and `~\.openclaw-<profile>\
 
 ## Normal install vs source checkout
 
-### Normal install (install.sh / npm / pnpm / bun)
+### Normal install (install.sh / npm / bun / bun)
 
 If you used `https://openclaw.ai/install.sh` or `install.ps1`, the CLI was installed with `npm install -g openclaw@latest`.
-Remove it with `npm rm -g openclaw` (or `pnpm remove -g` / `bun remove -g` if you installed that way).
+Remove it with `npm rm -g openclaw` (or `bun remove -g` / `bun remove -g` if you installed that way).
 
 ### Source checkout (git clone)
 

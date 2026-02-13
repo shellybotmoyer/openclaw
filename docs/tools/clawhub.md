@@ -1,9 +1,9 @@
 ---
 summary: "ClawHub guide: public skills registry + CLI workflows"
 read_when:
-  - Introducing ClawHub to new users
-  - Installing, searching, or publishing skills
-  - Explaining ClawHub CLI flags and sync behavior
+   - Introducing ClawHub to new users
+   - Installing, searching, or publishing skills
+   - Explaining ClawHub CLI flags and sync behavior
 title: "ClawHub"
 ---
 
@@ -61,7 +61,7 @@ npm i -g clawhub
 ```
 
 ```bash
-pnpm add -g clawhub
+bun add -g clawhub
 ```
 
 ## How it fits into OpenClaw

@@ -27,7 +27,7 @@ If you want a personal, single-user assistant that feels local, fast, and always
 
 Preferred setup: run the onboarding wizard (`openclaw onboard`) in your terminal.
 The wizard guides you step by step through setting up the gateway, workspace, channels, and skills. The CLI wizard is the recommended path and works on **macOS, Linux, and Windows (via WSL2; strongly recommended)**.
-Works with npm, pnpm, or bun.
+Works with npm, bun, or bun.
 New install? Start here: [Getting started](https://docs.openclaw.ai/start/getting-started)
 
 **Subscriptions (OAuth):**
@@ -48,7 +48,7 @@ Runtime: **Node ≥22**.
 
 ```bash
 npm install -g openclaw@latest
-# or: pnpm add -g openclaw@latest
+# or: bun add -g openclaw@latest
 
 openclaw onboard --install-daemon
 ```
@@ -86,23 +86,23 @@ Details: [Development channels](https://docs.openclaw.ai/install/development-cha
 
 ## From source (development)
 
-Prefer `pnpm` for builds from source. Bun is optional for running TypeScript directly.
+Prefer `bun` for builds from source. Bun is optional for running TypeScript directly.
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
 
-pnpm install
-pnpm ui:build # auto-installs UI deps on first run
-pnpm build
+bun install
+bun run ui:build # auto-installs UI deps on first run
+bun run build
 
-pnpm openclaw onboard --install-daemon
+bun run openclaw onboard --install-daemon
 
 # Dev loop (auto-reload on TS changes)
-pnpm gateway:watch
+bun run gateway:watch
 ```
 
-Note: `pnpm openclaw ...` runs TypeScript directly (via `tsx`). `pnpm build` produces `dist/` for running via Node / the packaged `openclaw` binary.
+Note: `bun run openclaw ...` runs TypeScript directly (via `tsx`). `bun run build` produces `dist/` for running via Node / the packaged `openclaw` binary.
 
 ## Security defaults (DM access)
 
@@ -316,9 +316,9 @@ Minimal `~/.openclaw/openclaw.json` (model + defaults):
 
 ```json5
 {
-  agent: {
-    model: "anthropic/claude-opus-4-6",
-  },
+	agent: {
+		model: "anthropic/claude-opus-4-6",
+	},
 }
 ```
 
@@ -334,7 +334,7 @@ Details: [Security guide](https://docs.openclaw.ai/gateway/security) · [Docker 
 
 ### [WhatsApp](https://docs.openclaw.ai/channels/whatsapp)
 
-- Link the device: `pnpm openclaw channels login` (stores creds in `~/.openclaw/credentials`).
+- Link the device: `bun run openclaw channels login` (stores creds in `~/.openclaw/credentials`).
 - Allowlist who can talk to the assistant via `channels.whatsapp.allowFrom`.
 - If `channels.whatsapp.groups` is set, it becomes a group allowlist; include `"*"` to allow all.
 
@@ -345,11 +345,11 @@ Details: [Security guide](https://docs.openclaw.ai/gateway/security) · [Docker 
 
 ```json5
 {
-  channels: {
-    telegram: {
-      botToken: "123456:ABCDEF",
-    },
-  },
+	channels: {
+		telegram: {
+			botToken: "123456:ABCDEF",
+		},
+	},
 }
 ```
 
@@ -364,11 +364,11 @@ Details: [Security guide](https://docs.openclaw.ai/gateway/security) · [Docker 
 
 ```json5
 {
-  channels: {
-    discord: {
-      token: "1234abcd",
-    },
-  },
+	channels: {
+		discord: {
+			token: "1234abcd",
+		},
+	},
 }
 ```
 
@@ -400,10 +400,10 @@ Browser control (optional):
 
 ```json5
 {
-  browser: {
-    enabled: true,
-    color: "#FF4500",
-  },
+	browser: {
+		enabled: true,
+		color: "#FF4500",
+	},
 }
 ```
 

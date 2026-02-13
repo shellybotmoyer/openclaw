@@ -1,10 +1,9 @@
 FROM node:22-bookworm
 
-# Install Bun (required for build scripts)
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:${PATH}"
-
-RUN corepack enable
+# Install Bun and expose it for the runtime user.
+RUN curl -fsSL https://bun.sh/install | bash \
+  && cp /root/.bun/bin/bun /usr/local/bin/bun
+ENV PATH="/usr/local/bin:${PATH}"
 
 WORKDIR /app
 
@@ -16,18 +15,16 @@ RUN if [ -n "$OPENCLAW_DOCKER_APT_PACKAGES" ]; then \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
     fi
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY package.json bun.lock .npmrc ./
 COPY ui/package.json ./ui/package.json
 COPY patches ./patches
 COPY scripts ./scripts
 
-RUN pnpm install --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 COPY . .
-RUN pnpm build
-# Force pnpm for UI build (Bun may fail on ARM/Synology architectures)
-ENV OPENCLAW_PREFER_PNPM=1
-RUN pnpm ui:build
+RUN bun run build
+RUN bun run ui:build
 
 ENV NODE_ENV=production
 
@@ -44,5 +41,5 @@ USER node
 #
 # For container platforms requiring external health checks:
 #   1. Set OPENCLAW_GATEWAY_TOKEN or OPENCLAW_GATEWAY_PASSWORD env var
-#   2. Override CMD: ["node","openclaw.mjs","gateway","--allow-unconfigured","--bind","lan"]
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
+#   2. Override CMD: ["bun","openclaw.mjs","gateway","--allow-unconfigured","--bind","lan"]
+CMD ["bun", "openclaw.mjs", "gateway", "--allow-unconfigured"]

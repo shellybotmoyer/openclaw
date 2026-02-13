@@ -2,8 +2,8 @@
 set -euo pipefail
 
 on_error() {
-  echo "A2UI bundling failed. Re-run with: pnpm canvas:a2ui:bundle" >&2
-  echo "If this persists, verify pnpm deps and try again." >&2
+  echo "A2UI bundling failed. Re-run with: bun run canvas:a2ui:bundle" >&2
+  echo "If this persists, verify Bun deps and try again." >&2
 }
 trap on_error ERR
 
@@ -26,10 +26,15 @@ fi
 
 INPUT_PATHS=(
   "$ROOT_DIR/package.json"
-  "$ROOT_DIR/pnpm-lock.yaml"
   "$A2UI_RENDERER_DIR"
   "$A2UI_APP_DIR"
 )
+
+if [[ -f "$ROOT_DIR/bun.lock" ]]; then
+  INPUT_PATHS+=("$ROOT_DIR/bun.lock")
+elif [[ -f "$ROOT_DIR/bun.lockb" ]]; then
+  INPUT_PATHS+=("$ROOT_DIR/bun.lockb")
+fi
 
 compute_hash() {
   ROOT_DIR="$ROOT_DIR" node --input-type=module - "${INPUT_PATHS[@]}" <<'NODE'
@@ -85,7 +90,7 @@ if [[ -f "$HASH_FILE" ]]; then
   fi
 fi
 
-pnpm -s exec tsc -p "$A2UI_RENDERER_DIR/tsconfig.json"
+bun x tsc -p "$A2UI_RENDERER_DIR/tsconfig.json"
 rolldown -c "$A2UI_APP_DIR/rolldown.config.mjs"
 
 echo "$current_hash" > "$HASH_FILE"

@@ -1,8 +1,8 @@
 ---
 summary: "Complete reference for CLI onboarding flow, auth/model setup, outputs, and internals"
 read_when:
-  - You need detailed behavior for openclaw onboard
-  - You are debugging onboarding results or integrating onboarding clients
+   - You need detailed behavior for openclaw onboard
+   - You are debugging onboarding results or integrating onboarding clients
 title: "CLI Onboarding Reference"
 sidebarTitle: "CLI reference"
 ---
@@ -79,7 +79,7 @@ It does not install or modify anything on the remote host.
   </Step>
   <Step title="Skills">
     - Reads available skills and checks requirements.
-    - Lets you choose node manager: npm or pnpm (bun not recommended).
+    - Lets you choose node manager: npm or bun (bun not recommended).
     - Installs optional dependencies (some use Homebrew on macOS).
   </Step>
   <Step title="Finish">
@@ -89,7 +89,7 @@ It does not install or modify anything on the remote host.
 
 <Note>
 If no GUI is detected, the wizard prints SSH port-forward instructions for the Control UI instead of opening a browser.
-If Control UI assets are missing, the wizard attempts to build them; fallback is `pnpm ui:build` (auto-installs UI deps).
+If Control UI assets are missing, the wizard attempts to build them; fallback is `bun run ui:build` (auto-installs UI deps).
 </Note>
 
 ## Remote mode details

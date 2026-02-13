@@ -13,7 +13,7 @@ Use this workflow when your fork has diverged from upstream (e.g., "18 commits a
 git fetch upstream && git rev-list --left-right --count main...upstream/main
 
 # Full sync (rebase preferred)
-git fetch upstream && git rebase upstream/main && pnpm install && pnpm build && ./scripts/restart-mac.sh
+git fetch upstream && git rebase upstream/main && bun install && bun run build && ./scripts/restart-mac.sh
 
 # Check for Swift 6.2 issues after sync
 grep -r "FileManager\.default\|Thread\.isMainThread" src/ apps/ --include="*.swift"
@@ -72,12 +72,12 @@ git rebase --abort
 
 ### Common Conflict Patterns
 
-| File             | Resolution                                       |
-| ---------------- | ------------------------------------------------ |
-| `package.json`   | Take upstream deps, keep local scripts if needed |
-| `pnpm-lock.yaml` | Accept upstream, regenerate with `pnpm install`  |
-| `*.patch` files  | Usually take upstream version                    |
-| Source files     | Merge logic carefully, prefer upstream structure |
+| File            | Resolution                                       |
+| --------------- | ------------------------------------------------ |
+| `package.json`  | Take upstream deps, keep local scripts if needed |
+| `bun.lock`      | Accept upstream, regenerate with `bun install`   |
+| `*.patch` files | Usually take upstream version                    |
+| Source files    | Merge logic carefully, prefer upstream structure |
 
 ---
 
@@ -104,16 +104,16 @@ After sync completes:
 
 ```bash
 # Install dependencies (regenerates lock if needed)
-pnpm install
+bun install
 
 # Build TypeScript
-pnpm build
+bun run build
 
 # Build UI assets
-pnpm ui:build
+bun run ui:build
 
 # Run diagnostics
-pnpm clawdbot doctor
+bun clawdbot doctor
 ```
 
 ---
@@ -125,7 +125,7 @@ pnpm clawdbot doctor
 ./scripts/restart-mac.sh
 
 # Or just package without restart
-pnpm mac:package
+bun run mac:package
 ```
 
 ### Install to /Applications
@@ -152,13 +152,13 @@ After rebuilding the macOS app, always verify it works correctly:
 
 ```bash
 # Check gateway health
-pnpm clawdbot health
+bun clawdbot health
 
 # Verify no zombie processes
 ps aux | grep -E "(clawdbot|gateway)" | grep -v grep
 
 # Test agent functionality by sending a verification message
-pnpm clawdbot agent --message "Verification: macOS app rebuild successful - agent is responding." --session-id YOUR_TELEGRAM_SESSION_ID
+bun clawdbot agent --message "Verification: macOS app rebuild successful - agent is responding." --session-id YOUR_TELEGRAM_SESSION_ID
 
 # Confirm the message was received on Telegram
 # (Check your Telegram chat with the bot)
@@ -213,7 +213,7 @@ grep -r "Thread\.isMainThread\|FileManager\.default" . --include="*.swift"
 
 # Fix and rebuild submodule
 cd /Volumes/Main SSD/Developer/clawdis
-pnpm canvas:a2ui:bundle
+bun run canvas:a2ui:bundle
 ```
 
 ### macOS App Concurrency Fixes
@@ -245,8 +245,8 @@ grep -r "openrouter\|OPENROUTER" src/ --include="*.ts" --include="*.js"
 
 ```bash
 # Verify everything works
-pnpm clawdbot health
-pnpm test
+bun clawdbot health
+bun run test
 
 # Push (force required after rebase)
 git push origin main --force-with-lease
@@ -264,8 +264,8 @@ git push origin main
 ```bash
 # Clean and rebuild
 rm -rf node_modules dist
-pnpm install
-pnpm build
+bun install
+bun run build
 ```
 
 ### Type Errors (Bun/Node Incompatibility)
@@ -285,7 +285,7 @@ cd apps/macos && rm -rf .build .swiftpm
 
 ```bash
 # Check patch status
-pnpm install 2>&1 | grep -i patch
+bun install 2>&1 | grep -i patch
 
 # If patches fail, they may need updating for new dep versions
 # Check patches/ directory against package.json patchedDependencies
@@ -323,7 +323,7 @@ rm -rf apps/macos/.build apps/macos/.swiftpm
 rm -rf src/canvas-host/a2ui/.build
 
 # Rebuild Peekaboo bundle
-pnpm canvas:a2ui:bundle
+bun run canvas:a2ui:bundle
 
 # Full macOS rebuild
 ./scripts/restart-mac.sh
@@ -349,20 +349,20 @@ echo "==> Rebasing onto upstream/main..."
 git rebase upstream/main
 
 echo "==> Installing dependencies..."
-pnpm install
+bun install
 
 echo "==> Building..."
-pnpm build
-pnpm ui:build
+bun run build
+bun run ui:build
 
 echo "==> Running doctor..."
-pnpm clawdbot doctor
+bun clawdbot doctor
 
 echo "==> Rebuilding macOS app..."
 ./scripts/restart-mac.sh
 
 echo "==> Verifying gateway health..."
-pnpm clawdbot health
+bun clawdbot health
 
 echo "==> Checking for Swift 6.2 compatibility issues..."
 if grep -r "FileManager\.default\|Thread\.isMainThread" src/ apps/ --include="*.swift" --quiet; then
@@ -374,7 +374,7 @@ fi
 
 echo "==> Testing agent functionality..."
 # Note: Update YOUR_TELEGRAM_SESSION_ID with actual session ID
-pnpm clawdbot agent --message "Verification: Upstream sync and macOS rebuild completed successfully." --session-id YOUR_TELEGRAM_SESSION_ID || echo "Warning: Agent test failed - check Telegram for verification message"
+bun clawdbot agent --message "Verification: Upstream sync and macOS rebuild completed successfully." --session-id YOUR_TELEGRAM_SESSION_ID || echo "Warning: Agent test failed - check Telegram for verification message"
 
 echo "==> Done! Check Telegram for verification message, then run 'git push --force-with-lease' when ready."
 ```

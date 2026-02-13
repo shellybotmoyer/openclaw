@@ -4,7 +4,6 @@ set -euo pipefail
 BASE_IMAGE="${BASE_IMAGE:-openclaw-sandbox:bookworm-slim}"
 TARGET_IMAGE="${TARGET_IMAGE:-openclaw-sandbox-common:bookworm-slim}"
 PACKAGES="${PACKAGES:-curl wget jq coreutils grep nodejs npm python3 git ca-certificates golang-go rustc cargo unzip pkg-config libasound2-dev build-essential file}"
-INSTALL_PNPM="${INSTALL_PNPM:-1}"
 INSTALL_BUN="${INSTALL_BUN:-1}"
 BUN_INSTALL_DIR="${BUN_INSTALL_DIR:-/opt/bun}"
 INSTALL_BREW="${INSTALL_BREW:-1}"
@@ -20,7 +19,6 @@ echo "Building ${TARGET_IMAGE} with: ${PACKAGES}"
 
 docker build \
   -t "${TARGET_IMAGE}" \
-  --build-arg INSTALL_PNPM="${INSTALL_PNPM}" \
   --build-arg INSTALL_BUN="${INSTALL_BUN}" \
   --build-arg BUN_INSTALL_DIR="${BUN_INSTALL_DIR}" \
   --build-arg INSTALL_BREW="${INSTALL_BREW}" \
@@ -28,7 +26,6 @@ docker build \
   - <<EOF
 FROM ${BASE_IMAGE}
 ENV DEBIAN_FRONTEND=noninteractive
-ARG INSTALL_PNPM=1
 ARG INSTALL_BUN=1
 ARG BUN_INSTALL_DIR=/opt/bun
 ARG INSTALL_BREW=1
@@ -41,7 +38,6 @@ ENV PATH="\${BUN_INSTALL_DIR}/bin:\${BREW_INSTALL_DIR}/bin:\${BREW_INSTALL_DIR}/
 RUN apt-get update \\
   && apt-get install -y --no-install-recommends ${PACKAGES} \\
   && rm -rf /var/lib/apt/lists/*
-RUN if [ "\${INSTALL_PNPM}" = "1" ]; then npm install -g pnpm; fi
 RUN if [ "\${INSTALL_BUN}" = "1" ]; then \\
   curl -fsSL https://bun.sh/install | bash; \\
   ln -sf "\${BUN_INSTALL_DIR}/bin/bun" /usr/local/bin/bun; \\

@@ -1,9 +1,9 @@
 ---
 summary: "Gateway runtime on macOS (external launchd service)"
 read_when:
-  - Packaging OpenClaw.app
-  - Debugging the macOS gateway launchd service
-  - Installing the gateway CLI for macOS
+   - Packaging OpenClaw.app
+   - Debugging the macOS gateway launchd service
+   - Installing the gateway CLI for macOS
 title: "Gateway on macOS"
 ---
 
@@ -22,7 +22,7 @@ You need Node 22+ on the Mac, then install `openclaw` globally:
 npm install -g openclaw@<version>
 ```
 
-The macOS app’s **Install CLI** button runs the same flow via npm/pnpm (bun not recommended for Gateway runtime).
+The macOS app’s **Install CLI** button runs the same flow via npm/bun (bun not recommended for Gateway runtime).
 
 ## Launchd (Gateway as LaunchAgent)
 

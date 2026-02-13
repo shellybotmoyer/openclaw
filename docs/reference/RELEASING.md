@@ -2,14 +2,14 @@
 title: "Release Checklist"
 summary: "Step-by-step release checklist for npm + macOS app"
 read_when:
-  - Cutting a new npm release
-  - Cutting a new macOS app release
-  - Verifying metadata before publishing
+   - Cutting a new npm release
+   - Cutting a new macOS app release
+   - Verifying metadata before publishing
 ---
 
 # Release Checklist (npm + macOS)
 
-Use `pnpm` (Node 22+) from the repo root. Keep the working tree clean before tagging/publishing.
+Use `bun` (Node 22+) from the repo root. Keep the working tree clean before tagging/publishing.
 
 ## Operator trigger
 
@@ -22,15 +22,15 @@ When the operator says “release”, immediately do this preflight (no extra qu
 1. **Version & metadata**
 
 - [ ] Bump `package.json` version (e.g., `2026.1.29`).
-- [ ] Run `pnpm plugins:sync` to align extension package versions + changelogs.
+- [ ] Run `bun run plugins:sync` to align extension package versions + changelogs.
 - [ ] Update CLI/version strings: [`src/cli/program.ts`](https://github.com/openclaw/openclaw/blob/main/src/cli/program.ts) and the Baileys user agent in [`src/provider-web.ts`](https://github.com/openclaw/openclaw/blob/main/src/provider-web.ts).
 - [ ] Confirm package metadata (name, description, repository, keywords, license) and `bin` map points to [`openclaw.mjs`](https://github.com/openclaw/openclaw/blob/main/openclaw.mjs) for `openclaw`.
-- [ ] If dependencies changed, run `pnpm install` so `pnpm-lock.yaml` is current.
+- [ ] If dependencies changed, run `bun install` so `bun.lock` is current.
 
 2. **Build & artifacts**
 
-- [ ] If A2UI inputs changed, run `pnpm canvas:a2ui:bundle` and commit any updated [`src/canvas-host/a2ui/a2ui.bundle.js`](https://github.com/openclaw/openclaw/blob/main/src/canvas-host/a2ui/a2ui.bundle.js).
-- [ ] `pnpm run build` (regenerates `dist/`).
+- [ ] If A2UI inputs changed, run `bun run canvas:a2ui:bundle` and commit any updated [`src/canvas-host/a2ui/a2ui.bundle.js`](https://github.com/openclaw/openclaw/blob/main/src/canvas-host/a2ui/a2ui.bundle.js).
+- [ ] `bun run build` (regenerates `dist/`).
 - [ ] Verify npm package `files` includes all required `dist/*` folders (notably `dist/node-host/**` and `dist/acp/**` for headless node + ACP CLI).
 - [ ] Confirm `dist/build-info.json` exists and includes the expected `commit` hash (CLI banner uses this for npm installs).
 - [ ] Optional: `npm pack --pack-destination /tmp` after the build; inspect the tarball contents and keep it handy for the GitHub release (do **not** commit it).
@@ -42,17 +42,17 @@ When the operator says “release”, immediately do this preflight (no extra qu
 
 4. **Validation**
 
-- [ ] `pnpm build`
-- [ ] `pnpm check`
-- [ ] `pnpm test` (or `pnpm test:coverage` if you need coverage output)
-- [ ] `pnpm release:check` (verifies npm pack contents)
-- [ ] `OPENCLAW_INSTALL_SMOKE_SKIP_NONROOT=1 pnpm test:install:smoke` (Docker install smoke test, fast path; required before release)
-  - If the immediate previous npm release is known broken, set `OPENCLAW_INSTALL_SMOKE_PREVIOUS=<last-good-version>` or `OPENCLAW_INSTALL_SMOKE_SKIP_PREVIOUS=1` for the preinstall step.
-- [ ] (Optional) Full installer smoke (adds non-root + CLI coverage): `pnpm test:install:smoke`
+- [ ] `bun run build`
+- [ ] `bun run check`
+- [ ] `bun run test` (or `bun run test:coverage` if you need coverage output)
+- [ ] `bun run release:check` (verifies npm pack contents)
+- [ ] `OPENCLAW_INSTALL_SMOKE_SKIP_NONROOT=1 bun run test:install:smoke` (Docker install smoke test, fast path; required before release)
+   - If the immediate previous npm release is known broken, set `OPENCLAW_INSTALL_SMOKE_PREVIOUS=<last-good-version>` or `OPENCLAW_INSTALL_SMOKE_SKIP_PREVIOUS=1` for the preinstall step.
+- [ ] (Optional) Full installer smoke (adds non-root + CLI coverage): `bun run test:install:smoke`
 - [ ] (Optional) Installer E2E (Docker, runs `curl -fsSL https://openclaw.ai/install.sh | bash`, onboards, then runs real tool calls):
-  - `pnpm test:install:e2e:openai` (requires `OPENAI_API_KEY`)
-  - `pnpm test:install:e2e:anthropic` (requires `ANTHROPIC_API_KEY`)
-  - `pnpm test:install:e2e` (requires both keys; runs both providers)
+   - `bun run test:install:e2e:openai` (requires `OPENAI_API_KEY`)
+   - `bun run test:install:e2e:anthropic` (requires `ANTHROPIC_API_KEY`)
+   - `bun run test:install:e2e` (requires both keys; runs both providers)
 - [ ] (Optional) Spot-check the web gateway if your changes affect send/receive paths.
 
 5. **macOS app (Sparkle)**
@@ -61,8 +61,8 @@ When the operator says “release”, immediately do this preflight (no extra qu
 - [ ] Generate the Sparkle appcast (HTML notes via [`scripts/make_appcast.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/make_appcast.sh)) and update `appcast.xml`.
 - [ ] Keep the app zip (and optional dSYM zip) ready to attach to the GitHub release.
 - [ ] Follow [macOS release](/platforms/mac/release) for the exact commands and required env vars.
-  - `APP_BUILD` must be numeric + monotonic (no `-beta`) so Sparkle compares versions correctly.
-  - If notarizing, use the `openclaw-notary` keychain profile created from App Store Connect API env vars (see [macOS release](/platforms/mac/release)).
+   - `APP_BUILD` must be numeric + monotonic (no `-beta`) so Sparkle compares versions correctly.
+   - If notarizing, use the `openclaw-notary` keychain profile created from App Store Connect API env vars (see [macOS release](/platforms/mac/release)).
 
 6. **Publish (npm)**
 
@@ -75,11 +75,11 @@ When the operator says “release”, immediately do this preflight (no extra qu
 
 - **npm pack/publish hangs or produces huge tarball**: the macOS app bundle in `dist/OpenClaw.app` (and release zips) get swept into the package. Fix by whitelisting publish contents via `package.json` `files` (include dist subdirs, docs, skills; exclude app bundles). Confirm with `npm pack --dry-run` that `dist/OpenClaw.app` is not listed.
 - **npm auth web loop for dist-tags**: use legacy auth to get an OTP prompt:
-  - `NPM_CONFIG_AUTH_TYPE=legacy npm dist-tag add openclaw@X.Y.Z latest`
+   - `NPM_CONFIG_AUTH_TYPE=legacy npm dist-tag add openclaw@X.Y.Z latest`
 - **`npx` verification fails with `ECOMPROMISED: Lock compromised`**: retry with a fresh cache:
-  - `NPM_CONFIG_CACHE=/tmp/npm-cache-$(date +%s) npx -y openclaw@X.Y.Z --version`
+   - `NPM_CONFIG_CACHE=/tmp/npm-cache-$(date +%s) npx -y openclaw@X.Y.Z --version`
 - **Tag needs repointing after a late fix**: force-update and push the tag, then ensure the GitHub release assets still match:
-  - `git tag -f vX.Y.Z && git push -f origin vX.Y.Z`
+   - `git tag -f vX.Y.Z && git push -f origin vX.Y.Z`
 
 7. **GitHub release + appcast**
 

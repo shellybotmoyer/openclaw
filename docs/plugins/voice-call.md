@@ -1,8 +1,8 @@
 ---
 summary: "Voice Call plugin: outbound + inbound calls via Twilio/Telnyx/Plivo (plugin install + config + CLI)"
 read_when:
-  - You want to place an outbound voice call from OpenClaw
-  - You are configuring or developing the voice-call plugin
+   - You want to place an outbound voice call from OpenClaw
+   - You are configuring or developing the voice-call plugin
 title: "Voice Call Plugin"
 ---
 
@@ -45,7 +45,7 @@ Restart the Gateway afterwards.
 
 ```bash
 openclaw plugins install ./extensions/voice-call
-cd ./extensions/voice-call && pnpm install
+cd ./extensions/voice-call && bun install
 ```
 
 Restart the Gateway afterwards.
@@ -56,54 +56,54 @@ Set config under `plugins.entries.voice-call.config`:
 
 ```json5
 {
-  plugins: {
-    entries: {
-      "voice-call": {
-        enabled: true,
-        config: {
-          provider: "twilio", // or "telnyx" | "plivo" | "mock"
-          fromNumber: "+15550001234",
-          toNumber: "+15550005678",
+	plugins: {
+		entries: {
+			"voice-call": {
+				enabled: true,
+				config: {
+					provider: "twilio", // or "telnyx" | "plivo" | "mock"
+					fromNumber: "+15550001234",
+					toNumber: "+15550005678",
 
-          twilio: {
-            accountSid: "ACxxxxxxxx",
-            authToken: "...",
-          },
+					twilio: {
+						accountSid: "ACxxxxxxxx",
+						authToken: "...",
+					},
 
-          plivo: {
-            authId: "MAxxxxxxxxxxxxxxxxxxxx",
-            authToken: "...",
-          },
+					plivo: {
+						authId: "MAxxxxxxxxxxxxxxxxxxxx",
+						authToken: "...",
+					},
 
-          // Webhook server
-          serve: {
-            port: 3334,
-            path: "/voice/webhook",
-          },
+					// Webhook server
+					serve: {
+						port: 3334,
+						path: "/voice/webhook",
+					},
 
-          // Webhook security (recommended for tunnels/proxies)
-          webhookSecurity: {
-            allowedHosts: ["voice.example.com"],
-            trustedProxyIPs: ["100.64.0.1"],
-          },
+					// Webhook security (recommended for tunnels/proxies)
+					webhookSecurity: {
+						allowedHosts: ["voice.example.com"],
+						trustedProxyIPs: ["100.64.0.1"],
+					},
 
-          // Public exposure (pick one)
-          // publicUrl: "https://example.ngrok.app/voice/webhook",
-          // tunnel: { provider: "ngrok" },
-          // tailscale: { mode: "funnel", path: "/voice/webhook" }
+					// Public exposure (pick one)
+					// publicUrl: "https://example.ngrok.app/voice/webhook",
+					// tunnel: { provider: "ngrok" },
+					// tailscale: { mode: "funnel", path: "/voice/webhook" }
 
-          outbound: {
-            defaultMode: "notify", // notify | conversation
-          },
+					outbound: {
+						defaultMode: "notify", // notify | conversation
+					},
 
-          streaming: {
-            enabled: true,
-            streamPath: "/voice/stream",
-          },
-        },
-      },
-    },
-  },
+					streaming: {
+						enabled: true,
+						streamPath: "/voice/stream",
+					},
+				},
+			},
+		},
+	},
 }
 ```
 
@@ -134,18 +134,18 @@ Example with a stable public host:
 
 ```json5
 {
-  plugins: {
-    entries: {
-      "voice-call": {
-        config: {
-          publicUrl: "https://voice.example.com/voice/webhook",
-          webhookSecurity: {
-            allowedHosts: ["voice.example.com"],
-          },
-        },
-      },
-    },
-  },
+	plugins: {
+		entries: {
+			"voice-call": {
+				config: {
+					publicUrl: "https://voice.example.com/voice/webhook",
+					webhookSecurity: {
+						allowedHosts: ["voice.example.com"],
+					},
+				},
+			},
+		},
+	},
 }
 ```
 
@@ -157,13 +157,13 @@ streaming speech on calls. You can override it under the plugin config with the
 
 ```json5
 {
-  tts: {
-    provider: "elevenlabs",
-    elevenlabs: {
-      voiceId: "pMsXgVXv3BLzUgSXRplE",
-      modelId: "eleven_multilingual_v2",
-    },
-  },
+	tts: {
+		provider: "elevenlabs",
+		elevenlabs: {
+			voiceId: "pMsXgVXv3BLzUgSXRplE",
+			modelId: "eleven_multilingual_v2",
+		},
+	},
 }
 ```
 
@@ -178,12 +178,12 @@ Use core TTS only (no override):
 
 ```json5
 {
-  messages: {
-    tts: {
-      provider: "openai",
-      openai: { voice: "alloy" },
-    },
-  },
+	messages: {
+		tts: {
+			provider: "openai",
+			openai: { voice: "alloy" },
+		},
+	},
 }
 ```
 
@@ -191,22 +191,22 @@ Override to ElevenLabs just for calls (keep core default elsewhere):
 
 ```json5
 {
-  plugins: {
-    entries: {
-      "voice-call": {
-        config: {
-          tts: {
-            provider: "elevenlabs",
-            elevenlabs: {
-              apiKey: "elevenlabs_key",
-              voiceId: "pMsXgVXv3BLzUgSXRplE",
-              modelId: "eleven_multilingual_v2",
-            },
-          },
-        },
-      },
-    },
-  },
+	plugins: {
+		entries: {
+			"voice-call": {
+				config: {
+					tts: {
+						provider: "elevenlabs",
+						elevenlabs: {
+							apiKey: "elevenlabs_key",
+							voiceId: "pMsXgVXv3BLzUgSXRplE",
+							modelId: "eleven_multilingual_v2",
+						},
+					},
+				},
+			},
+		},
+	},
 }
 ```
 
@@ -214,20 +214,20 @@ Override only the OpenAI model for calls (deep‑merge example):
 
 ```json5
 {
-  plugins: {
-    entries: {
-      "voice-call": {
-        config: {
-          tts: {
-            openai: {
-              model: "gpt-4o-mini-tts",
-              voice: "marin",
-            },
-          },
-        },
-      },
-    },
-  },
+	plugins: {
+		entries: {
+			"voice-call": {
+				config: {
+					tts: {
+						openai: {
+							model: "gpt-4o-mini-tts",
+							voice: "marin",
+						},
+					},
+				},
+			},
+		},
+	},
 }
 ```
 
@@ -237,9 +237,9 @@ Inbound policy defaults to `disabled`. To enable inbound calls, set:
 
 ```json5
 {
-  inboundPolicy: "allowlist",
-  allowFrom: ["+15550001234"],
-  inboundGreeting: "Hello! How can I help?",
+	inboundPolicy: "allowlist",
+	allowFrom: ["+15550001234"],
+	inboundGreeting: "Hello! How can I help?",
 }
 ```
 

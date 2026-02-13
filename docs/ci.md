@@ -44,8 +44,8 @@ Jobs are ordered so cheap checks fail before expensive ones run:
 ## Local Equivalents
 
 ```bash
-pnpm check          # types + lint + format
-pnpm test           # vitest tests
-pnpm check:docs     # docs format + lint + broken links
-pnpm release:check  # validate npm pack
+bun run check          # types + lint + format
+bun run test           # vitest tests
+bun run check:docs     # docs format + lint + broken links
+bun run release:check  # validate npm pack
 ```

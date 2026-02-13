@@ -1,7 +1,7 @@
 ---
 summary: "macOS app flow for controlling a remote OpenClaw gateway over SSH"
 read_when:
-  - Setting up or debugging remote mac control
+   - Setting up or debugging remote mac control
 title: "Remote Control"
 ---
 
@@ -24,7 +24,7 @@ Remote mode supports two transports:
 
 ## Prereqs on the remote host
 
-1. Install Node + pnpm and build/install the OpenClaw CLI (`pnpm install && pnpm build && pnpm link --global`).
+1. Install Node + bun and build/install the OpenClaw CLI (`bun install && bun run build && bun link --global`).
 2. Ensure `openclaw` is on PATH for non-interactive shells (symlink into `/usr/local/bin` or `/opt/homebrew/bin` if needed).
 3. Open SSH with key auth. We recommend **Tailscale** IPs for stable reachability off-LAN.
 
@@ -34,7 +34,7 @@ Remote mode supports two transports:
 2. Under **OpenClaw runs**, pick **Remote over SSH** and set:
    - **Transport**: **SSH tunnel** or **Direct (ws/wss)**.
    - **SSH target**: `user@host` (optional `:port`).
-     - If the gateway is on the same LAN and advertises Bonjour, pick it from the discovered list to auto-fill this field.
+      - If the gateway is on the same LAN and advertises Bonjour, pick it from the discovered list to auto-fill this field.
    - **Gateway URL** (Direct only): `wss://gateway.example.ts.net` (or `ws://...` for local/LAN).
    - **Identity file** (advanced): path to your key.
    - **Project root** (advanced): remote checkout path used for commands.

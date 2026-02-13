@@ -1,8 +1,8 @@
 ---
 summary: "OpenClaw macOS companion app (menu bar + gateway broker)"
 read_when:
-  - Implementing macOS app features
-  - Changing gateway lifecycle or node bridging on macOS
+   - Implementing macOS app features
+   - Changing gateway lifecycle or node bridging on macOS
 title: "macOS App"
 ---
 
@@ -21,7 +21,7 @@ capabilities to the agent as a node.
 - Exposes macOS‑only tools (Canvas, Camera, Screen Recording, `system.run`).
 - Starts the local node host service in **remote** mode (launchd), and stops it in **local** mode.
 - Optionally hosts **PeekabooBridge** for UI automation.
-- Installs the global CLI (`openclaw`) via npm/pnpm on request (bun not recommended for the Gateway runtime).
+- Installs the global CLI (`openclaw`) via npm/bun on request (bun not recommended for the Gateway runtime).
 
 ## Local vs remote mode
 
@@ -85,18 +85,18 @@ Example:
 
 ```json
 {
-  "version": 1,
-  "defaults": {
-    "security": "deny",
-    "ask": "on-miss"
-  },
-  "agents": {
-    "main": {
-      "security": "allowlist",
-      "ask": "on-miss",
-      "allowlist": [{ "pattern": "/opt/homebrew/bin/rg" }]
-    }
-  }
+	"version": 1,
+	"defaults": {
+		"security": "deny",
+		"ask": "on-miss"
+	},
+	"agents": {
+		"main": {
+			"security": "allowlist",
+			"ask": "on-miss",
+			"allowlist": [{ "pattern": "/opt/homebrew/bin/rg" }]
+		}
+	}
 }
 ```
 

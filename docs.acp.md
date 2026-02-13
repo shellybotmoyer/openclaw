@@ -63,14 +63,14 @@ Add a custom ACP agent in `~/.config/zed/settings.json`:
 
 ```json
 {
-  "agent_servers": {
-    "OpenClaw ACP": {
-      "type": "custom",
-      "command": "openclaw",
-      "args": ["acp"],
-      "env": {}
-    }
-  }
+	"agent_servers": {
+		"OpenClaw ACP": {
+			"type": "custom",
+			"command": "openclaw",
+			"args": ["acp"],
+			"env": {}
+		}
+	}
 }
 ```
 
@@ -78,22 +78,22 @@ To target a specific Gateway or agent:
 
 ```json
 {
-  "agent_servers": {
-    "OpenClaw ACP": {
-      "type": "custom",
-      "command": "openclaw",
-      "args": [
-        "acp",
-        "--url",
-        "wss://gateway-host:18789",
-        "--token",
-        "<token>",
-        "--session",
-        "agent:design:main"
-      ],
-      "env": {}
-    }
-  }
+	"agent_servers": {
+		"OpenClaw ACP": {
+			"type": "custom",
+			"command": "openclaw",
+			"args": [
+				"acp",
+				"--url",
+				"wss://gateway-host:18789",
+				"--token",
+				"<token>",
+				"--session",
+				"agent:design:main"
+			],
+			"env": {}
+		}
+	}
 }
 ```
 
@@ -127,12 +127,12 @@ openclaw acp --reset-session
 
 ```json
 {
-  "_meta": {
-    "sessionKey": "agent:main:main",
-    "sessionLabel": "support inbox",
-    "resetSession": true,
-    "requireExisting": false
-  }
+	"_meta": {
+		"sessionKey": "agent:main:main",
+		"sessionLabel": "support inbox",
+		"resetSession": true,
+		"requireExisting": false
+	}
 }
 ```
 
@@ -188,7 +188,7 @@ updates. Terminal Gateway states map to ACP `done` with stop reasons:
 ## Testing
 
 - Unit: `src/acp/session.test.ts` covers run id lifecycle.
-- Full gate: `pnpm build && pnpm check && pnpm test && pnpm docs:build`.
+- Full gate: `bun run build && bun run check && bun run test && bun run docs:build`.
 
 ## Related Docs
 

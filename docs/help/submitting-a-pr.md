@@ -13,7 +13,7 @@ Good PRs are easy to review: reviewers should quickly know the intent, verify be
 - [ ] List test coverage, skips, and reasons.
 - [ ] Add evidence: logs, screenshots, or recordings (UI/UX).
 - [ ] Code word: put “lobster-biscuit” in the PR description if you read this guide.
-- [ ] Run/fix relevant `pnpm` commands before creating PR.
+- [ ] Run/fix relevant `bun` commands before creating PR.
 - [ ] Search codebase and GitHub for related functionality/issues/fixes.
 - [ ] Base claims on evidence or observation.
 - [ ] Good title: verb + scope + outcome (e.g., `Docs: add PR and issue templates`).
@@ -22,11 +22,11 @@ Be concise; concise review > grammar. Omit any non-applicable sections.
 
 ### Baseline validation commands (run/fix failures for your change)
 
-- `pnpm lint`
-- `pnpm check`
-- `pnpm build`
-- `pnpm test`
-- Protocol changes: `pnpm protocol:check`
+- `bun run lint`
+- `bun run check`
+- `bun run build`
+- `bun run test`
+- Protocol changes: `bun run protocol:check`
 
 ## Progressive disclosure
 
@@ -41,7 +41,7 @@ Be concise; concise review > grammar. Omit any non-applicable sections.
 - [ ] Feature: Add use cases, behavior/demos/screenshots (UI).
 - [ ] Refactor: State "no behavior change", list what moved/simplified.
 - [ ] Chore: State why (e.g., build time, CI, dependencies).
-- [ ] Docs: Before/after context, link updated page, run `pnpm format`.
+- [ ] Docs: Before/after context, link updated page, run `bun run format`.
 - [ ] Test: What gap is covered; how it prevents regressions.
 - [ ] Perf: Add before/after metrics, and how measured.
 - [ ] UX/UI: Screenshots/video, note accessibility impact.
@@ -137,8 +137,8 @@ Be concise; concise review > grammar. Omit any non-applicable sections.
 
 - [ ] I searched the codebase for existing functionality.
       Searches performed (1-3 bullets):
-  -
-  -
+   -
+   -
 
 #### Tests
 
@@ -233,7 +233,7 @@ Be concise; concise review > grammar. Omit any non-applicable sections.
 
 #### Formatting
 
-pnpm format
+bun run format
 
 #### Evidence (omit if N/A)
 

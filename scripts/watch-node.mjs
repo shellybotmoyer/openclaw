@@ -7,53 +7,55 @@ const env = { ...process.env };
 const cwd = process.cwd();
 const compiler = "tsdown";
 
-const initialBuild = spawnSync("pnpm", ["exec", compiler], {
-  cwd,
-  env,
-  stdio: "inherit",
+const bunCmd = process.platform === "win32" ? "bun.exe" : "bun";
+
+const initialBuild = spawnSync(bunCmd, ["x", compiler], {
+	cwd,
+	env,
+	stdio: "inherit",
 });
 
 if (initialBuild.status !== 0) {
-  process.exit(initialBuild.status ?? 1);
+	process.exit(initialBuild.status ?? 1);
 }
 
-const compilerProcess = spawn("pnpm", ["exec", compiler, "--watch"], {
-  cwd,
-  env,
-  stdio: "inherit",
+const compilerProcess = spawn(bunCmd, ["x", compiler, "--watch"], {
+	cwd,
+	env,
+	stdio: "inherit",
 });
 
 const nodeProcess = spawn(process.execPath, ["--watch", "openclaw.mjs", ...args], {
-  cwd,
-  env,
-  stdio: "inherit",
+	cwd,
+	env,
+	stdio: "inherit",
 });
 
 let exiting = false;
 
 function cleanup(code = 0) {
-  if (exiting) {
-    return;
-  }
-  exiting = true;
-  nodeProcess.kill("SIGTERM");
-  compilerProcess.kill("SIGTERM");
-  process.exit(code);
+	if (exiting) {
+		return;
+	}
+	exiting = true;
+	nodeProcess.kill("SIGTERM");
+	compilerProcess.kill("SIGTERM");
+	process.exit(code);
 }
 
 process.on("SIGINT", () => cleanup(130));
 process.on("SIGTERM", () => cleanup(143));
 
 compilerProcess.on("exit", (code) => {
-  if (exiting) {
-    return;
-  }
-  cleanup(code ?? 1);
+	if (exiting) {
+		return;
+	}
+	cleanup(code ?? 1);
 });
 
 nodeProcess.on("exit", (code, signal) => {
-  if (signal || exiting) {
-    return;
-  }
-  cleanup(code ?? 1);
+	if (signal || exiting) {
+		return;
+	}
+	cleanup(code ?? 1);
 });

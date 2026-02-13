@@ -1,9 +1,9 @@
 ---
 summary: "Full reference for the CLI onboarding wizard: every step, flag, and config field"
 read_when:
-  - Looking up a specific wizard step or flag
-  - Automating onboarding with non-interactive mode
-  - Debugging wizard behavior
+   - Looking up a specific wizard step or flag
+   - Automating onboarding with non-interactive mode
+   - Debugging wizard behavior
 title: "Onboarding Wizard Reference"
 sidebarTitle: "Wizard Reference"
 ---
@@ -96,7 +96,7 @@ For a high-level overview, see [Onboarding Wizard](/start/wizard).
   </Step>
   <Step title="Skills (recommended)">
     - Reads the available skills and checks requirements.
-    - Lets you choose a node manager: **npm / pnpm** (bun not recommended).
+    - Lets you choose a node manager: **npm / bun** (bun not recommended).
     - Installs optional dependencies (some use Homebrew on macOS).
   </Step>
   <Step title="Finish">
@@ -106,7 +106,7 @@ For a high-level overview, see [Onboarding Wizard](/start/wizard).
 
 <Note>
 If no GUI is detected, the wizard prints SSH port-forward instructions for the Control UI instead of opening a browser.
-If the Control UI assets are missing, the wizard attempts to build them; fallback is `pnpm ui:build` (auto-installs UI deps).
+If the Control UI assets are missing, the wizard attempts to build them; fallback is `bun run ui:build` (auto-installs UI deps).
 </Note>
 
 ## Non-interactive mode

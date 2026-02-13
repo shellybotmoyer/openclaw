@@ -25,11 +25,11 @@ Be brief. Terseness > perfect grammar.
 
 Validation (run/fix before PR):
 
-- `pnpm lint`
-- `pnpm check`
-- `pnpm build`
-- `pnpm test`
-- If protocol code: `pnpm protocol:check`
+- `bun run lint`
+- `bun run check`
+- `bun run build`
+- `bun run test`
+- If protocol code: `bun run protocol:check`
 
 ### Templates
 

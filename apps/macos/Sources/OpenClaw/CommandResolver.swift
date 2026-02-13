@@ -79,7 +79,7 @@ enum CommandResolver {
 
     static func preferredPaths(home: URL, current: [String], projectRoot: URL) -> [String] {
         var extras = [
-            home.appendingPathComponent("Library/pnpm").path,
+            home.appendingPathComponent(".bun/bin").path,
             "/opt/homebrew/bin",
             "/usr/local/bin",
             "/usr/bin",
@@ -141,6 +141,12 @@ enum CommandResolver {
         bins.append(contentsOf: self.versionedNodeBinPaths(
             base: home.appendingPathComponent(".nvm/versions/node"),
             suffix: "bin"))
+
+        // Bun
+        let bun = home.appendingPathComponent(".bun/bin")
+        if FileManager().fileExists(atPath: bun.path) {
+            bins.append(bun.path)
+        }
 
         return bins
     }
@@ -221,7 +227,7 @@ enum CommandResolver {
 
     static func hasAnyOpenClawInvoker(searchPaths: [String]? = nil) -> Bool {
         if self.openclawExecutable(searchPaths: searchPaths) != nil { return true }
-        if self.findExecutable(named: "pnpm", searchPaths: searchPaths) != nil { return true }
+        if self.findExecutable(named: "bun", searchPaths: searchPaths) != nil { return true }
         if self.findExecutable(named: "node", searchPaths: searchPaths) != nil,
            self.nodeCliPath() != nil
         {
@@ -262,16 +268,15 @@ enum CommandResolver {
                     subcommand: subcommand,
                     extraArgs: extraArgs)
             }
-            if let pnpm = self.findExecutable(named: "pnpm", searchPaths: searchPaths) {
-                // Use --silent to avoid pnpm lifecycle banners that would corrupt JSON outputs.
-                return [pnpm, "--silent", "openclaw", subcommand] + extraArgs
+            if let bun = self.findExecutable(named: "bun", searchPaths: searchPaths) {
+                return [bun, "run", "openclaw", subcommand] + extraArgs
             }
             if let openclawPath = self.openclawExecutable(searchPaths: searchPaths) {
                 return [openclawPath, subcommand] + extraArgs
             }
 
             let missingEntry = """
-            openclaw entrypoint missing (looked for dist/index.js or openclaw.mjs); run pnpm build.
+            openclaw entrypoint missing (looked for dist/index.js or openclaw.mjs); run bun run build.
             """
             return self.errorCommand(with: missingEntry)
 
@@ -309,7 +314,7 @@ enum CommandResolver {
             "/bin",
             "/usr/sbin",
             "/sbin",
-            "$HOME/Library/pnpm",
+            "$HOME/.bun/bin",
             "$PATH",
         ].joined(separator: ":")
         let quotedArgs = ([subcommand] + extraArgs).map(self.shellQuote).joined(separator: " ")
@@ -381,9 +386,9 @@ enum CommandResolver {
           else
             echo "Node >=22 required on remote host"; exit 127;
           fi
-        elif command -v pnpm >/dev/null 2>&1; then
-          CLI="pnpm --silent openclaw"
-          pnpm --silent openclaw \(quotedArgs);
+        elif command -v bun >/dev/null 2>&1; then
+          CLI="bun run openclaw"
+          bun run openclaw \(quotedArgs);
         else
           echo "openclaw CLI missing on remote host"; exit 127;
         fi

@@ -1,9 +1,9 @@
 ---
 summary: "How the installer scripts work (install.sh, install-cli.sh, install.ps1), flags, and automation"
 read_when:
-  - You want to understand `openclaw.ai/install.sh`
-  - You want to automate installs (CI / headless)
-  - You want to install from a GitHub checkout
+   - You want to understand `openclaw.ai/install.sh`
+   - You want to automate installs (CI / headless)
+   - You want to install from a GitHub checkout
 title: "Installer Internals"
 ---
 
@@ -78,7 +78,7 @@ Recommended for most interactive installs on macOS/Linux/WSL.
   </Step>
   <Step title="Install OpenClaw">
     - `npm` method (default): global npm install
-    - `git` method: clone/update repo, install deps with pnpm, build, then install wrapper at `~/.local/bin/openclaw`
+    - `git` method: clone/update repo, install deps with bun, build, then install wrapper at `~/.local/bin/openclaw`
   </Step>
   <Step title="Post-install tasks">
     - Runs `openclaw doctor --non-interactive` on upgrades and git installs (best effort)
@@ -89,7 +89,7 @@ Recommended for most interactive installs on macOS/Linux/WSL.
 
 ### Source checkout detection
 
-If run inside an OpenClaw checkout (`package.json` + `pnpm-workspace.yaml`), the script offers:
+If run inside an OpenClaw checkout (`package.json` + `bun.lock`), the script offers:
 
 - use checkout (`git`), or
 - use global install (`npm`)
@@ -256,7 +256,7 @@ Designed for environments where you want everything under a local prefix (defaul
   </Step>
   <Step title="Install OpenClaw">
     - `npm` method (default): global npm install using selected `-Tag`
-    - `git` method: clone/update repo, install/build with pnpm, and install wrapper at `%USERPROFILE%\.local\bin\openclaw.cmd`
+    - `git` method: clone/update repo, install/build with bun, and install wrapper at `%USERPROFILE%\.local\bin\openclaw.cmd`
   </Step>
   <Step title="Post-install tasks">
     Adds needed bin directory to user PATH when possible, then runs `openclaw doctor --non-interactive` on upgrades and git installs (best effort).

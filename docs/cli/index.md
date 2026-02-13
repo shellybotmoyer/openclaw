@@ -1,8 +1,8 @@
 ---
 summary: "OpenClaw CLI reference for `openclaw` commands, subcommands, and options"
 read_when:
-  - Adding or modifying CLI commands or options
-  - Documenting new command surfaces
+   - Adding or modifying CLI commands or options
+   - Documenting new command surfaces
 title: "CLI Reference"
 ---
 
@@ -339,7 +339,7 @@ Options:
 - `--skip-skills`
 - `--skip-health`
 - `--skip-ui`
-- `--node-manager <npm|pnpm|bun>` (pnpm recommended; bun not recommended for Gateway runtime)
+- `--node-manager <npm|bun|bun>` (bun recommended; bun not recommended for Gateway runtime)
 - `--json`
 
 ### `configure`

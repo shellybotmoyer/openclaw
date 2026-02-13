@@ -3,23 +3,23 @@ name: oracle
 description: Best practices for using the oracle CLI (prompt + file bundling, engines, sessions, and file attachment patterns).
 homepage: https://askoracle.dev
 metadata:
-  {
-    "openclaw":
-      {
-        "emoji": "🧿",
-        "requires": { "bins": ["oracle"] },
-        "install":
-          [
-            {
-              "id": "node",
-              "kind": "node",
-              "package": "@steipete/oracle",
-              "bins": ["oracle"],
-              "label": "Install oracle (node)",
-            },
-          ],
-      },
-  }
+   {
+      "openclaw":
+         {
+            "emoji": "🧿",
+            "requires": { "bins": ["oracle"] },
+            "install":
+               [
+                  {
+                     "id": "node",
+                     "kind": "node",
+                     "package": "@steipete/oracle",
+                     "bins": ["oracle"],
+                     "label": "Install oracle (node)",
+                  },
+               ],
+         },
+   }
 ---
 
 # oracle — best use
@@ -45,58 +45,58 @@ Recommended defaults:
 ## Commands (preferred)
 
 - Help:
-  - `oracle --help`
-  - If the binary isn’t installed: `npx -y @steipete/oracle --help` (avoid `pnpx` here; sqlite bindings).
+   - `oracle --help`
+   - If the binary isn’t installed: `npx -y @steipete/oracle --help` (avoid `bunx` here; sqlite bindings).
 
 - Preview (no tokens):
-  - `oracle --dry-run summary -p "<task>" --file "src/**" --file "!**/*.test.*"`
-  - `oracle --dry-run full -p "<task>" --file "src/**"`
+   - `oracle --dry-run summary -p "<task>" --file "src/**" --file "!**/*.test.*"`
+   - `oracle --dry-run full -p "<task>" --file "src/**"`
 
 - Token sanity:
-  - `oracle --dry-run summary --files-report -p "<task>" --file "src/**"`
+   - `oracle --dry-run summary --files-report -p "<task>" --file "src/**"`
 
 - Browser run (main path; long-running is normal):
-  - `oracle --engine browser --model gpt-5.2-pro -p "<task>" --file "src/**"`
+   - `oracle --engine browser --model gpt-5.2-pro -p "<task>" --file "src/**"`
 
 - Manual paste fallback:
-  - `oracle --render --copy -p "<task>" --file "src/**"`
-  - Note: `--copy` is a hidden alias for `--copy-markdown`.
+   - `oracle --render --copy -p "<task>" --file "src/**"`
+   - Note: `--copy` is a hidden alias for `--copy-markdown`.
 
 ## Attaching files (`--file`)
 
 `--file` accepts files, directories, and globs. You can pass it multiple times; entries can be comma-separated.
 
 - Include:
-  - `--file "src/**"`
-  - `--file src/index.ts`
-  - `--file docs --file README.md`
+   - `--file "src/**"`
+   - `--file src/index.ts`
+   - `--file docs --file README.md`
 
 - Exclude:
-  - `--file "src/**" --file "!src/**/*.test.ts" --file "!**/*.snap"`
+   - `--file "src/**" --file "!src/**/*.test.ts" --file "!**/*.snap"`
 
 - Defaults (implementation behavior):
-  - Default-ignored dirs: `node_modules`, `dist`, `coverage`, `.git`, `.turbo`, `.next`, `build`, `tmp` (skipped unless explicitly passed as literal dirs/files).
-  - Honors `.gitignore` when expanding globs.
-  - Does not follow symlinks.
-  - Dotfiles filtered unless opted in via pattern (e.g. `--file ".github/**"`).
-  - Files > 1 MB rejected.
+   - Default-ignored dirs: `node_modules`, `dist`, `coverage`, `.git`, `.turbo`, `.next`, `build`, `tmp` (skipped unless explicitly passed as literal dirs/files).
+   - Honors `.gitignore` when expanding globs.
+   - Does not follow symlinks.
+   - Dotfiles filtered unless opted in via pattern (e.g. `--file ".github/**"`).
+   - Files > 1 MB rejected.
 
 ## Engines (API vs browser)
 
 - Auto-pick: `api` when `OPENAI_API_KEY` is set; otherwise `browser`.
 - Browser supports GPT + Gemini only; use `--engine api` for Claude/Grok/Codex or multi-model runs.
 - Browser attachments:
-  - `--browser-attachments auto|never|always` (auto pastes inline up to ~60k chars then uploads).
+   - `--browser-attachments auto|never|always` (auto pastes inline up to ~60k chars then uploads).
 - Remote browser host:
-  - Host: `oracle serve --host 0.0.0.0 --port 9473 --token <secret>`
-  - Client: `oracle --engine browser --remote-host <host:port> --remote-token <secret> -p "<task>" --file "src/**"`
+   - Host: `oracle serve --host 0.0.0.0 --port 9473 --token <secret>`
+   - Client: `oracle --engine browser --remote-host <host:port> --remote-token <secret> -p "<task>" --file "src/**"`
 
 ## Sessions + slugs
 
 - Stored under `~/.oracle/sessions` (override with `ORACLE_HOME_DIR`).
 - Runs may detach or take a long time (browser + GPT‑5.2 Pro often does). If the CLI times out: don’t re-run; reattach.
-  - List: `oracle status --hours 72`
-  - Attach: `oracle session <id> --render`
+   - List: `oracle status --hours 72`
+   - Attach: `oracle session <id> --render`
 - Use `--slug "<3-5 words>"` to keep session IDs readable.
 - Duplicate prompt guard exists; use `--force` only when you truly want a fresh run.
 

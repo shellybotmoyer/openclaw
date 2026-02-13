@@ -66,30 +66,30 @@ import Testing
         }
     }
 
-    @Test func fallsBackToPnpm() async throws {
+    @Test func fallsBackToBunRun() async throws {
         let defaults = self.makeDefaults()
         defaults.set(AppState.ConnectionMode.local.rawValue, forKey: connectionModeKey)
 
         let tmp = try makeTempDir()
         CommandResolver.setProjectRoot(tmp.path)
 
-        let pnpmPath = tmp.appendingPathComponent("node_modules/.bin/pnpm")
-        try self.makeExec(at: pnpmPath)
+        let bunPath = tmp.appendingPathComponent("node_modules/.bin/bun")
+        try self.makeExec(at: bunPath)
 
         let cmd = CommandResolver.openclawCommand(subcommand: "rpc", defaults: defaults, configRoot: [:])
 
-        #expect(cmd.prefix(4).elementsEqual([pnpmPath.path, "--silent", "openclaw", "rpc"]))
+        #expect(cmd.prefix(4).elementsEqual([bunPath.path, "run", "openclaw", "rpc"]))
     }
 
-    @Test func pnpmKeepsExtraArgsAfterSubcommand() async throws {
+    @Test func bunRunKeepsExtraArgsAfterSubcommand() async throws {
         let defaults = self.makeDefaults()
         defaults.set(AppState.ConnectionMode.local.rawValue, forKey: connectionModeKey)
 
         let tmp = try makeTempDir()
         CommandResolver.setProjectRoot(tmp.path)
 
-        let pnpmPath = tmp.appendingPathComponent("node_modules/.bin/pnpm")
-        try self.makeExec(at: pnpmPath)
+        let bunPath = tmp.appendingPathComponent("node_modules/.bin/bun")
+        try self.makeExec(at: bunPath)
 
         let cmd = CommandResolver.openclawCommand(
             subcommand: "health",
@@ -97,7 +97,7 @@ import Testing
             defaults: defaults,
             configRoot: [:])
 
-        #expect(cmd.prefix(5).elementsEqual([pnpmPath.path, "--silent", "openclaw", "health", "--json"]))
+        #expect(cmd.prefix(5).elementsEqual([bunPath.path, "run", "openclaw", "health", "--json"]))
         #expect(cmd.suffix(2).elementsEqual(["--timeout", "5"]))
     }
 

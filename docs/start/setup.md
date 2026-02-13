@@ -1,8 +1,8 @@
 ---
 summary: "Advanced setup and development workflows for OpenClaw"
 read_when:
-  - Setting up a new machine
-  - You want “latest + greatest” without breaking your personal setup
+   - Setting up a new machine
+   - You want “latest + greatest” without breaking your personal setup
 title: "Setup"
 ---
 
@@ -19,12 +19,12 @@ Last updated: 2026-01-01
 
 - **Tailoring lives outside the repo:** `~/.openclaw/workspace` (workspace) + `~/.openclaw/openclaw.json` (config).
 - **Stable workflow:** install the macOS app; let it run the bundled Gateway.
-- **Bleeding edge workflow:** run the Gateway yourself via `pnpm gateway:watch`, then let the macOS app attach in Local mode.
+- **Bleeding edge workflow:** run the Gateway yourself via `bun run gateway:watch`, then let the macOS app attach in Local mode.
 
 ## Prereqs (from source)
 
 - Node `>=22`
-- `pnpm`
+- `bun`
 - Docker (optional; only for containerized setup/e2e — see [Docker](/install/docker))
 
 ## Tailoring strategy (so updates don’t hurt)
@@ -46,11 +46,11 @@ From inside this repo, use the local CLI entry:
 openclaw setup
 ```
 
-If you don’t have a global install yet, run it via `pnpm openclaw setup`.
+If you don’t have a global install yet, run it via `bun run openclaw setup`.
 
 ## Run the Gateway from this repo
 
-After `pnpm build`, you can run the packaged CLI directly:
+After `bun run build`, you can run the packaged CLI directly:
 
 ```bash
 node openclaw.mjs gateway --port 18789 --verbose
@@ -92,8 +92,8 @@ If you also want the macOS app on the bleeding edge:
 ### 1) Start the dev Gateway
 
 ```bash
-pnpm install
-pnpm gateway:watch
+bun install
+bun run gateway:watch
 ```
 
 `gateway:watch` runs the gateway in watch mode and reloads on TypeScript changes.
@@ -118,9 +118,9 @@ openclaw health
 
 - **Wrong port:** Gateway WS defaults to `ws://127.0.0.1:18789`; keep app + CLI on the same port.
 - **Where state lives:**
-  - Credentials: `~/.openclaw/credentials/`
-  - Sessions: `~/.openclaw/agents/<agentId>/sessions/`
-  - Logs: `/tmp/openclaw/`
+   - Credentials: `~/.openclaw/credentials/`
+   - Sessions: `~/.openclaw/agents/<agentId>/sessions/`
+   - Logs: `/tmp/openclaw/`
 
 ## Credential storage map
 
@@ -138,7 +138,7 @@ Use this when debugging auth or deciding what to back up:
 ## Updating (without wrecking your setup)
 
 - Keep `~/.openclaw/workspace` and `~/.openclaw/` as “your stuff”; don’t put personal prompts/config into the `openclaw` repo.
-- Updating source: `git pull` + `pnpm install` (when lockfile changed) + keep using `pnpm gateway:watch`.
+- Updating source: `git pull` + `bun install` (when lockfile changed) + keep using `bun run gateway:watch`.
 
 ## Linux (systemd user service)
 

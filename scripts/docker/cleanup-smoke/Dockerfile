@@ -8,9 +8,10 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /repo
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN corepack enable \
-  && pnpm install --frozen-lockfile
+COPY package.json bun.lock ./
+RUN curl -fsSL https://bun.sh/install | bash \
+  && cp /root/.bun/bin/bun /usr/local/bin/bun \
+  && bun install --frozen-lockfile
 
 COPY . .
 COPY scripts/docker/cleanup-smoke/run.sh /usr/local/bin/openclaw-cleanup-smoke

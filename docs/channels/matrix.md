@@ -1,7 +1,7 @@
 ---
 summary: "Matrix support status, capabilities, and configuration"
 read_when:
-  - Working on Matrix channel features
+   - Working on Matrix channel features
 title: "Matrix"
 ---
 
@@ -81,14 +81,14 @@ Minimal config (access token, user ID auto-fetched):
 
 ```json5
 {
-  channels: {
-    matrix: {
-      enabled: true,
-      homeserver: "https://matrix.example.org",
-      accessToken: "syt_***",
-      dm: { policy: "pairing" },
-    },
-  },
+	channels: {
+		matrix: {
+			enabled: true,
+			homeserver: "https://matrix.example.org",
+			accessToken: "syt_***",
+			dm: { policy: "pairing" },
+		},
+	},
 }
 ```
 
@@ -96,15 +96,15 @@ E2EE config (end to end encryption enabled):
 
 ```json5
 {
-  channels: {
-    matrix: {
-      enabled: true,
-      homeserver: "https://matrix.example.org",
-      accessToken: "syt_***",
-      encryption: true,
-      dm: { policy: "pairing" },
-    },
-  },
+	channels: {
+		matrix: {
+			enabled: true,
+			homeserver: "https://matrix.example.org",
+			accessToken: "syt_***",
+			encryption: true,
+			dm: { policy: "pairing" },
+		},
+	},
 }
 ```
 
@@ -122,7 +122,7 @@ Enable with `channels.matrix.encryption: true`:
   OpenClaw logs a warning.
 - If you see missing crypto module errors (for example, `@matrix-org/matrix-sdk-crypto-nodejs-*`),
   allow build scripts for `@matrix-org/matrix-sdk-crypto-nodejs` and run
-  `pnpm rebuild @matrix-org/matrix-sdk-crypto-nodejs` or fetch the binary with
+  `bun pm trust @matrix-org/matrix-sdk-crypto-nodejs` or fetch the binary with
   `node node_modules/@matrix-org/matrix-sdk-crypto-nodejs/download-lib.js`.
 
 Crypto state is stored per account + access token in
@@ -145,8 +145,8 @@ Once verified, the bot can decrypt messages in encrypted rooms.
 
 - Default: `channels.matrix.dm.policy = "pairing"`. Unknown senders get a pairing code.
 - Approve via:
-  - `openclaw pairing list matrix`
-  - `openclaw pairing approve matrix <CODE>`
+   - `openclaw pairing list matrix`
+   - `openclaw pairing approve matrix <CODE>`
 - Public DMs: `channels.matrix.dm.policy="open"` plus `channels.matrix.dm.allowFrom=["*"]`.
 - `channels.matrix.dm.allowFrom` accepts full Matrix user IDs (example: `@user:server`). The wizard resolves display names to user IDs when directory search finds a single exact match.
 
@@ -157,16 +157,16 @@ Once verified, the bot can decrypt messages in encrypted rooms.
 
 ```json5
 {
-  channels: {
-    matrix: {
-      groupPolicy: "allowlist",
-      groups: {
-        "!roomId:example.org": { allow: true },
-        "#alias:example.org": { allow: true },
-      },
-      groupAllowFrom: ["@owner:example.org"],
-    },
-  },
+	channels: {
+		matrix: {
+			groupPolicy: "allowlist",
+			groups: {
+				"!roomId:example.org": { allow: true },
+				"#alias:example.org": { allow: true },
+			},
+			groupAllowFrom: ["@owner:example.org"],
+		},
+	},
 }
 ```
 
@@ -184,9 +184,9 @@ Once verified, the bot can decrypt messages in encrypted rooms.
 
 - Reply threading is supported.
 - `channels.matrix.threadReplies` controls whether replies stay in threads:
-  - `off`, `inbound` (default), `always`
+   - `off`, `inbound` (default), `always`
 - `channels.matrix.replyToMode` controls reply-to metadata when not replying in a thread:
-  - `off` (default), `first`, `all`
+   - `off` (default), `first`, `all`
 
 ## Capabilities
 

@@ -1,7 +1,7 @@
 ---
 summary: "TypeBox schemas as the single source of truth for the gateway protocol"
 read_when:
-  - Updating protocol schemas or codegen
+   - Updating protocol schemas or codegen
 title: "TypeBox"
 ---
 
@@ -64,12 +64,12 @@ Authoritative list lives in `src/gateway/server.ts` (`METHODS`, `EVENTS`).
 
 ## Current pipeline
 
-- `pnpm protocol:gen`
-  - writes JSON Schema (draft‑07) to `dist/protocol.schema.json`
-- `pnpm protocol:gen:swift`
-  - generates Swift gateway models
-- `pnpm protocol:check`
-  - runs both generators and verifies the output is committed
+- `bun run protocol:gen`
+   - writes JSON Schema (draft‑07) to `dist/protocol.schema.json`
+- `bun run protocol:gen:swift`
+   - generates Swift gateway models
+- `bun run protocol:check`
+   - runs both generators and verifies the output is committed
 
 ## How the schemas are used at runtime
 
@@ -86,21 +86,21 @@ Connect (first message):
 
 ```json
 {
-  "type": "req",
-  "id": "c1",
-  "method": "connect",
-  "params": {
-    "minProtocol": 2,
-    "maxProtocol": 2,
-    "client": {
-      "id": "openclaw-macos",
-      "displayName": "macos",
-      "version": "1.0.0",
-      "platform": "macos 15.1",
-      "mode": "ui",
-      "instanceId": "A1B2"
-    }
-  }
+	"type": "req",
+	"id": "c1",
+	"method": "connect",
+	"params": {
+		"minProtocol": 2,
+		"maxProtocol": 2,
+		"client": {
+			"id": "openclaw-macos",
+			"displayName": "macos",
+			"version": "1.0.0",
+			"platform": "macos 15.1",
+			"mode": "ui",
+			"instanceId": "A1B2"
+		}
+	}
 }
 ```
 
@@ -108,22 +108,22 @@ Hello-ok response:
 
 ```json
 {
-  "type": "res",
-  "id": "c1",
-  "ok": true,
-  "payload": {
-    "type": "hello-ok",
-    "protocol": 2,
-    "server": { "version": "dev", "connId": "ws-1" },
-    "features": { "methods": ["health"], "events": ["tick"] },
-    "snapshot": {
-      "presence": [],
-      "health": {},
-      "stateVersion": { "presence": 0, "health": 0 },
-      "uptimeMs": 0
-    },
-    "policy": { "maxPayload": 1048576, "maxBufferedBytes": 1048576, "tickIntervalMs": 30000 }
-  }
+	"type": "res",
+	"id": "c1",
+	"ok": true,
+	"payload": {
+		"type": "hello-ok",
+		"protocol": 2,
+		"server": { "version": "dev", "connId": "ws-1" },
+		"features": { "methods": ["health"], "events": ["tick"] },
+		"snapshot": {
+			"presence": [],
+			"health": {},
+			"stateVersion": { "presence": 0, "health": 0 },
+			"uptimeMs": 0
+		},
+		"policy": { "maxPayload": 1048576, "maxBufferedBytes": 1048576, "tickIntervalMs": 30000 }
+	}
 }
 ```
 
@@ -153,35 +153,35 @@ import { WebSocket } from "ws";
 const ws = new WebSocket("ws://127.0.0.1:18789");
 
 ws.on("open", () => {
-  ws.send(
-    JSON.stringify({
-      type: "req",
-      id: "c1",
-      method: "connect",
-      params: {
-        minProtocol: 3,
-        maxProtocol: 3,
-        client: {
-          id: "cli",
-          displayName: "example",
-          version: "dev",
-          platform: "node",
-          mode: "cli",
-        },
-      },
-    }),
-  );
+	ws.send(
+		JSON.stringify({
+			type: "req",
+			id: "c1",
+			method: "connect",
+			params: {
+				minProtocol: 3,
+				maxProtocol: 3,
+				client: {
+					id: "cli",
+					displayName: "example",
+					version: "dev",
+					platform: "node",
+					mode: "cli",
+				},
+			},
+		}),
+	);
 });
 
 ws.on("message", (data) => {
-  const msg = JSON.parse(String(data));
-  if (msg.type === "res" && msg.id === "c1" && msg.ok) {
-    ws.send(JSON.stringify({ type: "req", id: "h1", method: "health" }));
-  }
-  if (msg.type === "res" && msg.id === "h1") {
-    console.log("health:", msg.payload);
-    ws.close();
-  }
+	const msg = JSON.parse(String(data));
+	if (msg.type === "res" && msg.id === "c1" && msg.ok) {
+		ws.send(JSON.stringify({ type: "req", id: "h1", method: "health" }));
+	}
+	if (msg.type === "res" && msg.id === "h1") {
+		console.log("health:", msg.payload);
+		ws.close();
+	}
 });
 ```
 
@@ -195,13 +195,13 @@ Add to `src/gateway/protocol/schema.ts`:
 
 ```ts
 export const SystemEchoParamsSchema = Type.Object(
-  { text: NonEmptyString },
-  { additionalProperties: false },
+	{ text: NonEmptyString },
+	{ additionalProperties: false },
 );
 
 export const SystemEchoResultSchema = Type.Object(
-  { ok: Type.Boolean(), text: NonEmptyString },
-  { additionalProperties: false },
+	{ ok: Type.Boolean(), text: NonEmptyString },
+	{ additionalProperties: false },
 );
 ```
 
@@ -231,10 +231,10 @@ Add a handler in `src/gateway/server-methods/system.ts`:
 
 ```ts
 export const systemHandlers: GatewayRequestHandlers = {
-  "system.echo": ({ params, respond }) => {
-    const text = String(params.text ?? "");
-    respond(true, { ok: true, text });
-  },
+	"system.echo": ({ params, respond }) => {
+		const text = String(params.text ?? "");
+		respond(true, { ok: true, text });
+	},
 };
 ```
 
@@ -244,7 +244,7 @@ then add `"system.echo"` to `METHODS` in `src/gateway/server.ts`.
 4. **Regenerate**
 
 ```bash
-pnpm protocol:check
+bun run protocol:check
 ```
 
 5. **Tests + docs**
@@ -285,5 +285,5 @@ published raw file is typically available at:
 ## When you change schemas
 
 1. Update the TypeBox schemas.
-2. Run `pnpm protocol:check`.
+2. Run `bun run protocol:check`.
 3. Commit the regenerated schema + Swift models.

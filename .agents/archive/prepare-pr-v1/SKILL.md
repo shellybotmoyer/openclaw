@@ -33,7 +33,7 @@ Prepare a PR head branch for merge with review fixes, green gates, and determini
 - Rebase PR commits onto `origin/main`.
 - Fix all BLOCKER and IMPORTANT items from `.local/review.md`.
 - Commit prep changes with required subject format.
-- Run required gates and pass (`pnpm test` may be skipped only for high-confidence docs-only changes).
+- Run required gates and pass (`bun run test` may be skipped only for high-confidence docs-only changes).
 - Push the updated HEAD back to the PR head branch.
 - Write `.local/prep.md` and `.local/prep.env`.
 - Output exactly: `PR is ready for /mergepr`.
@@ -138,7 +138,7 @@ If running targeted tests in a fresh worktree:
 
 ```sh
 if [ ! -x node_modules/.bin/vitest ]; then
-  pnpm install --frozen-lockfile
+  bun install --frozen-lockfile
 fi
 ```
 
@@ -167,7 +167,7 @@ echo "$subject" | rg -q "thanks @$contrib" || { echo "ERROR: commit subject miss
 
 6. Decide verification mode and run required gates before pushing
 
-If you are highly confident the change is docs-only, you may skip `pnpm test`.
+If you are highly confident the change is docs-only, you may skip `bun run test`.
 
 High-confidence docs-only criteria (all must be true):
 
@@ -193,20 +193,20 @@ Bootstrap dependencies in a fresh worktree before gates:
 
 ```sh
 if [ ! -d node_modules ]; then
-  pnpm install --frozen-lockfile
+  bun install --frozen-lockfile
 fi
 ```
 
 Run required gates:
 
 ```sh
-pnpm build
-pnpm check
+bun run build
+bun run check
 
 if [ "$docs_only" = "true" ]; then
-  echo "Docs-only change detected with high confidence; skipping pnpm test." | tee -a .local/prep.md
+  echo "Docs-only change detected with high confidence; skipping bun run test." | tee -a .local/prep.md
 else
-  pnpm test
+  bun run test
 fi
 ```
 
@@ -260,10 +260,10 @@ if [ "${push_failed:-0}" = "1" ]; then
   git fetch origin pull/<PR>/head:pr-<PR>-latest --force
   git rebase pr-<PR>-latest
 
-  pnpm build
-  pnpm check
+  bun run build
+  bun run check
   if [ "$docs_only" != "true" ]; then
-    pnpm test
+    bun run test
   fi
 
   git push --force-with-lease=refs/heads/$head:$pr_head_sha_before prhead HEAD:$head
@@ -333,4 +333,4 @@ Otherwise, list remaining failures and stop.
 - Do not delete the worktree on success. `/mergepr` may reuse it.
 - Do not run `gh pr merge`.
 - Never push to main. Only push to the PR head branch.
-- Run and pass all required gates before pushing. `pnpm test` may be skipped only for high-confidence docs-only changes, and the skip must be explicitly recorded in `.local/prep.md`.
+- Run and pass all required gates before pushing. `bun run test` may be skipped only for high-confidence docs-only changes, and the skip must be explicitly recorded in `.local/prep.md`.

@@ -1,8 +1,8 @@
 ---
 summary: "Stable, beta, and dev channels: semantics, switching, and tagging"
 read_when:
-  - You want to switch between stable/beta/dev
-  - You are tagging or publishing prereleases
+   - You want to switch between stable/beta/dev
+   - You are tagging or publishing prereleases
 title: "Development Channels"
 ---
 
@@ -32,7 +32,7 @@ openclaw update --channel dev
 - `stable`/`beta` check out the latest matching tag (often the same tag).
 - `dev` switches to `main` and rebases on the upstream.
 
-npm/pnpm global install:
+npm/bun global install:
 
 ```bash
 openclaw update --channel stable
@@ -63,9 +63,9 @@ When you switch channels with `openclaw update`, OpenClaw also syncs plugin sour
 - Tag releases you want git checkouts to land on (`vYYYY.M.D` or `vYYYY.M.D-<patch>`).
 - Keep tags immutable: never move or reuse a tag.
 - npm dist-tags remain the source of truth for npm installs:
-  - `latest` → stable
-  - `beta` → candidate build
-  - `dev` → main snapshot (optional)
+   - `latest` → stable
+   - `beta` → candidate build
+   - `dev` → main snapshot (optional)
 
 ## macOS app availability
 

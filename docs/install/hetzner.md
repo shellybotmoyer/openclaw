@@ -1,10 +1,10 @@
 ---
 summary: "Run OpenClaw Gateway 24/7 on a cheap Hetzner VPS (Docker) with durable state and baked-in binaries"
 read_when:
-  - You want OpenClaw running 24/7 on a cloud VPS (not your laptop)
-  - You want a production-grade, always-on Gateway on your own VPS
-  - You want full control over persistence, binaries, and restart behavior
-  - You are running OpenClaw in Docker on Hetzner or a similar provider
+   - You want OpenClaw running 24/7 on a cloud VPS (not your laptop)
+   - You want a production-grade, always-on Gateway on your own VPS
+   - You want full control over persistence, binaries, and restart behavior
+   - You are running OpenClaw in Docker on Hetzner or a similar provider
 title: "Hetzner"
 ---
 
@@ -58,9 +58,9 @@ For the generic Docker flow, see [Docker](/install/docker).
 - Docker and Docker Compose
 - Model auth credentials
 - Optional provider credentials
-  - WhatsApp QR
-  - Telegram bot token
-  - Gmail OAuth
+   - WhatsApp QR
+   - Telegram bot token
+   - Gmail OAuth
 
 ---
 
@@ -154,44 +154,44 @@ Create or update `docker-compose.yml`.
 
 ```yaml
 services:
-  openclaw-gateway:
-    image: ${OPENCLAW_IMAGE}
-    build: .
-    restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      - HOME=/home/node
-      - NODE_ENV=production
-      - TERM=xterm-256color
-      - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND}
-      - OPENCLAW_GATEWAY_PORT=${OPENCLAW_GATEWAY_PORT}
-      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
-      - GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD}
-      - XDG_CONFIG_HOME=${XDG_CONFIG_HOME}
-      - PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    volumes:
-      - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
-    ports:
-      # Recommended: keep the Gateway loopback-only on the VPS; access via SSH tunnel.
-      # To expose it publicly, remove the `127.0.0.1:` prefix and firewall accordingly.
-      - "127.0.0.1:${OPENCLAW_GATEWAY_PORT}:18789"
+   openclaw-gateway:
+      image: ${OPENCLAW_IMAGE}
+      build: .
+      restart: unless-stopped
+      env_file:
+         - .env
+      environment:
+         - HOME=/home/node
+         - NODE_ENV=production
+         - TERM=xterm-256color
+         - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND}
+         - OPENCLAW_GATEWAY_PORT=${OPENCLAW_GATEWAY_PORT}
+         - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+         - GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD}
+         - XDG_CONFIG_HOME=${XDG_CONFIG_HOME}
+         - PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      volumes:
+         - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
+         - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
+      ports:
+         # Recommended: keep the Gateway loopback-only on the VPS; access via SSH tunnel.
+         # To expose it publicly, remove the `127.0.0.1:` prefix and firewall accordingly.
+         - "127.0.0.1:${OPENCLAW_GATEWAY_PORT}:18789"
 
-      # Optional: only if you run iOS/Android nodes against this VPS and need Canvas host.
-      # If you expose this publicly, read /gateway/security and firewall accordingly.
-      # - "18793:18793"
-    command:
-      [
-        "node",
-        "dist/index.js",
-        "gateway",
-        "--bind",
-        "${OPENCLAW_GATEWAY_BIND}",
-        "--port",
-        "${OPENCLAW_GATEWAY_PORT}",
-        "--allow-unconfigured",
-      ]
+         # Optional: only if you run iOS/Android nodes against this VPS and need Canvas host.
+         # If you expose this publicly, read /gateway/security and firewall accordingly.
+         # - "18793:18793"
+      command:
+         [
+            "node",
+            "dist/index.js",
+            "gateway",
+            "--bind",
+            "${OPENCLAW_GATEWAY_BIND}",
+            "--port",
+            "${OPENCLAW_GATEWAY_PORT}",
+            "--allow-unconfigured",
+         ]
 ```
 
 `--allow-unconfigured` is only for bootstrap convenience, it is not a replacement for a proper gateway configuration. Still set auth (`gateway.auth.token` or password) and use safe bind settings for your deployment.
@@ -242,17 +242,17 @@ RUN curl -L https://github.com/steipete/wacli/releases/latest/download/wacli_Lin
 # Add more binaries below using the same pattern
 
 WORKDIR /app
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY package.json bun.lock .npmrc ./
 COPY ui/package.json ./ui/package.json
 COPY scripts ./scripts
 
 RUN corepack enable
-RUN pnpm install --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 COPY . .
-RUN pnpm build
-RUN pnpm ui:install
-RUN pnpm ui:build
+RUN bun run build
+RUN bun run ui:install
+RUN bun run ui:build
 
 ENV NODE_ENV=production
 
