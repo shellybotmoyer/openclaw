@@ -2179,7 +2179,7 @@
 
     "openai": ["openai@6.21.0", "", { "peerDependencies": { "ws": "^8.18.0", "zod": "^3.25 || ^4.0" }, "optionalPeers": ["ws", "zod"], "bin": { "openai": "bin/cli" } }, "sha512-26dQFi76dB8IiN/WKGQOV+yKKTTlRCxQjoi2WLt0kMcH8pvxVyvfdBDkld5GTl7W1qvBpwVOtFcsqktj3fBRpA=="],
 
-    "openclaw": ["openclaw@root:", { "bin": { "openclaw": "openclaw.mjs" } }],
+    "openclaw": ["openclaw@root:", {}],
 
     "openclaw-control-ui": ["openclaw-control-ui@workspace:ui"],
 
