@@ -1,8 +1,8 @@
 ---
 summary: "Doctor command: health checks, config migrations, and repair steps"
 read_when:
-  - Adding or modifying doctor migrations
-  - Introducing breaking config changes
+   - Adding or modifying doctor migrations
+   - Introducing breaking config changes
 title: "Doctor"
 ---
 
@@ -79,7 +79,7 @@ cat ~/.openclaw/openclaw.json
 - Security warnings for open DM policies.
 - Gateway auth warnings when no `gateway.auth.token` is set (local mode; offers token generation).
 - systemd linger check on Linux.
-- Source install checks (pnpm workspace mismatch, missing UI assets, missing tsx binary).
+- Source install checks (bun workspace mismatch, missing UI assets, missing tsx binary).
 - Writes updated config + wizard metadata.
 
 ## Detailed behavior and rationale
@@ -138,12 +138,12 @@ remove the override and restore per-model API routing + costs.
 Doctor can migrate older on-disk layouts into the current structure:
 
 - Sessions store + transcripts:
-  - from `~/.openclaw/sessions/` to `~/.openclaw/agents/<agentId>/sessions/`
+   - from `~/.openclaw/sessions/` to `~/.openclaw/agents/<agentId>/sessions/`
 - Agent dir:
-  - from `~/.openclaw/agent/` to `~/.openclaw/agents/<agentId>/agent/`
+   - from `~/.openclaw/agent/` to `~/.openclaw/agents/<agentId>/agent/`
 - WhatsApp auth state (Baileys):
-  - from legacy `~/.openclaw/credentials/*.json` (except `oauth.json`)
-  - to `~/.openclaw/credentials/whatsapp/<accountId>/...` (default account id: `default`)
+   - from legacy `~/.openclaw/credentials/*.json` (except `oauth.json`)
+   - to `~/.openclaw/credentials/whatsapp/<accountId>/...` (default account id: `default`)
 
 These migrations are best-effort and idempotent; doctor will emit warnings when
 it leaves any legacy folders behind as backups. The Gateway/CLI also auto-migrates

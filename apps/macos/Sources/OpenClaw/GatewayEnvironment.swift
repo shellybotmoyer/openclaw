@@ -242,18 +242,15 @@ enum GatewayEnvironment {
         } else {
             "latest"
         }
-        let npm = CommandResolver.findExecutable(named: "npm")
-        let pnpm = CommandResolver.findExecutable(named: "pnpm")
         let bun = CommandResolver.findExecutable(named: "bun")
+        let npm = CommandResolver.findExecutable(named: "npm")
         let (label, cmd): (String, [String]) =
-            if let npm {
-                ("npm", [npm, "install", "-g", "openclaw@\(target)"])
-            } else if let pnpm {
-                ("pnpm", [pnpm, "add", "-g", "openclaw@\(target)"])
-            } else if let bun {
+            if let bun {
                 ("bun", [bun, "add", "-g", "openclaw@\(target)"])
+            } else if let npm {
+                ("npm", [npm, "install", "-g", "openclaw@\(target)"])
             } else {
-                ("npm", ["npm", "install", "-g", "openclaw@\(target)"])
+                ("bun", ["bun", "add", "-g", "openclaw@\(target)"])
             }
 
         statusHandler("Installing openclaw@\(target) via \(label)…")

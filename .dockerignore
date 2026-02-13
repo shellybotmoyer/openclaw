@@ -17,8 +17,6 @@
 *.mp3
 node_modules
 **/node_modules
-.pnpm-store
-**/.pnpm-store
 .turbo
 **/.turbo
 .cache

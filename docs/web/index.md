@@ -1,8 +1,8 @@
 ---
 summary: "Gateway web surfaces: Control UI, bind modes, and security"
 read_when:
-  - You want to access the Gateway over Tailscale
-  - You want the browser Control UI and config editing
+   - You want to access the Gateway over Tailscale
+   - You want the browser Control UI and config editing
 title: "Web"
 ---
 
@@ -28,9 +28,9 @@ You can control it via config:
 
 ```json5
 {
-  gateway: {
-    controlUi: { enabled: true, basePath: "/openclaw" }, // basePath optional
-  },
+	gateway: {
+		controlUi: { enabled: true, basePath: "/openclaw" }, // basePath optional
+	},
 }
 ```
 
@@ -42,10 +42,10 @@ Keep the Gateway on loopback and let Tailscale Serve proxy it:
 
 ```json5
 {
-  gateway: {
-    bind: "loopback",
-    tailscale: { mode: "serve" },
-  },
+	gateway: {
+		bind: "loopback",
+		tailscale: { mode: "serve" },
+	},
 }
 ```
 
@@ -63,11 +63,11 @@ Open:
 
 ```json5
 {
-  gateway: {
-    bind: "tailnet",
-    controlUi: { enabled: true },
-    auth: { mode: "token", token: "your-token" },
-  },
+	gateway: {
+		bind: "tailnet",
+		controlUi: { enabled: true },
+		auth: { mode: "token", token: "your-token" },
+	},
 }
 ```
 
@@ -85,11 +85,11 @@ Open:
 
 ```json5
 {
-  gateway: {
-    bind: "loopback",
-    tailscale: { mode: "funnel" },
-    auth: { mode: "password" }, // or OPENCLAW_GATEWAY_PASSWORD
-  },
+	gateway: {
+		bind: "loopback",
+		tailscale: { mode: "funnel" },
+		auth: { mode: "password" }, // or OPENCLAW_GATEWAY_PASSWORD
+	},
 }
 ```
 
@@ -112,5 +112,5 @@ Open:
 The Gateway serves static files from `dist/control-ui`. Build them with:
 
 ```bash
-pnpm ui:build # auto-installs UI deps on first run
+bun run ui:build # auto-installs UI deps on first run
 ```

@@ -69,7 +69,7 @@ name: my-hook
 description: "Short description"
 homepage: https://docs.openclaw.ai/hooks#my-hook
 metadata:
-  { "openclaw": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
+   { "openclaw": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
 ---
 # Hook Title
 
@@ -81,11 +81,11 @@ Documentation goes here...
 - **emoji**: Display emoji for CLI
 - **events**: Array of events to listen for (e.g., `["command:new", "session:start"]`)
 - **requires**: Optional requirements
-  - **bins**: Required binaries on PATH
-  - **anyBins**: At least one of these binaries must be present
-  - **env**: Required environment variables
-  - **config**: Required config paths (e.g., `["workspace.dir"]`)
-  - **os**: Required platforms (e.g., `["darwin", "linux"]`)
+   - **bins**: Required binaries on PATH
+   - **anyBins**: At least one of these binaries must be present
+   - **env**: Required environment variables
+   - **config**: Required config paths (e.g., `["workspace.dir"]`)
+   - **os**: Required platforms (e.g., `["darwin", "linux"]`)
 - **install**: Installation methods (for bundled hooks: `[{"id":"bundled","kind":"bundled"}]`)
 
 ## Creating Custom Hooks
@@ -130,19 +130,19 @@ Hooks can be configured in `~/.openclaw/openclaw.json`:
 
 ```json
 {
-  "hooks": {
-    "internal": {
-      "enabled": true,
-      "entries": {
-        "session-memory": {
-          "enabled": true
-        },
-        "command-logger": {
-          "enabled": false
-        }
-      }
-    }
-  }
+	"hooks": {
+		"internal": {
+			"enabled": true,
+			"entries": {
+				"session-memory": {
+					"enabled": true
+				},
+				"command-logger": {
+					"enabled": false
+				}
+			}
+		}
+	}
 }
 ```
 
@@ -165,12 +165,12 @@ Hook handlers receive an `InternalHookEvent` object:
 
 ```typescript
 interface InternalHookEvent {
-  type: "command" | "session" | "agent" | "gateway";
-  action: string; // e.g., 'new', 'reset', 'stop'
-  sessionKey: string;
-  context: Record<string, unknown>;
-  timestamp: Date;
-  messages: string[]; // Push messages here to send to user
+	type: "command" | "session" | "agent" | "gateway";
+	action: string; // e.g., 'new', 'reset', 'stop'
+	sessionKey: string;
+	context: Record<string, unknown>;
+	timestamp: Date;
+	messages: string[]; // Push messages here to send to user
 }
 ```
 
@@ -180,15 +180,15 @@ Example handler:
 import type { HookHandler } from "../../src/hooks/hooks.js";
 
 const myHandler: HookHandler = async (event) => {
-  if (event.type !== "command" || event.action !== "new") {
-    return;
-  }
+	if (event.type !== "command" || event.action !== "new") {
+		return;
+	}
 
-  // Your logic here
-  console.log("New command triggered!");
+	// Your logic here
+	console.log("New command triggered!");
 
-  // Optionally send message to user
-  event.messages.push("✨ Hook executed!");
+	// Optionally send message to user
+	event.messages.push("✨ Hook executed!");
 };
 
 export default myHandler;
@@ -199,7 +199,7 @@ export default myHandler;
 Test your hooks by:
 
 1. Place hook in workspace hooks directory
-2. Restart gateway: `pkill -9 -f 'openclaw.*gateway' && pnpm openclaw gateway`
+2. Restart gateway: `pkill -9 -f 'openclaw.*gateway' && bun run openclaw gateway`
 3. Enable the hook: `openclaw hooks enable my-hook`
 4. Trigger the event (e.g., send `/new` command)
 5. Check gateway logs for hook execution

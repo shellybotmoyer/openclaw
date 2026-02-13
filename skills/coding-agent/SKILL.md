@@ -2,9 +2,10 @@
 name: coding-agent
 description: Run Codex CLI, Claude Code, OpenCode, or Pi Coding Agent via background process for programmatic control.
 metadata:
-  {
-    "openclaw": { "emoji": "🧩", "requires": { "anyBins": ["claude", "codex", "opencode", "pi"] } },
-  }
+   {
+      "openclaw":
+         { "emoji": "🧩", "requires": { "anyBins": ["claude", "codex", "opencode", "pi"] } },
+   }
 ---
 
 # Coding Agent (bash-first)
@@ -202,8 +203,8 @@ git worktree add -b fix/issue-78 /tmp/issue-78 main
 git worktree add -b fix/issue-99 /tmp/issue-99 main
 
 # 2. Launch Codex in each (background + PTY!)
-bash pty:true workdir:/tmp/issue-78 background:true command:"pnpm install && codex --yolo 'Fix issue #78: <description>. Commit and push.'"
-bash pty:true workdir:/tmp/issue-99 background:true command:"pnpm install && codex --yolo 'Fix issue #99: <description>. Commit and push.'"
+bash pty:true workdir:/tmp/issue-78 background:true command:"bun install && codex --yolo 'Fix issue #78: <description>. Commit and push.'"
+bash pty:true workdir:/tmp/issue-99 background:true command:"bun install && codex --yolo 'Fix issue #99: <description>. Commit and push.'"
 
 # 3. Monitor progress
 process action:list
@@ -242,10 +243,10 @@ When you spawn coding agents in the background, keep the user in the loop.
 
 - Send 1 short message when you start (what's running + where).
 - Then only update again when something changes:
-  - a milestone completes (build finished, tests passed)
-  - the agent asks a question / needs input
-  - you hit an error or need user action
-  - the agent finishes (include what changed + where)
+   - a milestone completes (build finished, tests passed)
+   - the agent asks a question / needs input
+   - you hit an error or need user action
+   - the agent finishes (include what changed + where)
 - If you kill a session, immediately say you killed it and why.
 
 This prevents the user from seeing only "Agent failed before reply" and having no idea what happened.

@@ -30,4 +30,4 @@ docker run --rm -t \
   -v "$WORKSPACE_DIR":/home/node/.openclaw/workspace \
   "${PROFILE_MOUNT[@]}" \
   "$IMAGE_NAME" \
-  -lc "set -euo pipefail; [ -f \"$HOME/.profile\" ] && source \"$HOME/.profile\" || true; cd /app && pnpm test:live"
+  -lc "set -euo pipefail; [ -f \"$HOME/.profile\" ] && source \"$HOME/.profile\" || true; cd /app && bun run test:live"

@@ -60,21 +60,21 @@ Minimum schema:
 
 ```json
 {
-  "recommendation": "READY FOR /prepare-pr",
-  "findings": [
-    {
-      "id": "F1",
-      "severity": "IMPORTANT",
-      "title": "Missing changelog entry",
-      "area": "CHANGELOG.md",
-      "fix": "Add a Fixes entry for PR #<PR>"
-    }
-  ],
-  "tests": {
-    "ran": ["pnpm test -- ..."],
-    "gaps": ["..."],
-    "result": "pass"
-  }
+	"recommendation": "READY FOR /prepare-pr",
+	"findings": [
+		{
+			"id": "F1",
+			"severity": "IMPORTANT",
+			"title": "Missing changelog entry",
+			"area": "CHANGELOG.md",
+			"fix": "Add a Fixes entry for PR #<PR>"
+		}
+	],
+	"tests": {
+		"ran": ["bun run test -- ..."],
+		"gaps": ["..."],
+		"result": "pass"
+	}
 }
 ```
 
@@ -119,13 +119,13 @@ Before any substantive review or prep work, **always rebase the PR branch onto c
 In fresh worktrees, dependency bootstrap is handled by wrappers before local gates. Manual equivalent:
 
 ```sh
-pnpm install --frozen-lockfile
+bun install --frozen-lockfile
 ```
 
 Gate set:
 
-- Always: `pnpm build`, `pnpm check`
-- `pnpm test` required unless high-confidence docs-only criteria pass.
+- Always: `bun run build`, `bun run check`
+- `bun run test` required unless high-confidence docs-only criteria pass.
 
 ## Co-contributor and clawtributors
 
@@ -140,7 +140,7 @@ Gate set:
 ## Review mode vs landing mode
 
 - **Review mode (PR link only):** read `gh pr view`/`gh pr diff`; **do not** switch branches; **do not** change code.
-- **Landing mode (exception path):** use only when normal `review-pr -> prepare-pr -> merge-pr` flow cannot safely preserve attribution or cannot satisfy branch protection. Create an integration branch from `main`, bring in PR commits (**prefer rebase** for linear history; **merge allowed** when complexity/conflicts make it safer), apply fixes, add changelog (+ thanks + PR #), run full gate **locally before committing** (`pnpm build && pnpm check && pnpm test`), commit, merge back to `main`, then `git switch main` (never stay on a topic branch after landing). Important: the contributor needs to be in the git graph after this!
+- **Landing mode (exception path):** use only when normal `review-pr -> prepare-pr -> merge-pr` flow cannot safely preserve attribution or cannot satisfy branch protection. Create an integration branch from `main`, bring in PR commits (**prefer rebase** for linear history; **merge allowed** when complexity/conflicts make it safer), apply fixes, add changelog (+ thanks + PR #), run full gate **locally before committing** (`bun run build && bun run check && bun run test`), commit, merge back to `main`, then `git switch main` (never stay on a topic branch after landing). Important: the contributor needs to be in the git graph after this!
 
 ## Pre-review safety checks
 
@@ -190,7 +190,7 @@ Purpose:
 
 - Make the PR merge-ready on its head branch.
 - Rebase onto current `main` first, then fix blocker/important findings, then run gates.
-- In fresh worktrees, bootstrap dependencies before local gates (`pnpm install --frozen-lockfile`).
+- In fresh worktrees, bootstrap dependencies before local gates (`bun install --frozen-lockfile`).
 
 Expected output:
 

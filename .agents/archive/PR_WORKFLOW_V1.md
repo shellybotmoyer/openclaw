@@ -72,7 +72,7 @@ Before any substantive review or prep work, **always rebase the PR branch onto c
 ## Review mode vs landing mode
 
 - **Review mode (PR link only):** read `gh pr view`/`gh pr diff`; **do not** switch branches; **do not** change code.
-- **Landing mode (exception path):** use only when normal `review-pr -> prepare-pr -> merge-pr` flow cannot safely preserve attribution or cannot satisfy branch protection. Create an integration branch from `main`, bring in PR commits (**prefer rebase** for linear history; **merge allowed** when complexity/conflicts make it safer), apply fixes, add changelog (+ thanks + PR #), run full gate **locally before committing** (`pnpm build && pnpm check && pnpm test`), commit, merge back to `main`, then `git switch main` (never stay on a topic branch after landing). Important: the contributor needs to be in the git graph after this!
+- **Landing mode (exception path):** use only when normal `review-pr -> prepare-pr -> merge-pr` flow cannot safely preserve attribution or cannot satisfy branch protection. Create an integration branch from `main`, bring in PR commits (**prefer rebase** for linear history; **merge allowed** when complexity/conflicts make it safer), apply fixes, add changelog (+ thanks + PR #), run full gate **locally before committing** (`bun run build && bun run check && bun run test`), commit, merge back to `main`, then `git switch main` (never stay on a topic branch after landing). Important: the contributor needs to be in the git graph after this!
 
 ## Pre-review safety checks
 
@@ -122,7 +122,7 @@ Purpose:
 
 - Make the PR merge-ready on its head branch.
 - Rebase onto current `main` first, then fix blocker/important findings, then run gates.
-- In fresh worktrees, bootstrap dependencies before local gates (`pnpm install --frozen-lockfile`).
+- In fresh worktrees, bootstrap dependencies before local gates (`bun install --frozen-lockfile`).
 
 Expected output:
 

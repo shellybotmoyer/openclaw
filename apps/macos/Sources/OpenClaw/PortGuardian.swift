@@ -263,7 +263,7 @@ actor PortGuardian {
     {
         let expectedDesc: String
         let okPredicate: (Listener) -> Bool
-        let expectedCommands = ["node", "openclaw", "tsx", "pnpm", "bun"]
+        let expectedCommands = ["node", "openclaw", "tsx", "bun"]
 
         switch mode {
         case .remote:

@@ -178,7 +178,7 @@ If you run local tests in the worktree, bootstrap dependencies first:
 
 ```sh
 if [ ! -x node_modules/.bin/vitest ]; then
-  pnpm install --frozen-lockfile
+  bun install --frozen-lockfile
 fi
 ```
 

@@ -2,8 +2,8 @@
 title: "Memory"
 summary: "How OpenClaw memory works (workspace files + automatic memory flush)"
 read_when:
-  - You want the memory file layout and workflow
-  - You want to tune the automatic pre-compaction memory flush
+   - You want the memory file layout and workflow
+   - You want to tune the automatic pre-compaction memory flush
 ---
 
 # Memory
@@ -19,11 +19,11 @@ Memory search tools are provided by the active memory plugin (default:
 The default workspace layout uses two memory layers:
 
 - `memory/YYYY-MM-DD.md`
-  - Daily log (append-only).
-  - Read today + yesterday at session start.
+   - Daily log (append-only).
+   - Read today + yesterday at session start.
 - `MEMORY.md` (optional)
-  - Curated long-term memory.
-  - **Only load in the main, private session** (never in group contexts).
+   - Curated long-term memory.
+   - **Only load in the main, private session** (never in group contexts).
 
 These files live under the workspace (`agents.defaults.workspace`, default
 `~/.openclaw/workspace`). See [Agent workspace](/concepts/agent-workspace) for the full layout.
@@ -47,19 +47,19 @@ This is controlled by `agents.defaults.compaction.memoryFlush`:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      compaction: {
-        reserveTokensFloor: 20000,
-        memoryFlush: {
-          enabled: true,
-          softThresholdTokens: 4000,
-          systemPrompt: "Session nearing compaction. Store durable memories now.",
-          prompt: "Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.",
-        },
-      },
-    },
-  },
+	agents: {
+		defaults: {
+			compaction: {
+				reserveTokensFloor: 20000,
+				memoryFlush: {
+					enabled: true,
+					softThresholdTokens: 4000,
+					systemPrompt: "Session nearing compaction. Store durable memories now.",
+					prompt: "Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.",
+				},
+			},
+		},
+	},
 }
 ```
 
@@ -88,12 +88,12 @@ Defaults:
 - Configure memory search under `agents.defaults.memorySearch` (not top-level
   `memorySearch`).
 - Uses remote embeddings by default. If `memorySearch.provider` is not set, OpenClaw auto-selects:
-  1. `local` if a `memorySearch.local.modelPath` is configured and the file exists.
-  2. `openai` if an OpenAI key can be resolved.
-  3. `gemini` if a Gemini key can be resolved.
-  4. `voyage` if a Voyage key can be resolved.
-  5. Otherwise memory search stays disabled until configured.
-- Local mode uses node-llama-cpp and may require `pnpm approve-builds`.
+   1. `local` if a `memorySearch.local.modelPath` is configured and the file exists.
+   2. `openai` if an OpenAI key can be resolved.
+   3. `gemini` if a Gemini key can be resolved.
+   4. `voyage` if a Voyage key can be resolved.
+   5. Otherwise memory search stays disabled until configured.
+- Local mode uses node-llama-cpp and may require `bun pm trust`.
 - Uses sqlite-vec (when available) to accelerate vector search inside SQLite.
 
 Remote embeddings **require** an API key for the embedding provider. OpenClaw
@@ -148,32 +148,32 @@ out to QMD for retrieval. Key points:
   controlled by QMD itself.
 - **First search may be slow**: QMD may download local GGUF models (reranker/query
   expansion) on the first `qmd query` run.
-  - OpenClaw sets `XDG_CONFIG_HOME`/`XDG_CACHE_HOME` automatically when it runs QMD.
-  - If you want to pre-download models manually (and warm the same index OpenClaw
-    uses), run a one-off query with the agent’s XDG dirs.
+   - OpenClaw sets `XDG_CONFIG_HOME`/`XDG_CACHE_HOME` automatically when it runs QMD.
+   - If you want to pre-download models manually (and warm the same index OpenClaw
+     uses), run a one-off query with the agent’s XDG dirs.
 
-    OpenClaw’s QMD state lives under your **state dir** (defaults to `~/.openclaw`).
-    You can point `qmd` at the exact same index by exporting the same XDG vars
-    OpenClaw uses:
+      OpenClaw’s QMD state lives under your **state dir** (defaults to `~/.openclaw`).
+      You can point `qmd` at the exact same index by exporting the same XDG vars
+      OpenClaw uses:
 
-    ```bash
-    # Pick the same state dir OpenClaw uses
-    STATE_DIR="${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
-    if [ -d "$HOME/.moltbot" ] && [ ! -d "$HOME/.openclaw" ] \
-      && [ -z "${OPENCLAW_STATE_DIR:-}" ]; then
-      STATE_DIR="$HOME/.moltbot"
-    fi
+      ```bash
+      # Pick the same state dir OpenClaw uses
+      STATE_DIR="${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
+      if [ -d "$HOME/.moltbot" ] && [ ! -d "$HOME/.openclaw" ] \
+        && [ -z "${OPENCLAW_STATE_DIR:-}" ]; then
+        STATE_DIR="$HOME/.moltbot"
+      fi
 
-    export XDG_CONFIG_HOME="$STATE_DIR/agents/main/qmd/xdg-config"
-    export XDG_CACHE_HOME="$STATE_DIR/agents/main/qmd/xdg-cache"
+      export XDG_CONFIG_HOME="$STATE_DIR/agents/main/qmd/xdg-config"
+      export XDG_CACHE_HOME="$STATE_DIR/agents/main/qmd/xdg-cache"
 
-    # (Optional) force an index refresh + embeddings
-    qmd update
-    qmd embed
+      # (Optional) force an index refresh + embeddings
+      qmd update
+      qmd embed
 
-    # Warm up / trigger first-time model downloads
-    qmd query "test" -c memory-root --json >/dev/null 2>&1
-    ```
+      # Warm up / trigger first-time model downloads
+      qmd query "test" -c memory-root --json >/dev/null 2>&1
+      ```
 
 **Config surface (`memory.qmd.*`)**
 
@@ -323,8 +323,8 @@ Why OpenAI batch is fast + cheap:
 - For large backfills, OpenAI is typically the fastest option we support because we can submit many embedding requests in a single batch job and let OpenAI process them asynchronously.
 - OpenAI offers discounted pricing for Batch API workloads, so large indexing runs are usually cheaper than sending the same requests synchronously.
 - See the OpenAI Batch API docs and pricing for details:
-  - [https://platform.openai.com/docs/api-reference/batch](https://platform.openai.com/docs/api-reference/batch)
-  - [https://platform.openai.com/pricing](https://platform.openai.com/pricing)
+   - [https://platform.openai.com/docs/api-reference/batch](https://platform.openai.com/docs/api-reference/batch)
+   - [https://platform.openai.com/pricing](https://platform.openai.com/pricing)
 
 Config example:
 
@@ -537,7 +537,7 @@ Notes:
 
 - Default local embedding model: `hf:ggml-org/embeddinggemma-300M-GGUF/embeddinggemma-300M-Q8_0.gguf` (~0.6 GB).
 - When `memorySearch.provider = "local"`, `node-llama-cpp` resolves `modelPath`; if the GGUF is missing it **auto-downloads** to the cache (or `local.modelCacheDir` if set), then loads it. Downloads resume on retry.
-- Native build requirement: run `pnpm approve-builds`, pick `node-llama-cpp`, then `pnpm rebuild node-llama-cpp`.
+- Native build requirement: run `bun pm trust`, pick `node-llama-cpp`, then `bun pm trust node-llama-cpp`.
 - Fallback: if local setup fails and `memorySearch.fallback = "openai"`, we automatically switch to remote embeddings (`openai/text-embedding-3-small` unless overridden) and record the reason.
 
 ### Custom OpenAI-compatible endpoint example

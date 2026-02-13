@@ -25,7 +25,7 @@ USAGE
 require_cmds() {
   local missing=()
   local cmd
-  for cmd in git gh jq rg pnpm node; do
+  for cmd in git gh jq rg bun node; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
       missing+=("$cmd")
     fi
@@ -144,7 +144,7 @@ run_quiet_logged() {
 
 bootstrap_deps_if_needed() {
   if [ ! -x node_modules/.bin/vitest ]; then
-    run_quiet_logged "pnpm install --frozen-lockfile" ".local/bootstrap-install.log" pnpm install --frozen-lockfile
+    run_quiet_logged "bun install --frozen-lockfile" ".local/bootstrap-install.log" bun install --frozen-lockfile
   fi
 }
 
@@ -444,7 +444,7 @@ review_tests() {
   bootstrap_deps_if_needed
 
   local list_log=".local/review-tests-list.log"
-  run_quiet_logged "pnpm vitest list" "$list_log" pnpm vitest list "$@"
+  run_quiet_logged "bunx vitest list" "$list_log" bunx vitest list "$@"
 
   local missing_list=()
   for target in "$@"; do
@@ -462,7 +462,7 @@ review_tests() {
   fi
 
   local run_log=".local/review-tests-run.log"
-  run_quiet_logged "pnpm vitest run" "$run_log" pnpm vitest run "$@"
+  run_quiet_logged "bunx vitest run" "$run_log" bunx vitest run "$@"
 
   local missing_run=()
   for target in "$@"; do
@@ -627,13 +627,13 @@ prepare_gates() {
     exit 1
   fi
 
-  run_quiet_logged "pnpm build" ".local/gates-build.log" pnpm build
-  run_quiet_logged "pnpm check" ".local/gates-check.log" pnpm check
+  run_quiet_logged "bun run build" ".local/gates-build.log" bun run build
+  run_quiet_logged "bun run check" ".local/gates-check.log" bun run check
 
   if [ "$docs_only" = "true" ]; then
-    echo "Docs-only change detected with high confidence; skipping pnpm test."
+    echo "Docs-only change detected with high confidence; skipping bun test."
   else
-    run_quiet_logged "pnpm test" ".local/gates-test.log" pnpm test
+    run_quiet_logged "bun run test" ".local/gates-test.log" bun run test
   fi
 
   cat > .local/gates.env <<EOF_ENV
@@ -711,10 +711,10 @@ prepare_push() {
       prep_head_sha=$(git rev-parse HEAD)
 
       bootstrap_deps_if_needed
-      run_quiet_logged "pnpm build (lease-retry)" ".local/lease-retry-build.log" pnpm build
-      run_quiet_logged "pnpm check (lease-retry)" ".local/lease-retry-check.log" pnpm check
+      run_quiet_logged "bun run build (lease-retry)" ".local/lease-retry-build.log" bun run build
+      run_quiet_logged "bun run check (lease-retry)" ".local/lease-retry-check.log" bun run check
       if [ "${DOCS_ONLY:-false}" != "true" ]; then
-        run_quiet_logged "pnpm test (lease-retry)" ".local/lease-retry-test.log" pnpm test
+        run_quiet_logged "bun run test (lease-retry)" ".local/lease-retry-test.log" bun run test
       fi
 
       git push --force-with-lease=refs/heads/$PR_HEAD:$lease_sha prhead HEAD:$PR_HEAD

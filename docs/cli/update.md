@@ -1,8 +1,8 @@
 ---
 summary: "CLI reference for `openclaw update` (safe-ish source update + gateway auto-restart)"
 read_when:
-  - You want to update a source checkout safely
-  - You need to understand `--update` shorthand behavior
+   - You want to update a source checkout safely
+   - You need to understand `--update` shorthand behavior
 title: "update"
 ---
 
@@ -10,7 +10,7 @@ title: "update"
 
 Safely update OpenClaw and switch between stable/beta/dev channels.
 
-If you installed via **npm/pnpm** (global install, no git metadata), updates happen via the package manager flow in [Updating](/install/updating).
+If you installed via **npm/bun** (global install, no git metadata), updates happen via the package manager flow in [Updating](/install/updating).
 
 ## Usage
 
@@ -81,7 +81,7 @@ High-level:
 3. Fetches upstream (dev only).
 4. Dev only: preflight lint + TypeScript build in a temp worktree; if the tip fails, walks back up to 10 commits to find the newest clean build.
 5. Rebases onto the selected commit (dev only).
-6. Installs deps (pnpm preferred; npm fallback).
+6. Installs deps (bun preferred; npm fallback).
 7. Builds + builds the Control UI.
 8. Runs `openclaw doctor` as the final “safe update” check.
 9. Syncs plugins to the active channel (dev uses bundled extensions; stable/beta uses npm) and updates npm-installed plugins.

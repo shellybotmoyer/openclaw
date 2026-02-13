@@ -1,8 +1,8 @@
 ---
 summary: "First-run onboarding flow for OpenClaw (macOS app)"
 read_when:
-  - Designing the macOS onboarding assistant
-  - Implementing auth or identity setup
+   - Designing the macOS onboarding assistant
+   - Implementing auth or identity setup
 title: "Onboarding (macOS App)"
 sidebarTitle: "Onboarding: macOS App"
 ---
@@ -69,7 +69,7 @@ Onboarding requests TCC permissions needed for:
 </Step>
 <Step title="CLI">
   <Info>This step is optional</Info>
-  The app can install the global `openclaw` CLI via npm/pnpm so terminal
+  The app can install the global `openclaw` CLI via npm/bun so terminal
   workflows and launchd tasks work out of the box.
 </Step>
 <Step title="Onboarding Chat (dedicated session)">

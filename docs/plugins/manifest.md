@@ -1,8 +1,8 @@
 ---
 summary: "Plugin manifest + JSON schema requirements (strict config validation)"
 read_when:
-  - You are building a OpenClaw plugin
-  - You need to ship a plugin config schema or debug plugin validation errors
+   - You are building a OpenClaw plugin
+   - You need to ship a plugin config schema or debug plugin validation errors
 title: "Plugin Manifest"
 ---
 
@@ -19,12 +19,12 @@ See the full plugin system guide: [Plugins](/tools/plugin).
 
 ```json
 {
-  "id": "voice-call",
-  "configSchema": {
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {}
-  }
+	"id": "voice-call",
+	"configSchema": {
+		"type": "object",
+		"additionalProperties": false,
+		"properties": {}
+	}
 }
 ```
 
@@ -67,5 +67,5 @@ Optional keys:
 - Runtime still loads the plugin module separately; the manifest is only for
   discovery + validation.
 - If your plugin depends on native modules, document the build steps and any
-  package-manager allowlist requirements (for example, pnpm `allow-build-scripts`
-  - `pnpm rebuild <package>`).
+  package-manager allowlist requirements (for example, bun `allow-build-scripts`
+   - `bun pm trust <package>`).

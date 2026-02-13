@@ -1,8 +1,8 @@
 ---
 summary: Node + tsx "__name is not a function" crash notes and workarounds
 read_when:
-  - Debugging Node-only dev scripts or watch mode failures
-  - Investigating tsx/esbuild loader crashes in OpenClaw
+   - Debugging Node-only dev scripts or watch mode failures
+   - Investigating tsx/esbuild loader crashes in OpenClaw
 title: "Node + tsx Crash"
 ---
 
@@ -31,7 +31,7 @@ This began after switching dev scripts from Bun to `tsx` (commit `2871657e`, 202
 ```bash
 # in repo root
 node --version
-pnpm install
+bun install
 node --import tsx src/entry.ts status
 ```
 
@@ -63,12 +63,12 @@ node --import tsx scripts/repro/tsx-name-repro.ts
 - Use Bun for dev scripts (current temporary revert).
 - Use Node + tsc watch, then run compiled output:
 
-  ```bash
-  pnpm exec tsc --watch --preserveWatchOutput
-  node --watch openclaw.mjs status
-  ```
+   ```bash
+   bunx tsc --watch --preserveWatchOutput
+   node --watch openclaw.mjs status
+   ```
 
-- Confirmed locally: `pnpm exec tsc -p tsconfig.json` + `node openclaw.mjs status` works on Node 25.
+- Confirmed locally: `bunx tsc -p tsconfig.json` + `node openclaw.mjs status` works on Node 25.
 - Disable esbuild keepNames in the TS loader if possible (prevents `__name` helper insertion); tsx does not currently expose this.
 - Test Node LTS (22/24) with `tsx` to see if the issue is Node 25–specific.
 

@@ -1,8 +1,8 @@
 ---
 summary: "Updating OpenClaw safely (global install or source), plus rollback strategy"
 read_when:
-  - Updating OpenClaw
-  - Something breaks after an update
+   - Updating OpenClaw
+   - Something breaks after an update
 title: "Updating"
 ---
 
@@ -25,23 +25,23 @@ Notes:
 - Add `--no-onboard` if you don’t want the onboarding wizard to run again.
 - For **source installs**, use:
 
-  ```bash
-  curl -fsSL https://openclaw.ai/install.sh | bash -s -- --install-method git --no-onboard
-  ```
+   ```bash
+   curl -fsSL https://openclaw.ai/install.sh | bash -s -- --install-method git --no-onboard
+   ```
 
-  The installer will `git pull --rebase` **only** if the repo is clean.
+   The installer will `git pull --rebase` **only** if the repo is clean.
 
 - For **global installs**, the script uses `npm install -g openclaw@latest` under the hood.
 - Legacy note: `clawdbot` remains available as a compatibility shim.
 
 ## Before you update
 
-- Know how you installed: **global** (npm/pnpm) vs **from source** (git clone).
+- Know how you installed: **global** (npm/bun) vs **from source** (git clone).
 - Know how your Gateway is running: **foreground terminal** vs **supervised service** (launchd/systemd).
 - Snapshot your tailoring:
-  - Config: `~/.openclaw/openclaw.json`
-  - Credentials: `~/.openclaw/credentials/`
-  - Workspace: `~/.openclaw/workspace`
+   - Config: `~/.openclaw/openclaw.json`
+   - Credentials: `~/.openclaw/credentials/`
+   - Workspace: `~/.openclaw/workspace`
 
 ## Update (global install)
 
@@ -52,7 +52,7 @@ npm i -g openclaw@latest
 ```
 
 ```bash
-pnpm add -g openclaw@latest
+bun add -g openclaw@latest
 ```
 
 We do **not** recommend Bun for the Gateway runtime (WhatsApp/Telegram bugs).
@@ -100,7 +100,7 @@ It runs a safe-ish update flow:
 - Installs deps, builds, builds the Control UI, and runs `openclaw doctor`.
 - Restarts the gateway by default (use `--no-restart` to skip).
 
-If you installed via **npm/pnpm** (no git metadata), `openclaw update` will try to update via your package manager. If it can’t detect the install, use “Update (global install)” instead.
+If you installed via **npm/bun** (no git metadata), `openclaw update` will try to update via your package manager. If it can’t detect the install, use “Update (global install)” instead.
 
 ## Update (Control UI / RPC)
 
@@ -126,18 +126,18 @@ Manual (equivalent-ish):
 
 ```bash
 git pull
-pnpm install
-pnpm build
-pnpm ui:build # auto-installs UI deps on first run
+bun install
+bun run build
+bun run ui:build # auto-installs UI deps on first run
 openclaw doctor
 openclaw health
 ```
 
 Notes:
 
-- `pnpm build` matters when you run the packaged `openclaw` binary ([`openclaw.mjs`](https://github.com/openclaw/openclaw/blob/main/openclaw.mjs)) or use Node to run `dist/`.
-- If you run from a repo checkout without a global install, use `pnpm openclaw ...` for CLI commands.
-- If you run directly from TypeScript (`pnpm openclaw ...`), a rebuild is usually unnecessary, but **config migrations still apply** → run doctor.
+- `bun run build` matters when you run the packaged `openclaw` binary ([`openclaw.mjs`](https://github.com/openclaw/openclaw/blob/main/openclaw.mjs)) or use Node to run `dist/`.
+- If you run from a repo checkout without a global install, use `bun run openclaw ...` for CLI commands.
+- If you run directly from TypeScript (`bun run openclaw ...`), a rebuild is usually unnecessary, but **config migrations still apply** → run doctor.
 - Switching between global and git installs is easy: install the other flavor, then run `openclaw doctor` so the gateway service entrypoint is rewritten to the current install.
 
 ## Always Run: `openclaw doctor`
@@ -173,7 +173,7 @@ If you’re supervised:
 - macOS launchd (app-bundled LaunchAgent): `launchctl kickstart -k gui/$UID/bot.molt.gateway` (use `bot.molt.<profile>`; legacy `com.openclaw.*` still works)
 - Linux systemd user service: `systemctl --user restart openclaw-gateway[-<profile>].service`
 - Windows (WSL2): `systemctl --user restart openclaw-gateway[-<profile>].service`
-  - `launchctl`/`systemctl` only work if the service is installed; otherwise run `openclaw gateway install`.
+   - `launchctl`/`systemctl` only work if the service is installed; otherwise run `openclaw gateway install`.
 
 Runbook + exact service labels: [Gateway runbook](/gateway)
 
@@ -188,7 +188,7 @@ npm i -g openclaw@<version>
 ```
 
 ```bash
-pnpm add -g openclaw@<version>
+bun add -g openclaw@<version>
 ```
 
 Tip: to see the current published version, run `npm view openclaw version`.
@@ -212,8 +212,8 @@ git checkout "$(git rev-list -n 1 --before=\"2026-01-01\" origin/main)"
 Then reinstall deps + restart:
 
 ```bash
-pnpm install
-pnpm build
+bun install
+bun run build
 openclaw gateway restart
 ```
 

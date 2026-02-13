@@ -1,8 +1,8 @@
 ---
 summary: "OpenClaw plugins/extensions: discovery, config, and safety"
 read_when:
-  - Adding or modifying plugins/extensions
-  - Documenting plugin install or load rules
+   - Adding or modifying plugins/extensions
+   - Documenting plugin install or load rules
 title: "Plugins"
 ---
 
@@ -75,8 +75,8 @@ Plugins can access selected core helpers via `api.runtime`. For telephony TTS:
 
 ```ts
 const result = await api.runtime.tts.textToSpeechTelephony({
-  text: "Hello from OpenClaw",
-  cfg: api.config,
+	text: "Hello from OpenClaw",
+	cfg: api.config,
 });
 ```
 
@@ -125,10 +125,10 @@ A plugin directory may include a `package.json` with `openclaw.extensions`:
 
 ```json
 {
-  "name": "my-pack",
-  "openclaw": {
-    "extensions": ["./src/safety.ts", "./src/tools.ts"]
-  }
+	"name": "my-pack",
+	"openclaw": {
+		"extensions": ["./src/safety.ts", "./src/tools.ts"]
+	}
 }
 ```
 
@@ -136,7 +136,7 @@ Each entry becomes a plugin. If the pack lists multiple extensions, the plugin i
 becomes `name/<fileBase>`.
 
 If your plugin imports npm deps, install them in that directory so
-`node_modules` is available (`npm install` / `pnpm install`).
+`node_modules` is available (`npm install` / `bun install`).
 
 ### Channel catalog metadata
 
@@ -147,25 +147,25 @@ Example:
 
 ```json
 {
-  "name": "@openclaw/nextcloud-talk",
-  "openclaw": {
-    "extensions": ["./index.ts"],
-    "channel": {
-      "id": "nextcloud-talk",
-      "label": "Nextcloud Talk",
-      "selectionLabel": "Nextcloud Talk (self-hosted)",
-      "docsPath": "/channels/nextcloud-talk",
-      "docsLabel": "nextcloud-talk",
-      "blurb": "Self-hosted chat via Nextcloud Talk webhook bots.",
-      "order": 65,
-      "aliases": ["nc-talk", "nc"]
-    },
-    "install": {
-      "npmSpec": "@openclaw/nextcloud-talk",
-      "localPath": "extensions/nextcloud-talk",
-      "defaultChoice": "npm"
-    }
-  }
+	"name": "@openclaw/nextcloud-talk",
+	"openclaw": {
+		"extensions": ["./index.ts"],
+		"channel": {
+			"id": "nextcloud-talk",
+			"label": "Nextcloud Talk",
+			"selectionLabel": "Nextcloud Talk (self-hosted)",
+			"docsPath": "/channels/nextcloud-talk",
+			"docsLabel": "nextcloud-talk",
+			"blurb": "Self-hosted chat via Nextcloud Talk webhook bots.",
+			"order": 65,
+			"aliases": ["nc-talk", "nc"]
+		},
+		"install": {
+			"npmSpec": "@openclaw/nextcloud-talk",
+			"localPath": "extensions/nextcloud-talk",
+			"defaultChoice": "npm"
+		}
+	}
 }
 ```
 
@@ -194,15 +194,15 @@ configured id.
 
 ```json5
 {
-  plugins: {
-    enabled: true,
-    allow: ["voice-call"],
-    deny: ["untrusted-plugin"],
-    load: { paths: ["~/Projects/oss/voice-call-extension"] },
-    entries: {
-      "voice-call": { enabled: true, config: { provider: "twilio" } },
-    },
-  },
+	plugins: {
+		enabled: true,
+		allow: ["voice-call"],
+		deny: ["untrusted-plugin"],
+		load: { paths: ["~/Projects/oss/voice-call-extension"] },
+		entries: {
+			"voice-call": { enabled: true, config: { provider: "twilio" } },
+		},
+	},
 }
 ```
 
@@ -232,11 +232,11 @@ Some plugin categories are **exclusive** (only one active at a time). Use
 
 ```json5
 {
-  plugins: {
-    slots: {
-      memory: "memory-core", // or "none" to disable memory plugins
-    },
-  },
+	plugins: {
+		slots: {
+			memory: "memory-core", // or "none" to disable memory plugins
+		},
+	},
 }
 ```
 
@@ -260,19 +260,19 @@ Example:
 
 ```json
 {
-  "id": "my-plugin",
-  "configSchema": {
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-      "apiKey": { "type": "string" },
-      "region": { "type": "string" }
-    }
-  },
-  "uiHints": {
-    "apiKey": { "label": "API Key", "sensitive": true },
-    "region": { "label": "Region", "placeholder": "us-east-1" }
-  }
+	"id": "my-plugin",
+	"configSchema": {
+		"type": "object",
+		"additionalProperties": false,
+		"properties": {
+			"apiKey": { "type": "string" },
+			"region": { "type": "string" }
+		}
+	},
+	"uiHints": {
+		"apiKey": { "label": "API Key", "sensitive": true },
+		"region": { "label": "Region", "placeholder": "us-east-1" }
+	}
 }
 ```
 
@@ -341,33 +341,33 @@ Example:
 
 ```ts
 api.registerProvider({
-  id: "acme",
-  label: "AcmeAI",
-  auth: [
-    {
-      id: "oauth",
-      label: "OAuth",
-      kind: "oauth",
-      run: async (ctx) => {
-        // Run OAuth flow and return auth profiles.
-        return {
-          profiles: [
-            {
-              profileId: "acme:default",
-              credential: {
-                type: "oauth",
-                provider: "acme",
-                access: "...",
-                refresh: "...",
-                expires: Date.now() + 3600 * 1000,
-              },
-            },
-          ],
-          defaultModel: "acme/opus-1",
-        };
-      },
-    },
-  ],
+	id: "acme",
+	label: "AcmeAI",
+	auth: [
+		{
+			id: "oauth",
+			label: "OAuth",
+			kind: "oauth",
+			run: async (ctx) => {
+				// Run OAuth flow and return auth profiles.
+				return {
+					profiles: [
+						{
+							profileId: "acme:default",
+							credential: {
+								type: "oauth",
+								provider: "acme",
+								access: "...",
+								refresh: "...",
+								expires: Date.now() + 3600 * 1000,
+							},
+						},
+					],
+					defaultModel: "acme/opus-1",
+				};
+			},
+		},
+	],
 });
 ```
 
@@ -386,31 +386,31 @@ validated by your channel plugin code.
 
 ```ts
 const myChannel = {
-  id: "acmechat",
-  meta: {
-    id: "acmechat",
-    label: "AcmeChat",
-    selectionLabel: "AcmeChat (API)",
-    docsPath: "/channels/acmechat",
-    blurb: "demo channel plugin.",
-    aliases: ["acme"],
-  },
-  capabilities: { chatTypes: ["direct"] },
-  config: {
-    listAccountIds: (cfg) => Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
-    resolveAccount: (cfg, accountId) =>
-      cfg.channels?.acmechat?.accounts?.[accountId ?? "default"] ?? {
-        accountId,
-      },
-  },
-  outbound: {
-    deliveryMode: "direct",
-    sendText: async () => ({ ok: true }),
-  },
+	id: "acmechat",
+	meta: {
+		id: "acmechat",
+		label: "AcmeChat",
+		selectionLabel: "AcmeChat (API)",
+		docsPath: "/channels/acmechat",
+		blurb: "demo channel plugin.",
+		aliases: ["acme"],
+	},
+	capabilities: { chatTypes: ["direct"] },
+	config: {
+		listAccountIds: (cfg) => Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
+		resolveAccount: (cfg, accountId) =>
+			cfg.channels?.acmechat?.accounts?.[accountId ?? "default"] ?? {
+				accountId,
+			},
+	},
+	outbound: {
+		deliveryMode: "direct",
+		sendText: async () => ({ ok: true }),
+	},
 };
 
 export default function (api) {
-  api.registerChannel({ plugin: myChannel });
+	api.registerChannel({ plugin: myChannel });
 }
 ```
 
@@ -459,13 +459,13 @@ Minimal config example:
 
 ```json5
 {
-  channels: {
-    acmechat: {
-      accounts: {
-        default: { token: "ACME_TOKEN", enabled: true },
-      },
-    },
-  },
+	channels: {
+		acmechat: {
+			accounts: {
+				default: { token: "ACME_TOKEN", enabled: true },
+			},
+		},
+	},
 }
 ```
 
@@ -473,34 +473,34 @@ Minimal channel plugin (outbound‑only):
 
 ```ts
 const plugin = {
-  id: "acmechat",
-  meta: {
-    id: "acmechat",
-    label: "AcmeChat",
-    selectionLabel: "AcmeChat (API)",
-    docsPath: "/channels/acmechat",
-    blurb: "AcmeChat messaging channel.",
-    aliases: ["acme"],
-  },
-  capabilities: { chatTypes: ["direct"] },
-  config: {
-    listAccountIds: (cfg) => Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
-    resolveAccount: (cfg, accountId) =>
-      cfg.channels?.acmechat?.accounts?.[accountId ?? "default"] ?? {
-        accountId,
-      },
-  },
-  outbound: {
-    deliveryMode: "direct",
-    sendText: async ({ text }) => {
-      // deliver `text` to your channel here
-      return { ok: true };
-    },
-  },
+	id: "acmechat",
+	meta: {
+		id: "acmechat",
+		label: "AcmeChat",
+		selectionLabel: "AcmeChat (API)",
+		docsPath: "/channels/acmechat",
+		blurb: "AcmeChat messaging channel.",
+		aliases: ["acme"],
+	},
+	capabilities: { chatTypes: ["direct"] },
+	config: {
+		listAccountIds: (cfg) => Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
+		resolveAccount: (cfg, accountId) =>
+			cfg.channels?.acmechat?.accounts?.[accountId ?? "default"] ?? {
+				accountId,
+			},
+	},
+	outbound: {
+		deliveryMode: "direct",
+		sendText: async ({ text }) => {
+			// deliver `text` to your channel here
+			return { ok: true };
+		},
+	},
 };
 
 export default function (api) {
-  api.registerChannel({ plugin });
+	api.registerChannel({ plugin });
 }
 ```
 
@@ -515,9 +515,9 @@ See the dedicated guide: [Plugin agent tools](/plugins/agent-tools).
 
 ```ts
 export default function (api) {
-  api.registerGatewayMethod("myplugin.status", ({ respond }) => {
-    respond(true, { ok: true });
-  });
+	api.registerGatewayMethod("myplugin.status", ({ respond }) => {
+		respond(true, { ok: true });
+	});
 }
 ```
 
@@ -525,14 +525,14 @@ export default function (api) {
 
 ```ts
 export default function (api) {
-  api.registerCli(
-    ({ program }) => {
-      program.command("mycmd").action(() => {
-        console.log("Hello");
-      });
-    },
-    { commands: ["mycmd"] },
-  );
+	api.registerCli(
+		({ program }) => {
+			program.command("mycmd").action(() => {
+				console.log("Hello");
+			});
+		},
+		{ commands: ["mycmd"] },
+	);
 }
 ```
 
@@ -544,13 +544,13 @@ that don't need LLM processing.
 
 ```ts
 export default function (api) {
-  api.registerCommand({
-    name: "mystatus",
-    description: "Show plugin status",
-    handler: (ctx) => ({
-      text: `Plugin is running! Channel: ${ctx.channel}`,
-    }),
-  });
+	api.registerCommand({
+		name: "mystatus",
+		description: "Show plugin status",
+		handler: (ctx) => ({
+			text: `Plugin is running! Channel: ${ctx.channel}`,
+		}),
+	});
 }
 ```
 
@@ -575,15 +575,15 @@ Example with authorization and arguments:
 
 ```ts
 api.registerCommand({
-  name: "setmode",
-  description: "Set plugin mode",
-  acceptsArgs: true,
-  requireAuth: true,
-  handler: async (ctx) => {
-    const mode = ctx.args?.trim() || "default";
-    await saveMode(mode);
-    return { text: `Mode set to: ${mode}` };
-  },
+	name: "setmode",
+	description: "Set plugin mode",
+	acceptsArgs: true,
+	requireAuth: true,
+	handler: async (ctx) => {
+		const mode = ctx.args?.trim() || "default";
+		await saveMode(mode);
+		return { text: `Mode set to: ${mode}` };
+	},
 });
 ```
 
@@ -600,11 +600,11 @@ Notes:
 
 ```ts
 export default function (api) {
-  api.registerService({
-    id: "my-service",
-    start: () => api.logger.info("ready"),
-    stop: () => api.logger.info("bye"),
-  });
+	api.registerService({
+		id: "my-service",
+		start: () => api.logger.info("ready"),
+		stop: () => api.logger.info("bye"),
+	});
 }
 ```
 

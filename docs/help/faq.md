@@ -10,190 +10,190 @@ Quick answers plus deeper troubleshooting for real-world setups (local dev, VPS,
 ## Table of contents
 
 - [Quick start and first-run setup]
-  - [Im stuck whats the fastest way to get unstuck?](#im-stuck-whats-the-fastest-way-to-get-unstuck)
-  - [What's the recommended way to install and set up OpenClaw?](#whats-the-recommended-way-to-install-and-set-up-openclaw)
-  - [How do I open the dashboard after onboarding?](#how-do-i-open-the-dashboard-after-onboarding)
-  - [How do I authenticate the dashboard (token) on localhost vs remote?](#how-do-i-authenticate-the-dashboard-token-on-localhost-vs-remote)
-  - [What runtime do I need?](#what-runtime-do-i-need)
-  - [Does it run on Raspberry Pi?](#does-it-run-on-raspberry-pi)
-  - [Any tips for Raspberry Pi installs?](#any-tips-for-raspberry-pi-installs)
-  - [It is stuck on "wake up my friend" / onboarding will not hatch. What now?](#it-is-stuck-on-wake-up-my-friend-onboarding-will-not-hatch-what-now)
-  - [Can I migrate my setup to a new machine (Mac mini) without redoing onboarding?](#can-i-migrate-my-setup-to-a-new-machine-mac-mini-without-redoing-onboarding)
-  - [Where do I see what is new in the latest version?](#where-do-i-see-what-is-new-in-the-latest-version)
-  - [I can't access docs.openclaw.ai (SSL error). What now?](#i-cant-access-docsopenclawai-ssl-error-what-now)
-  - [What's the difference between stable and beta?](#whats-the-difference-between-stable-and-beta)
-  - [How do I install the beta version, and what's the difference between beta and dev?](#how-do-i-install-the-beta-version-and-whats-the-difference-between-beta-and-dev)
-  - [How do I try the latest bits?](#how-do-i-try-the-latest-bits)
-  - [How long does install and onboarding usually take?](#how-long-does-install-and-onboarding-usually-take)
-  - [Installer stuck? How do I get more feedback?](#installer-stuck-how-do-i-get-more-feedback)
-  - [Windows install says git not found or openclaw not recognized](#windows-install-says-git-not-found-or-openclaw-not-recognized)
-  - [The docs didn't answer my question - how do I get a better answer?](#the-docs-didnt-answer-my-question-how-do-i-get-a-better-answer)
-  - [How do I install OpenClaw on Linux?](#how-do-i-install-openclaw-on-linux)
-  - [How do I install OpenClaw on a VPS?](#how-do-i-install-openclaw-on-a-vps)
-  - [Where are the cloud/VPS install guides?](#where-are-the-cloudvps-install-guides)
-  - [Can I ask OpenClaw to update itself?](#can-i-ask-openclaw-to-update-itself)
-  - [What does the onboarding wizard actually do?](#what-does-the-onboarding-wizard-actually-do)
-  - [Do I need a Claude or OpenAI subscription to run this?](#do-i-need-a-claude-or-openai-subscription-to-run-this)
-  - [Can I use Claude Max subscription without an API key](#can-i-use-claude-max-subscription-without-an-api-key)
-  - [How does Anthropic "setup-token" auth work?](#how-does-anthropic-setuptoken-auth-work)
-  - [Where do I find an Anthropic setup-token?](#where-do-i-find-an-anthropic-setuptoken)
-  - [Do you support Claude subscription auth (Claude Pro or Max)?](#do-you-support-claude-subscription-auth-claude-pro-or-max)
-  - [Why am I seeing `HTTP 429: rate_limit_error` from Anthropic?](#why-am-i-seeing-http-429-ratelimiterror-from-anthropic)
-  - [Is AWS Bedrock supported?](#is-aws-bedrock-supported)
-  - [How does Codex auth work?](#how-does-codex-auth-work)
-  - [Do you support OpenAI subscription auth (Codex OAuth)?](#do-you-support-openai-subscription-auth-codex-oauth)
-  - [How do I set up Gemini CLI OAuth](#how-do-i-set-up-gemini-cli-oauth)
-  - [Is a local model OK for casual chats?](#is-a-local-model-ok-for-casual-chats)
-  - [How do I keep hosted model traffic in a specific region?](#how-do-i-keep-hosted-model-traffic-in-a-specific-region)
-  - [Do I have to buy a Mac Mini to install this?](#do-i-have-to-buy-a-mac-mini-to-install-this)
-  - [Do I need a Mac mini for iMessage support?](#do-i-need-a-mac-mini-for-imessage-support)
-  - [If I buy a Mac mini to run OpenClaw, can I connect it to my MacBook Pro?](#if-i-buy-a-mac-mini-to-run-openclaw-can-i-connect-it-to-my-macbook-pro)
-  - [Can I use Bun?](#can-i-use-bun)
-  - [Telegram: what goes in `allowFrom`?](#telegram-what-goes-in-allowfrom)
-  - [Can multiple people use one WhatsApp number with different OpenClaw instances?](#can-multiple-people-use-one-whatsapp-number-with-different-openclaw-instances)
-  - [Can I run a "fast chat" agent and an "Opus for coding" agent?](#can-i-run-a-fast-chat-agent-and-an-opus-for-coding-agent)
-  - [Does Homebrew work on Linux?](#does-homebrew-work-on-linux)
-  - [What's the difference between the hackable (git) install and npm install?](#whats-the-difference-between-the-hackable-git-install-and-npm-install)
-  - [Can I switch between npm and git installs later?](#can-i-switch-between-npm-and-git-installs-later)
-  - [Should I run the Gateway on my laptop or a VPS?](#should-i-run-the-gateway-on-my-laptop-or-a-vps)
-  - [How important is it to run OpenClaw on a dedicated machine?](#how-important-is-it-to-run-openclaw-on-a-dedicated-machine)
-  - [What are the minimum VPS requirements and recommended OS?](#what-are-the-minimum-vps-requirements-and-recommended-os)
-  - [Can I run OpenClaw in a VM and what are the requirements](#can-i-run-openclaw-in-a-vm-and-what-are-the-requirements)
+   - [Im stuck whats the fastest way to get unstuck?](#im-stuck-whats-the-fastest-way-to-get-unstuck)
+   - [What's the recommended way to install and set up OpenClaw?](#whats-the-recommended-way-to-install-and-set-up-openclaw)
+   - [How do I open the dashboard after onboarding?](#how-do-i-open-the-dashboard-after-onboarding)
+   - [How do I authenticate the dashboard (token) on localhost vs remote?](#how-do-i-authenticate-the-dashboard-token-on-localhost-vs-remote)
+   - [What runtime do I need?](#what-runtime-do-i-need)
+   - [Does it run on Raspberry Pi?](#does-it-run-on-raspberry-pi)
+   - [Any tips for Raspberry Pi installs?](#any-tips-for-raspberry-pi-installs)
+   - [It is stuck on "wake up my friend" / onboarding will not hatch. What now?](#it-is-stuck-on-wake-up-my-friend-onboarding-will-not-hatch-what-now)
+   - [Can I migrate my setup to a new machine (Mac mini) without redoing onboarding?](#can-i-migrate-my-setup-to-a-new-machine-mac-mini-without-redoing-onboarding)
+   - [Where do I see what is new in the latest version?](#where-do-i-see-what-is-new-in-the-latest-version)
+   - [I can't access docs.openclaw.ai (SSL error). What now?](#i-cant-access-docsopenclawai-ssl-error-what-now)
+   - [What's the difference between stable and beta?](#whats-the-difference-between-stable-and-beta)
+   - [How do I install the beta version, and what's the difference between beta and dev?](#how-do-i-install-the-beta-version-and-whats-the-difference-between-beta-and-dev)
+   - [How do I try the latest bits?](#how-do-i-try-the-latest-bits)
+   - [How long does install and onboarding usually take?](#how-long-does-install-and-onboarding-usually-take)
+   - [Installer stuck? How do I get more feedback?](#installer-stuck-how-do-i-get-more-feedback)
+   - [Windows install says git not found or openclaw not recognized](#windows-install-says-git-not-found-or-openclaw-not-recognized)
+   - [The docs didn't answer my question - how do I get a better answer?](#the-docs-didnt-answer-my-question-how-do-i-get-a-better-answer)
+   - [How do I install OpenClaw on Linux?](#how-do-i-install-openclaw-on-linux)
+   - [How do I install OpenClaw on a VPS?](#how-do-i-install-openclaw-on-a-vps)
+   - [Where are the cloud/VPS install guides?](#where-are-the-cloudvps-install-guides)
+   - [Can I ask OpenClaw to update itself?](#can-i-ask-openclaw-to-update-itself)
+   - [What does the onboarding wizard actually do?](#what-does-the-onboarding-wizard-actually-do)
+   - [Do I need a Claude or OpenAI subscription to run this?](#do-i-need-a-claude-or-openai-subscription-to-run-this)
+   - [Can I use Claude Max subscription without an API key](#can-i-use-claude-max-subscription-without-an-api-key)
+   - [How does Anthropic "setup-token" auth work?](#how-does-anthropic-setuptoken-auth-work)
+   - [Where do I find an Anthropic setup-token?](#where-do-i-find-an-anthropic-setuptoken)
+   - [Do you support Claude subscription auth (Claude Pro or Max)?](#do-you-support-claude-subscription-auth-claude-pro-or-max)
+   - [Why am I seeing `HTTP 429: rate_limit_error` from Anthropic?](#why-am-i-seeing-http-429-ratelimiterror-from-anthropic)
+   - [Is AWS Bedrock supported?](#is-aws-bedrock-supported)
+   - [How does Codex auth work?](#how-does-codex-auth-work)
+   - [Do you support OpenAI subscription auth (Codex OAuth)?](#do-you-support-openai-subscription-auth-codex-oauth)
+   - [How do I set up Gemini CLI OAuth](#how-do-i-set-up-gemini-cli-oauth)
+   - [Is a local model OK for casual chats?](#is-a-local-model-ok-for-casual-chats)
+   - [How do I keep hosted model traffic in a specific region?](#how-do-i-keep-hosted-model-traffic-in-a-specific-region)
+   - [Do I have to buy a Mac Mini to install this?](#do-i-have-to-buy-a-mac-mini-to-install-this)
+   - [Do I need a Mac mini for iMessage support?](#do-i-need-a-mac-mini-for-imessage-support)
+   - [If I buy a Mac mini to run OpenClaw, can I connect it to my MacBook Pro?](#if-i-buy-a-mac-mini-to-run-openclaw-can-i-connect-it-to-my-macbook-pro)
+   - [Can I use Bun?](#can-i-use-bun)
+   - [Telegram: what goes in `allowFrom`?](#telegram-what-goes-in-allowfrom)
+   - [Can multiple people use one WhatsApp number with different OpenClaw instances?](#can-multiple-people-use-one-whatsapp-number-with-different-openclaw-instances)
+   - [Can I run a "fast chat" agent and an "Opus for coding" agent?](#can-i-run-a-fast-chat-agent-and-an-opus-for-coding-agent)
+   - [Does Homebrew work on Linux?](#does-homebrew-work-on-linux)
+   - [What's the difference between the hackable (git) install and npm install?](#whats-the-difference-between-the-hackable-git-install-and-npm-install)
+   - [Can I switch between npm and git installs later?](#can-i-switch-between-npm-and-git-installs-later)
+   - [Should I run the Gateway on my laptop or a VPS?](#should-i-run-the-gateway-on-my-laptop-or-a-vps)
+   - [How important is it to run OpenClaw on a dedicated machine?](#how-important-is-it-to-run-openclaw-on-a-dedicated-machine)
+   - [What are the minimum VPS requirements and recommended OS?](#what-are-the-minimum-vps-requirements-and-recommended-os)
+   - [Can I run OpenClaw in a VM and what are the requirements](#can-i-run-openclaw-in-a-vm-and-what-are-the-requirements)
 - [What is OpenClaw?](#what-is-openclaw)
-  - [What is OpenClaw, in one paragraph?](#what-is-openclaw-in-one-paragraph)
-  - [What's the value proposition?](#whats-the-value-proposition)
-  - [I just set it up what should I do first](#i-just-set-it-up-what-should-i-do-first)
-  - [What are the top five everyday use cases for OpenClaw](#what-are-the-top-five-everyday-use-cases-for-openclaw)
-  - [Can OpenClaw help with lead gen outreach ads and blogs for a SaaS](#can-openclaw-help-with-lead-gen-outreach-ads-and-blogs-for-a-saas)
-  - [What are the advantages vs Claude Code for web development?](#what-are-the-advantages-vs-claude-code-for-web-development)
+   - [What is OpenClaw, in one paragraph?](#what-is-openclaw-in-one-paragraph)
+   - [What's the value proposition?](#whats-the-value-proposition)
+   - [I just set it up what should I do first](#i-just-set-it-up-what-should-i-do-first)
+   - [What are the top five everyday use cases for OpenClaw](#what-are-the-top-five-everyday-use-cases-for-openclaw)
+   - [Can OpenClaw help with lead gen outreach ads and blogs for a SaaS](#can-openclaw-help-with-lead-gen-outreach-ads-and-blogs-for-a-saas)
+   - [What are the advantages vs Claude Code for web development?](#what-are-the-advantages-vs-claude-code-for-web-development)
 - [Skills and automation](#skills-and-automation)
-  - [How do I customize skills without keeping the repo dirty?](#how-do-i-customize-skills-without-keeping-the-repo-dirty)
-  - [Can I load skills from a custom folder?](#can-i-load-skills-from-a-custom-folder)
-  - [How can I use different models for different tasks?](#how-can-i-use-different-models-for-different-tasks)
-  - [The bot freezes while doing heavy work. How do I offload that?](#the-bot-freezes-while-doing-heavy-work-how-do-i-offload-that)
-  - [Cron or reminders do not fire. What should I check?](#cron-or-reminders-do-not-fire-what-should-i-check)
-  - [How do I install skills on Linux?](#how-do-i-install-skills-on-linux)
-  - [Can OpenClaw run tasks on a schedule or continuously in the background?](#can-openclaw-run-tasks-on-a-schedule-or-continuously-in-the-background)
-  - [Can I run Apple macOS-only skills from Linux?](#can-i-run-apple-macos-only-skills-from-linux)
-  - [Do you have a Notion or HeyGen integration?](#do-you-have-a-notion-or-heygen-integration)
-  - [How do I install the Chrome extension for browser takeover?](#how-do-i-install-the-chrome-extension-for-browser-takeover)
+   - [How do I customize skills without keeping the repo dirty?](#how-do-i-customize-skills-without-keeping-the-repo-dirty)
+   - [Can I load skills from a custom folder?](#can-i-load-skills-from-a-custom-folder)
+   - [How can I use different models for different tasks?](#how-can-i-use-different-models-for-different-tasks)
+   - [The bot freezes while doing heavy work. How do I offload that?](#the-bot-freezes-while-doing-heavy-work-how-do-i-offload-that)
+   - [Cron or reminders do not fire. What should I check?](#cron-or-reminders-do-not-fire-what-should-i-check)
+   - [How do I install skills on Linux?](#how-do-i-install-skills-on-linux)
+   - [Can OpenClaw run tasks on a schedule or continuously in the background?](#can-openclaw-run-tasks-on-a-schedule-or-continuously-in-the-background)
+   - [Can I run Apple macOS-only skills from Linux?](#can-i-run-apple-macos-only-skills-from-linux)
+   - [Do you have a Notion or HeyGen integration?](#do-you-have-a-notion-or-heygen-integration)
+   - [How do I install the Chrome extension for browser takeover?](#how-do-i-install-the-chrome-extension-for-browser-takeover)
 - [Sandboxing and memory](#sandboxing-and-memory)
-  - [Is there a dedicated sandboxing doc?](#is-there-a-dedicated-sandboxing-doc)
-  - [How do I bind a host folder into the sandbox?](#how-do-i-bind-a-host-folder-into-the-sandbox)
-  - [How does memory work?](#how-does-memory-work)
-  - [Memory keeps forgetting things. How do I make it stick?](#memory-keeps-forgetting-things-how-do-i-make-it-stick)
-  - [Does memory persist forever? What are the limits?](#does-memory-persist-forever-what-are-the-limits)
-  - [Does semantic memory search require an OpenAI API key?](#does-semantic-memory-search-require-an-openai-api-key)
+   - [Is there a dedicated sandboxing doc?](#is-there-a-dedicated-sandboxing-doc)
+   - [How do I bind a host folder into the sandbox?](#how-do-i-bind-a-host-folder-into-the-sandbox)
+   - [How does memory work?](#how-does-memory-work)
+   - [Memory keeps forgetting things. How do I make it stick?](#memory-keeps-forgetting-things-how-do-i-make-it-stick)
+   - [Does memory persist forever? What are the limits?](#does-memory-persist-forever-what-are-the-limits)
+   - [Does semantic memory search require an OpenAI API key?](#does-semantic-memory-search-require-an-openai-api-key)
 - [Where things live on disk](#where-things-live-on-disk)
-  - [Is all data used with OpenClaw saved locally?](#is-all-data-used-with-openclaw-saved-locally)
-  - [Where does OpenClaw store its data?](#where-does-openclaw-store-its-data)
-  - [Where should AGENTS.md / SOUL.md / USER.md / MEMORY.md live?](#where-should-agentsmd-soulmd-usermd-memorymd-live)
-  - [What's the recommended backup strategy?](#whats-the-recommended-backup-strategy)
-  - [How do I completely uninstall OpenClaw?](#how-do-i-completely-uninstall-openclaw)
-  - [Can agents work outside the workspace?](#can-agents-work-outside-the-workspace)
-  - [I'm in remote mode - where is the session store?](#im-in-remote-mode-where-is-the-session-store)
+   - [Is all data used with OpenClaw saved locally?](#is-all-data-used-with-openclaw-saved-locally)
+   - [Where does OpenClaw store its data?](#where-does-openclaw-store-its-data)
+   - [Where should AGENTS.md / SOUL.md / USER.md / MEMORY.md live?](#where-should-agentsmd-soulmd-usermd-memorymd-live)
+   - [What's the recommended backup strategy?](#whats-the-recommended-backup-strategy)
+   - [How do I completely uninstall OpenClaw?](#how-do-i-completely-uninstall-openclaw)
+   - [Can agents work outside the workspace?](#can-agents-work-outside-the-workspace)
+   - [I'm in remote mode - where is the session store?](#im-in-remote-mode-where-is-the-session-store)
 - [Config basics](#config-basics)
-  - [What format is the config? Where is it?](#what-format-is-the-config-where-is-it)
-  - [I set `gateway.bind: "lan"` (or `"tailnet"`) and now nothing listens / the UI says unauthorized](#i-set-gatewaybind-lan-or-tailnet-and-now-nothing-listens-the-ui-says-unauthorized)
-  - [Why do I need a token on localhost now?](#why-do-i-need-a-token-on-localhost-now)
-  - [Do I have to restart after changing config?](#do-i-have-to-restart-after-changing-config)
-  - [How do I enable web search (and web fetch)?](#how-do-i-enable-web-search-and-web-fetch)
-  - [config.apply wiped my config. How do I recover and avoid this?](#configapply-wiped-my-config-how-do-i-recover-and-avoid-this)
-  - [How do I run a central Gateway with specialized workers across devices?](#how-do-i-run-a-central-gateway-with-specialized-workers-across-devices)
-  - [Can the OpenClaw browser run headless?](#can-the-openclaw-browser-run-headless)
-  - [How do I use Brave for browser control?](#how-do-i-use-brave-for-browser-control)
+   - [What format is the config? Where is it?](#what-format-is-the-config-where-is-it)
+   - [I set `gateway.bind: "lan"` (or `"tailnet"`) and now nothing listens / the UI says unauthorized](#i-set-gatewaybind-lan-or-tailnet-and-now-nothing-listens-the-ui-says-unauthorized)
+   - [Why do I need a token on localhost now?](#why-do-i-need-a-token-on-localhost-now)
+   - [Do I have to restart after changing config?](#do-i-have-to-restart-after-changing-config)
+   - [How do I enable web search (and web fetch)?](#how-do-i-enable-web-search-and-web-fetch)
+   - [config.apply wiped my config. How do I recover and avoid this?](#configapply-wiped-my-config-how-do-i-recover-and-avoid-this)
+   - [How do I run a central Gateway with specialized workers across devices?](#how-do-i-run-a-central-gateway-with-specialized-workers-across-devices)
+   - [Can the OpenClaw browser run headless?](#can-the-openclaw-browser-run-headless)
+   - [How do I use Brave for browser control?](#how-do-i-use-brave-for-browser-control)
 - [Remote gateways and nodes](#remote-gateways-and-nodes)
-  - [How do commands propagate between Telegram, the gateway, and nodes?](#how-do-commands-propagate-between-telegram-the-gateway-and-nodes)
-  - [How can my agent access my computer if the Gateway is hosted remotely?](#how-can-my-agent-access-my-computer-if-the-gateway-is-hosted-remotely)
-  - [Tailscale is connected but I get no replies. What now?](#tailscale-is-connected-but-i-get-no-replies-what-now)
-  - [Can two OpenClaw instances talk to each other (local + VPS)?](#can-two-openclaw-instances-talk-to-each-other-local-vps)
-  - [Do I need separate VPSes for multiple agents](#do-i-need-separate-vpses-for-multiple-agents)
-  - [Is there a benefit to using a node on my personal laptop instead of SSH from a VPS?](#is-there-a-benefit-to-using-a-node-on-my-personal-laptop-instead-of-ssh-from-a-vps)
-  - [Do nodes run a gateway service?](#do-nodes-run-a-gateway-service)
-  - [Is there an API / RPC way to apply config?](#is-there-an-api-rpc-way-to-apply-config)
-  - [What's a minimal "sane" config for a first install?](#whats-a-minimal-sane-config-for-a-first-install)
-  - [How do I set up Tailscale on a VPS and connect from my Mac?](#how-do-i-set-up-tailscale-on-a-vps-and-connect-from-my-mac)
-  - [How do I connect a Mac node to a remote Gateway (Tailscale Serve)?](#how-do-i-connect-a-mac-node-to-a-remote-gateway-tailscale-serve)
-  - [Should I install on a second laptop or just add a node?](#should-i-install-on-a-second-laptop-or-just-add-a-node)
+   - [How do commands propagate between Telegram, the gateway, and nodes?](#how-do-commands-propagate-between-telegram-the-gateway-and-nodes)
+   - [How can my agent access my computer if the Gateway is hosted remotely?](#how-can-my-agent-access-my-computer-if-the-gateway-is-hosted-remotely)
+   - [Tailscale is connected but I get no replies. What now?](#tailscale-is-connected-but-i-get-no-replies-what-now)
+   - [Can two OpenClaw instances talk to each other (local + VPS)?](#can-two-openclaw-instances-talk-to-each-other-local-vps)
+   - [Do I need separate VPSes for multiple agents](#do-i-need-separate-vpses-for-multiple-agents)
+   - [Is there a benefit to using a node on my personal laptop instead of SSH from a VPS?](#is-there-a-benefit-to-using-a-node-on-my-personal-laptop-instead-of-ssh-from-a-vps)
+   - [Do nodes run a gateway service?](#do-nodes-run-a-gateway-service)
+   - [Is there an API / RPC way to apply config?](#is-there-an-api-rpc-way-to-apply-config)
+   - [What's a minimal "sane" config for a first install?](#whats-a-minimal-sane-config-for-a-first-install)
+   - [How do I set up Tailscale on a VPS and connect from my Mac?](#how-do-i-set-up-tailscale-on-a-vps-and-connect-from-my-mac)
+   - [How do I connect a Mac node to a remote Gateway (Tailscale Serve)?](#how-do-i-connect-a-mac-node-to-a-remote-gateway-tailscale-serve)
+   - [Should I install on a second laptop or just add a node?](#should-i-install-on-a-second-laptop-or-just-add-a-node)
 - [Env vars and .env loading](#env-vars-and-env-loading)
-  - [How does OpenClaw load environment variables?](#how-does-openclaw-load-environment-variables)
-  - ["I started the Gateway via the service and my env vars disappeared." What now?](#i-started-the-gateway-via-the-service-and-my-env-vars-disappeared-what-now)
-  - [I set `COPILOT_GITHUB_TOKEN`, but models status shows "Shell env: off." Why?](#i-set-copilotgithubtoken-but-models-status-shows-shell-env-off-why)
+   - [How does OpenClaw load environment variables?](#how-does-openclaw-load-environment-variables)
+   - ["I started the Gateway via the service and my env vars disappeared." What now?](#i-started-the-gateway-via-the-service-and-my-env-vars-disappeared-what-now)
+   - [I set `COPILOT_GITHUB_TOKEN`, but models status shows "Shell env: off." Why?](#i-set-copilotgithubtoken-but-models-status-shows-shell-env-off-why)
 - [Sessions and multiple chats](#sessions-and-multiple-chats)
-  - [How do I start a fresh conversation?](#how-do-i-start-a-fresh-conversation)
-  - [Do sessions reset automatically if I never send `/new`?](#do-sessions-reset-automatically-if-i-never-send-new)
-  - [Is there a way to make a team of OpenClaw instances one CEO and many agents](#is-there-a-way-to-make-a-team-of-openclaw-instances-one-ceo-and-many-agents)
-  - [Why did context get truncated mid-task? How do I prevent it?](#why-did-context-get-truncated-midtask-how-do-i-prevent-it)
-  - [How do I completely reset OpenClaw but keep it installed?](#how-do-i-completely-reset-openclaw-but-keep-it-installed)
-  - [I'm getting "context too large" errors - how do I reset or compact?](#im-getting-context-too-large-errors-how-do-i-reset-or-compact)
-  - [Why am I seeing "LLM request rejected: messages.N.content.X.tool_use.input: Field required"?](#why-am-i-seeing-llm-request-rejected-messagesncontentxtooluseinput-field-required)
-  - [Why am I getting heartbeat messages every 30 minutes?](#why-am-i-getting-heartbeat-messages-every-30-minutes)
-  - [Do I need to add a "bot account" to a WhatsApp group?](#do-i-need-to-add-a-bot-account-to-a-whatsapp-group)
-  - [How do I get the JID of a WhatsApp group?](#how-do-i-get-the-jid-of-a-whatsapp-group)
-  - [Why doesn't OpenClaw reply in a group?](#why-doesnt-openclaw-reply-in-a-group)
-  - [Do groups/threads share context with DMs?](#do-groupsthreads-share-context-with-dms)
-  - [How many workspaces and agents can I create?](#how-many-workspaces-and-agents-can-i-create)
-  - [Can I run multiple bots or chats at the same time (Slack), and how should I set that up?](#can-i-run-multiple-bots-or-chats-at-the-same-time-slack-and-how-should-i-set-that-up)
+   - [How do I start a fresh conversation?](#how-do-i-start-a-fresh-conversation)
+   - [Do sessions reset automatically if I never send `/new`?](#do-sessions-reset-automatically-if-i-never-send-new)
+   - [Is there a way to make a team of OpenClaw instances one CEO and many agents](#is-there-a-way-to-make-a-team-of-openclaw-instances-one-ceo-and-many-agents)
+   - [Why did context get truncated mid-task? How do I prevent it?](#why-did-context-get-truncated-midtask-how-do-i-prevent-it)
+   - [How do I completely reset OpenClaw but keep it installed?](#how-do-i-completely-reset-openclaw-but-keep-it-installed)
+   - [I'm getting "context too large" errors - how do I reset or compact?](#im-getting-context-too-large-errors-how-do-i-reset-or-compact)
+   - [Why am I seeing "LLM request rejected: messages.N.content.X.tool_use.input: Field required"?](#why-am-i-seeing-llm-request-rejected-messagesncontentxtooluseinput-field-required)
+   - [Why am I getting heartbeat messages every 30 minutes?](#why-am-i-getting-heartbeat-messages-every-30-minutes)
+   - [Do I need to add a "bot account" to a WhatsApp group?](#do-i-need-to-add-a-bot-account-to-a-whatsapp-group)
+   - [How do I get the JID of a WhatsApp group?](#how-do-i-get-the-jid-of-a-whatsapp-group)
+   - [Why doesn't OpenClaw reply in a group?](#why-doesnt-openclaw-reply-in-a-group)
+   - [Do groups/threads share context with DMs?](#do-groupsthreads-share-context-with-dms)
+   - [How many workspaces and agents can I create?](#how-many-workspaces-and-agents-can-i-create)
+   - [Can I run multiple bots or chats at the same time (Slack), and how should I set that up?](#can-i-run-multiple-bots-or-chats-at-the-same-time-slack-and-how-should-i-set-that-up)
 - [Models: defaults, selection, aliases, switching](#models-defaults-selection-aliases-switching)
-  - [What is the "default model"?](#what-is-the-default-model)
-  - [What model do you recommend?](#what-model-do-you-recommend)
-  - [How do I switch models without wiping my config?](#how-do-i-switch-models-without-wiping-my-config)
-  - [Can I use self-hosted models (llama.cpp, vLLM, Ollama)?](#can-i-use-selfhosted-models-llamacpp-vllm-ollama)
-  - [What do OpenClaw, Flawd, and Krill use for models?](#what-do-openclaw-flawd-and-krill-use-for-models)
-  - [How do I switch models on the fly (without restarting)?](#how-do-i-switch-models-on-the-fly-without-restarting)
-  - [Can I use GPT 5.2 for daily tasks and Codex 5.3 for coding](#can-i-use-gpt-52-for-daily-tasks-and-codex-53-for-coding)
-  - [Why do I see "Model … is not allowed" and then no reply?](#why-do-i-see-model-is-not-allowed-and-then-no-reply)
-  - [Why do I see "Unknown model: minimax/MiniMax-M2.1"?](#why-do-i-see-unknown-model-minimaxminimaxm21)
-  - [Can I use MiniMax as my default and OpenAI for complex tasks?](#can-i-use-minimax-as-my-default-and-openai-for-complex-tasks)
-  - [Are opus / sonnet / gpt built-in shortcuts?](#are-opus-sonnet-gpt-builtin-shortcuts)
-  - [How do I define/override model shortcuts (aliases)?](#how-do-i-defineoverride-model-shortcuts-aliases)
-  - [How do I add models from other providers like OpenRouter or Z.AI?](#how-do-i-add-models-from-other-providers-like-openrouter-or-zai)
+   - [What is the "default model"?](#what-is-the-default-model)
+   - [What model do you recommend?](#what-model-do-you-recommend)
+   - [How do I switch models without wiping my config?](#how-do-i-switch-models-without-wiping-my-config)
+   - [Can I use self-hosted models (llama.cpp, vLLM, Ollama)?](#can-i-use-selfhosted-models-llamacpp-vllm-ollama)
+   - [What do OpenClaw, Flawd, and Krill use for models?](#what-do-openclaw-flawd-and-krill-use-for-models)
+   - [How do I switch models on the fly (without restarting)?](#how-do-i-switch-models-on-the-fly-without-restarting)
+   - [Can I use GPT 5.2 for daily tasks and Codex 5.3 for coding](#can-i-use-gpt-52-for-daily-tasks-and-codex-53-for-coding)
+   - [Why do I see "Model … is not allowed" and then no reply?](#why-do-i-see-model-is-not-allowed-and-then-no-reply)
+   - [Why do I see "Unknown model: minimax/MiniMax-M2.1"?](#why-do-i-see-unknown-model-minimaxminimaxm21)
+   - [Can I use MiniMax as my default and OpenAI for complex tasks?](#can-i-use-minimax-as-my-default-and-openai-for-complex-tasks)
+   - [Are opus / sonnet / gpt built-in shortcuts?](#are-opus-sonnet-gpt-builtin-shortcuts)
+   - [How do I define/override model shortcuts (aliases)?](#how-do-i-defineoverride-model-shortcuts-aliases)
+   - [How do I add models from other providers like OpenRouter or Z.AI?](#how-do-i-add-models-from-other-providers-like-openrouter-or-zai)
 - [Model failover and "All models failed"](#model-failover-and-all-models-failed)
-  - [How does failover work?](#how-does-failover-work)
-  - [What does this error mean?](#what-does-this-error-mean)
-  - [Fix checklist for `No credentials found for profile "anthropic:default"`](#fix-checklist-for-no-credentials-found-for-profile-anthropicdefault)
-  - [Why did it also try Google Gemini and fail?](#why-did-it-also-try-google-gemini-and-fail)
+   - [How does failover work?](#how-does-failover-work)
+   - [What does this error mean?](#what-does-this-error-mean)
+   - [Fix checklist for `No credentials found for profile "anthropic:default"`](#fix-checklist-for-no-credentials-found-for-profile-anthropicdefault)
+   - [Why did it also try Google Gemini and fail?](#why-did-it-also-try-google-gemini-and-fail)
 - [Auth profiles: what they are and how to manage them](#auth-profiles-what-they-are-and-how-to-manage-them)
-  - [What is an auth profile?](#what-is-an-auth-profile)
-  - [What are typical profile IDs?](#what-are-typical-profile-ids)
-  - [Can I control which auth profile is tried first?](#can-i-control-which-auth-profile-is-tried-first)
-  - [OAuth vs API key: what's the difference?](#oauth-vs-api-key-whats-the-difference)
+   - [What is an auth profile?](#what-is-an-auth-profile)
+   - [What are typical profile IDs?](#what-are-typical-profile-ids)
+   - [Can I control which auth profile is tried first?](#can-i-control-which-auth-profile-is-tried-first)
+   - [OAuth vs API key: what's the difference?](#oauth-vs-api-key-whats-the-difference)
 - [Gateway: ports, "already running", and remote mode](#gateway-ports-already-running-and-remote-mode)
-  - [What port does the Gateway use?](#what-port-does-the-gateway-use)
-  - [Why does `openclaw gateway status` say `Runtime: running` but `RPC probe: failed`?](#why-does-openclaw-gateway-status-say-runtime-running-but-rpc-probe-failed)
-  - [Why does `openclaw gateway status` show `Config (cli)` and `Config (service)` different?](#why-does-openclaw-gateway-status-show-config-cli-and-config-service-different)
-  - [What does "another gateway instance is already listening" mean?](#what-does-another-gateway-instance-is-already-listening-mean)
-  - [How do I run OpenClaw in remote mode (client connects to a Gateway elsewhere)?](#how-do-i-run-openclaw-in-remote-mode-client-connects-to-a-gateway-elsewhere)
-  - [The Control UI says "unauthorized" (or keeps reconnecting). What now?](#the-control-ui-says-unauthorized-or-keeps-reconnecting-what-now)
-  - [I set `gateway.bind: "tailnet"` but it can't bind / nothing listens](#i-set-gatewaybind-tailnet-but-it-cant-bind-nothing-listens)
-  - [Can I run multiple Gateways on the same host?](#can-i-run-multiple-gateways-on-the-same-host)
-  - [What does "invalid handshake" / code 1008 mean?](#what-does-invalid-handshake-code-1008-mean)
+   - [What port does the Gateway use?](#what-port-does-the-gateway-use)
+   - [Why does `openclaw gateway status` say `Runtime: running` but `RPC probe: failed`?](#why-does-openclaw-gateway-status-say-runtime-running-but-rpc-probe-failed)
+   - [Why does `openclaw gateway status` show `Config (cli)` and `Config (service)` different?](#why-does-openclaw-gateway-status-show-config-cli-and-config-service-different)
+   - [What does "another gateway instance is already listening" mean?](#what-does-another-gateway-instance-is-already-listening-mean)
+   - [How do I run OpenClaw in remote mode (client connects to a Gateway elsewhere)?](#how-do-i-run-openclaw-in-remote-mode-client-connects-to-a-gateway-elsewhere)
+   - [The Control UI says "unauthorized" (or keeps reconnecting). What now?](#the-control-ui-says-unauthorized-or-keeps-reconnecting-what-now)
+   - [I set `gateway.bind: "tailnet"` but it can't bind / nothing listens](#i-set-gatewaybind-tailnet-but-it-cant-bind-nothing-listens)
+   - [Can I run multiple Gateways on the same host?](#can-i-run-multiple-gateways-on-the-same-host)
+   - [What does "invalid handshake" / code 1008 mean?](#what-does-invalid-handshake-code-1008-mean)
 - [Logging and debugging](#logging-and-debugging)
-  - [Where are logs?](#where-are-logs)
-  - [How do I start/stop/restart the Gateway service?](#how-do-i-startstoprestart-the-gateway-service)
-  - [I closed my terminal on Windows - how do I restart OpenClaw?](#i-closed-my-terminal-on-windows-how-do-i-restart-openclaw)
-  - [The Gateway is up but replies never arrive. What should I check?](#the-gateway-is-up-but-replies-never-arrive-what-should-i-check)
-  - ["Disconnected from gateway: no reason" - what now?](#disconnected-from-gateway-no-reason-what-now)
-  - [Telegram setMyCommands fails with network errors. What should I check?](#telegram-setmycommands-fails-with-network-errors-what-should-i-check)
-  - [TUI shows no output. What should I check?](#tui-shows-no-output-what-should-i-check)
-  - [How do I completely stop then start the Gateway?](#how-do-i-completely-stop-then-start-the-gateway)
-  - [ELI5: `openclaw gateway restart` vs `openclaw gateway`](#eli5-openclaw-gateway-restart-vs-openclaw-gateway)
-  - [What's the fastest way to get more details when something fails?](#whats-the-fastest-way-to-get-more-details-when-something-fails)
+   - [Where are logs?](#where-are-logs)
+   - [How do I start/stop/restart the Gateway service?](#how-do-i-startstoprestart-the-gateway-service)
+   - [I closed my terminal on Windows - how do I restart OpenClaw?](#i-closed-my-terminal-on-windows-how-do-i-restart-openclaw)
+   - [The Gateway is up but replies never arrive. What should I check?](#the-gateway-is-up-but-replies-never-arrive-what-should-i-check)
+   - ["Disconnected from gateway: no reason" - what now?](#disconnected-from-gateway-no-reason-what-now)
+   - [Telegram setMyCommands fails with network errors. What should I check?](#telegram-setmycommands-fails-with-network-errors-what-should-i-check)
+   - [TUI shows no output. What should I check?](#tui-shows-no-output-what-should-i-check)
+   - [How do I completely stop then start the Gateway?](#how-do-i-completely-stop-then-start-the-gateway)
+   - [ELI5: `openclaw gateway restart` vs `openclaw gateway`](#eli5-openclaw-gateway-restart-vs-openclaw-gateway)
+   - [What's the fastest way to get more details when something fails?](#whats-the-fastest-way-to-get-more-details-when-something-fails)
 - [Media and attachments](#media-and-attachments)
-  - [My skill generated an image/PDF, but nothing was sent](#my-skill-generated-an-imagepdf-but-nothing-was-sent)
+   - [My skill generated an image/PDF, but nothing was sent](#my-skill-generated-an-imagepdf-but-nothing-was-sent)
 - [Security and access control](#security-and-access-control)
-  - [Is it safe to expose OpenClaw to inbound DMs?](#is-it-safe-to-expose-openclaw-to-inbound-dms)
-  - [Is prompt injection only a concern for public bots?](#is-prompt-injection-only-a-concern-for-public-bots)
-  - [Should my bot have its own email GitHub account or phone number](#should-my-bot-have-its-own-email-github-account-or-phone-number)
-  - [Can I give it autonomy over my text messages and is that safe](#can-i-give-it-autonomy-over-my-text-messages-and-is-that-safe)
-  - [Can I use cheaper models for personal assistant tasks?](#can-i-use-cheaper-models-for-personal-assistant-tasks)
-  - [I ran `/start` in Telegram but didn't get a pairing code](#i-ran-start-in-telegram-but-didnt-get-a-pairing-code)
-  - [WhatsApp: will it message my contacts? How does pairing work?](#whatsapp-will-it-message-my-contacts-how-does-pairing-work)
+   - [Is it safe to expose OpenClaw to inbound DMs?](#is-it-safe-to-expose-openclaw-to-inbound-dms)
+   - [Is prompt injection only a concern for public bots?](#is-prompt-injection-only-a-concern-for-public-bots)
+   - [Should my bot have its own email GitHub account or phone number](#should-my-bot-have-its-own-email-github-account-or-phone-number)
+   - [Can I give it autonomy over my text messages and is that safe](#can-i-give-it-autonomy-over-my-text-messages-and-is-that-safe)
+   - [Can I use cheaper models for personal assistant tasks?](#can-i-use-cheaper-models-for-personal-assistant-tasks)
+   - [I ran `/start` in Telegram but didn't get a pairing code](#i-ran-start-in-telegram-but-didnt-get-a-pairing-code)
+   - [WhatsApp: will it message my contacts? How does pairing work?](#whatsapp-will-it-message-my-contacts-how-does-pairing-work)
 - [Chat commands, aborting tasks, and "it won't stop"](#chat-commands-aborting-tasks-and-it-wont-stop)
-  - [How do I stop internal system messages from showing in chat](#how-do-i-stop-internal-system-messages-from-showing-in-chat)
-  - [How do I stop/cancel a running task?](#how-do-i-stopcancel-a-running-task)
-  - [How do I send a Discord message from Telegram? ("Cross-context messaging denied")](#how-do-i-send-a-discord-message-from-telegram-crosscontext-messaging-denied)
-  - [Why does it feel like the bot "ignores" rapid-fire messages?](#why-does-it-feel-like-the-bot-ignores-rapidfire-messages)
+   - [How do I stop internal system messages from showing in chat](#how-do-i-stop-internal-system-messages-from-showing-in-chat)
+   - [How do I stop/cancel a running task?](#how-do-i-stopcancel-a-running-task)
+   - [How do I send a Discord message from Telegram? ("Cross-context messaging denied")](#how-do-i-send-a-discord-message-from-telegram-crosscontext-messaging-denied)
+   - [Why does it feel like the bot "ignores" rapid-fire messages?](#why-does-it-feel-like-the-bot-ignores-rapidfire-messages)
 
 ## First 60 seconds if something's broken
 
@@ -326,13 +326,13 @@ From source (contributors/dev):
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
-pnpm install
-pnpm build
-pnpm ui:build # auto-installs UI deps on first run
+bun install
+bun run build
+bun run ui:build # auto-installs UI deps on first run
 openclaw onboard
 ```
 
-If you don't have a global install yet, run it via `pnpm openclaw onboard`.
+If you don't have a global install yet, run it via `bun run openclaw onboard`.
 
 ### How do I open the dashboard after onboarding
 
@@ -356,7 +356,7 @@ See [Dashboard](/web/dashboard) and [Web surfaces](/web) for bind modes and auth
 
 ### What runtime do I need
 
-Node **>= 22** is required. `pnpm` is recommended. Bun is **not recommended** for the Gateway.
+Node **>= 22** is required. `bun` is recommended. Bun is **not recommended** for the Gateway.
 
 ### Does it run on Raspberry Pi
 
@@ -519,8 +519,8 @@ If you prefer a clean clone manually, use:
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
-pnpm install
-pnpm build
+bun install
+bun run build
 ```
 
 Docs: [Update](/cli/update), [Development channels](/install/development-channels),
@@ -571,9 +571,9 @@ Two common Windows issues:
 - Your npm global bin folder is not on PATH.
 - Check the path:
 
-  ```powershell
-  npm config get prefix
-  ```
+   ```powershell
+   npm config get prefix
+   ```
 
 - Ensure `<prefix>\\bin` is on PATH (on most systems it is `%AppData%\\npm`).
 - Close and reopen PowerShell after updating PATH.
@@ -830,7 +830,7 @@ brew install <formula>
 ```
 
 If you run OpenClaw via systemd, ensure the service PATH includes `/home/linuxbrew/.linuxbrew/bin` (or your brew prefix) so `brew`-installed tools resolve in non-login shells.
-Recent builds also prepend common user bin dirs on Linux systemd services (for example `~/.local/bin`, `~/.npm-global/bin`, `~/.local/share/pnpm`, `~/.bun/bin`) and honor `PNPM_HOME`, `NPM_CONFIG_PREFIX`, `BUN_INSTALL`, `VOLTA_HOME`, `ASDF_DATA_DIR`, `NVM_DIR`, and `FNM_DIR` when set.
+Recent builds also prepend common user bin dirs on Linux systemd services (for example `~/.local/bin`, `~/.npm-global/bin`, `~/.local/share/bun`, `~/.bun/bin`) and honor `PNPM_HOME`, `NPM_CONFIG_PREFIX`, `BUN_INSTALL`, `VOLTA_HOME`, `ASDF_DATA_DIR`, `NVM_DIR`, and `FNM_DIR` when set.
 
 ### What's the difference between the hackable git install and npm install
 
@@ -852,8 +852,8 @@ From npm → git:
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
-pnpm install
-pnpm build
+bun install
+bun run build
 openclaw doctor
 openclaw gateway restart
 ```
@@ -1068,7 +1068,7 @@ npm i -g clawhub
 ```
 
 ```bash
-pnpm add -g clawhub
+bun add -g clawhub
 ```
 
 ### Can OpenClaw run tasks on a schedule or continuously in the background
@@ -1293,7 +1293,7 @@ Default workspace is `~/.openclaw/workspace`, configurable via:
 
 ```json5
 {
-  agents: { defaults: { workspace: "~/.openclaw/workspace" } },
+	agents: { defaults: { workspace: "~/.openclaw/workspace" } },
 }
 ```
 
@@ -1336,11 +1336,11 @@ Example (repo as default cwd):
 
 ```json5
 {
-  agents: {
-    defaults: {
-      workspace: "~/Projects/my-repo",
-    },
-  },
+	agents: {
+		defaults: {
+			workspace: "~/Projects/my-repo",
+		},
+	},
 }
 ```
 
@@ -1366,13 +1366,13 @@ Non-loopback binds **require auth**. Configure `gateway.auth.mode` + `gateway.au
 
 ```json5
 {
-  gateway: {
-    bind: "lan",
-    auth: {
-      mode: "token",
-      token: "replace-me",
-    },
-  },
+	gateway: {
+		bind: "lan",
+		auth: {
+			mode: "token",
+			token: "replace-me",
+		},
+	},
 }
 ```
 
@@ -1403,18 +1403,18 @@ Gateway process.
 
 ```json5
 {
-  tools: {
-    web: {
-      search: {
-        enabled: true,
-        apiKey: "BRAVE_API_KEY_HERE",
-        maxResults: 5,
-      },
-      fetch: {
-        enabled: true,
-      },
-    },
-  },
+	tools: {
+		web: {
+			search: {
+				enabled: true,
+				apiKey: "BRAVE_API_KEY_HERE",
+				maxResults: 5,
+			},
+			fetch: {
+				enabled: true,
+			},
+		},
+	},
 }
 ```
 
@@ -1444,12 +1444,12 @@ Yes. It's a config option:
 
 ```json5
 {
-  browser: { headless: true },
-  agents: {
-    defaults: {
-      sandbox: { browser: { headless: true } },
-    },
-  },
+	browser: { headless: true },
+	agents: {
+		defaults: {
+			sandbox: { browser: { headless: true } },
+		},
+	},
 }
 ```
 
@@ -1616,8 +1616,8 @@ Docs: [Config](/cli/config), [Configure](/cli/configure), [Doctor](/gateway/doct
 
 ```json5
 {
-  agents: { defaults: { workspace: "~/.openclaw/workspace" } },
-  channels: { whatsapp: { allowFrom: ["+15555550123"] } },
+	agents: { defaults: { workspace: "~/.openclaw/workspace" } },
+	channels: { whatsapp: { allowFrom: ["+15555550123"] } },
 }
 ```
 
@@ -1683,10 +1683,10 @@ You can also define inline env vars in config (applied only if missing from the 
 
 ```json5
 {
-  env: {
-    OPENROUTER_API_KEY: "sk-or-...",
-    vars: { GROQ_API_KEY: "gsk-..." },
-  },
+	env: {
+		OPENROUTER_API_KEY: "sk-or-...",
+		vars: { GROQ_API_KEY: "gsk-..." },
+	},
 }
 ```
 
@@ -1701,12 +1701,12 @@ Two common fixes:
 
 ```json5
 {
-  env: {
-    shellEnv: {
-      enabled: true,
-      timeoutMs: 15000,
-    },
-  },
+	env: {
+		shellEnv: {
+			enabled: true,
+			timeoutMs: 15000,
+		},
+	},
 }
 ```
 
@@ -1754,9 +1754,9 @@ transcripts - it just starts a new session.
 
 ```json5
 {
-  session: {
-    idleMinutes: 240,
-  },
+	session: {
+		idleMinutes: 240,
+	},
 }
 ```
 
@@ -1817,18 +1817,18 @@ Use one of these:
 
 - **Compact** (keeps the conversation but summarizes older turns):
 
-  ```
-  /compact
-  ```
+   ```
+   /compact
+   ```
 
-  or `/compact <instructions>` to guide the summary.
+   or `/compact <instructions>` to guide the summary.
 
 - **Reset** (fresh session ID for the same chat key):
 
-  ```
-  /new
-  /reset
-  ```
+   ```
+   /new
+   /reset
+   ```
 
 If it keeps happening:
 
@@ -1851,13 +1851,13 @@ Heartbeats run every **30m** by default. Tune or disable them:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      heartbeat: {
-        every: "2h", // or "0m" to disable
-      },
-    },
-  },
+	agents: {
+		defaults: {
+			heartbeat: {
+				every: "2h", // or "0m" to disable
+			},
+		},
+	},
 }
 ```
 
@@ -1876,12 +1876,12 @@ If you want only **you** to be able to trigger group replies:
 
 ```json5
 {
-  channels: {
-    whatsapp: {
-      groupPolicy: "allowlist",
-      groupAllowFrom: ["+15551234567"],
-    },
-  },
+	channels: {
+		whatsapp: {
+			groupPolicy: "allowlist",
+			groupAllowFrom: ["+15551234567"],
+		},
+	},
 }
 ```
 
@@ -2113,16 +2113,16 @@ Fallbacks are for **errors**, not "hard tasks," so use `/model` or a separate ag
 
 ```json5
 {
-  env: { MINIMAX_API_KEY: "sk-...", OPENAI_API_KEY: "sk-..." },
-  agents: {
-    defaults: {
-      model: { primary: "minimax/MiniMax-M2.1" },
-      models: {
-        "minimax/MiniMax-M2.1": { alias: "minimax" },
-        "openai/gpt-5.2": { alias: "gpt" },
-      },
-    },
-  },
+	env: { MINIMAX_API_KEY: "sk-...", OPENAI_API_KEY: "sk-..." },
+	agents: {
+		defaults: {
+			model: { primary: "minimax/MiniMax-M2.1" },
+			models: {
+				"minimax/MiniMax-M2.1": { alias: "minimax" },
+				"openai/gpt-5.2": { alias: "gpt" },
+			},
+		},
+	},
 }
 ```
 
@@ -2159,16 +2159,16 @@ Aliases come from `agents.defaults.models.<modelId>.alias`. Example:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      model: { primary: "anthropic/claude-opus-4-6" },
-      models: {
-        "anthropic/claude-opus-4-6": { alias: "opus" },
-        "anthropic/claude-sonnet-4-5": { alias: "sonnet" },
-        "anthropic/claude-haiku-4-5": { alias: "haiku" },
-      },
-    },
-  },
+	agents: {
+		defaults: {
+			model: { primary: "anthropic/claude-opus-4-6" },
+			models: {
+				"anthropic/claude-opus-4-6": { alias: "opus" },
+				"anthropic/claude-sonnet-4-5": { alias: "sonnet" },
+				"anthropic/claude-haiku-4-5": { alias: "haiku" },
+			},
+		},
+	},
 }
 ```
 
@@ -2180,13 +2180,13 @@ OpenRouter (pay-per-token; many models):
 
 ```json5
 {
-  agents: {
-    defaults: {
-      model: { primary: "openrouter/anthropic/claude-sonnet-4-5" },
-      models: { "openrouter/anthropic/claude-sonnet-4-5": {} },
-    },
-  },
-  env: { OPENROUTER_API_KEY: "sk-or-..." },
+	agents: {
+		defaults: {
+			model: { primary: "openrouter/anthropic/claude-sonnet-4-5" },
+			models: { "openrouter/anthropic/claude-sonnet-4-5": {} },
+		},
+	},
+	env: { OPENROUTER_API_KEY: "sk-or-..." },
 }
 ```
 
@@ -2194,13 +2194,13 @@ Z.AI (GLM models):
 
 ```json5
 {
-  agents: {
-    defaults: {
-      model: { primary: "zai/glm-4.7" },
-      models: { "zai/glm-4.7": {} },
-    },
-  },
-  env: { ZAI_API_KEY: "..." },
+	agents: {
+		defaults: {
+			model: { primary: "zai/glm-4.7" },
+			models: { "zai/glm-4.7": {} },
+		},
+	},
+	env: { ZAI_API_KEY: "..." },
 }
 ```
 
@@ -2244,14 +2244,14 @@ It means the system attempted to use the auth profile ID `anthropic:default`, bu
 ### Fix checklist for No credentials found for profile anthropicdefault
 
 - **Confirm where auth profiles live** (new vs legacy paths)
-  - Current: `~/.openclaw/agents/<agentId>/agent/auth-profiles.json`
-  - Legacy: `~/.openclaw/agent/*` (migrated by `openclaw doctor`)
+   - Current: `~/.openclaw/agents/<agentId>/agent/auth-profiles.json`
+   - Legacy: `~/.openclaw/agent/*` (migrated by `openclaw doctor`)
 - **Confirm your env var is loaded by the Gateway**
-  - If you set `ANTHROPIC_API_KEY` in your shell but run the Gateway via systemd/launchd, it may not inherit it. Put it in `~/.openclaw/.env` or enable `env.shellEnv`.
+   - If you set `ANTHROPIC_API_KEY` in your shell but run the Gateway via systemd/launchd, it may not inherit it. Put it in `~/.openclaw/.env` or enable `env.shellEnv`.
 - **Make sure you're editing the correct agent**
-  - Multi-agent setups mean there can be multiple `auth-profiles.json` files.
+   - Multi-agent setups mean there can be multiple `auth-profiles.json` files.
 - **Sanity-check model/auth status**
-  - Use `openclaw models status` to see configured models and whether providers are authenticated.
+   - Use `openclaw models status` to see configured models and whether providers are authenticated.
 
 **Fix checklist for No credentials found for profile anthropic**
 
@@ -2259,18 +2259,18 @@ This means the run is pinned to an Anthropic auth profile, but the Gateway
 can't find it in its auth store.
 
 - **Use a setup-token**
-  - Run `claude setup-token`, then paste it with `openclaw models auth setup-token --provider anthropic`.
-  - If the token was created on another machine, use `openclaw models auth paste-token --provider anthropic`.
+   - Run `claude setup-token`, then paste it with `openclaw models auth setup-token --provider anthropic`.
+   - If the token was created on another machine, use `openclaw models auth paste-token --provider anthropic`.
 - **If you want to use an API key instead**
-  - Put `ANTHROPIC_API_KEY` in `~/.openclaw/.env` on the **gateway host**.
-  - Clear any pinned order that forces a missing profile:
+   - Put `ANTHROPIC_API_KEY` in `~/.openclaw/.env` on the **gateway host**.
+   - Clear any pinned order that forces a missing profile:
 
-    ```bash
-    openclaw models auth order clear --provider anthropic
-    ```
+      ```bash
+      openclaw models auth order clear --provider anthropic
+      ```
 
 - **Confirm you're running commands on the gateway host**
-  - In remote mode, auth profiles live on the gateway machine, not your laptop.
+   - In remote mode, auth profiles live on the gateway machine, not your laptop.
 
 ### Why did it also try Google Gemini and fail
 
@@ -2388,14 +2388,14 @@ Set `gateway.mode: "remote"` and point to a remote WebSocket URL, optionally wit
 
 ```json5
 {
-  gateway: {
-    mode: "remote",
-    remote: {
-      url: "ws://gateway.tailnet:18789",
-      token: "your-token",
-      password: "your-password",
-    },
-  },
+	gateway: {
+		mode: "remote",
+		remote: {
+			url: "ws://gateway.tailnet:18789",
+			token: "your-token",
+			password: "your-password",
+		},
+	},
 }
 ```
 
@@ -2678,9 +2678,9 @@ See [Images](/nodes/images).
 Treat inbound DMs as untrusted input. Defaults are designed to reduce risk:
 
 - Default behavior on DM-capable channels is **pairing**:
-  - Unknown senders receive a pairing code; the bot does not process their message.
-  - Approve with: `openclaw pairing approve <channel> <code>`
-  - Pending requests are capped at **3 per channel**; check `openclaw pairing list <channel>` if a code didn't arrive.
+   - Unknown senders receive a pairing code; the bot does not process their message.
+   - Approve with: `openclaw pairing approve <channel> <code>`
+   - Pending requests are capped at **3 per channel**; check `openclaw pairing list <channel>` if a code didn't arrive.
 - Opening DMs publicly requires explicit opt-in (`dmPolicy: "open"` and allowlist `"*"`).
 
 Run `openclaw doctor` to surface risky DM policies.
@@ -2816,18 +2816,18 @@ Enable cross-provider messaging for the agent:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      tools: {
-        message: {
-          crossContext: {
-            allowAcrossProviders: true,
-            marker: { enabled: true, prefix: "[from {channel}] " },
-          },
-        },
-      },
-    },
-  },
+	agents: {
+		defaults: {
+			tools: {
+				message: {
+					crossContext: {
+						allowAcrossProviders: true,
+						marker: { enabled: true, prefix: "[from {channel}] " },
+					},
+				},
+			},
+		},
+	},
 }
 ```
 

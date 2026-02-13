@@ -1,9 +1,9 @@
 ---
 summary: "Automated, hardened OpenClaw installation with Ansible, Tailscale VPN, and firewall isolation"
 read_when:
-  - You want automated server deployment with security hardening
-  - You need firewall-isolated setup with VPN access
-  - You're deploying to remote Debian/Ubuntu servers
+   - You want automated server deployment with security hardening
+   - You need firewall-isolated setup with VPN access
+   - You're deploying to remote Debian/Ubuntu servers
 title: "Ansible"
 ---
 
@@ -46,7 +46,7 @@ The Ansible playbook installs and configures:
 1. **Tailscale** (mesh VPN for secure remote access)
 2. **UFW firewall** (SSH + Tailscale ports only)
 3. **Docker CE + Compose V2** (for agent sandboxes)
-4. **Node.js 22.x + pnpm** (runtime dependencies)
+4. **Node.js 22.x + bun** (runtime dependencies)
 5. **OpenClaw** (host-based, not containerized)
 6. **Systemd service** (auto-start with security hardening)
 
@@ -166,7 +166,7 @@ sudo ls -la /opt/openclaw
 # Test manual start
 sudo -i -u openclaw
 cd ~/openclaw
-pnpm start
+bun run start
 ```
 
 ### Docker sandbox issues

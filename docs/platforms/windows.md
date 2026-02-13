@@ -1,8 +1,8 @@
 ---
 summary: "Windows (WSL2) support + companion app status"
 read_when:
-  - Installing OpenClaw on Windows
-  - Looking for Windows companion app status
+   - Installing OpenClaw on Windows
+   - Looking for Windows companion app status
 title: "Windows (WSL2)"
 ---
 
@@ -10,7 +10,7 @@ title: "Windows (WSL2)"
 
 OpenClaw on Windows is recommended **via WSL2** (Ubuntu recommended). The
 CLI + Gateway run inside Linux, which keeps the runtime consistent and makes
-tooling far more compatible (Node/Bun/pnpm, Linux binaries, skills). Native
+tooling far more compatible (Node/Bun/bun, Linux binaries, skills). Native
 Windows might be trickier. WSL2 gives you the full Linux experience — one command
 to install: `wsl --install`.
 
@@ -145,9 +145,9 @@ Follow the Linux Getting Started flow inside WSL:
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
-pnpm install
-pnpm ui:build # auto-installs UI deps on first run
-pnpm build
+bun install
+bun run ui:build # auto-installs UI deps on first run
+bun run build
 openclaw onboard
 ```
 

@@ -27,7 +27,7 @@ What actually happened?
 
 - Clawdbot version:
 - OS:
-- Install method (pnpm/npx/docker/etc):
+- Install method (bun/npx/docker/etc):
 
 ## Logs or screenshots
 

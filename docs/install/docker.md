@@ -1,8 +1,8 @@
 ---
 summary: "Optional Docker-based setup and onboarding for OpenClaw"
 read_when:
-  - You want a containerized gateway instead of local installs
-  - You are validating the Docker flow
+   - You want a containerized gateway instead of local installs
+   - You are validating the Docker flow
 title: "Docker"
 ---
 
@@ -240,7 +240,7 @@ If you choose to run as root for convenience, you accept the security tradeoff.
 ### Faster rebuilds (recommended)
 
 To speed up rebuilds, order your Dockerfile so dependency layers are cached.
-This avoids re-running `pnpm install` unless lockfiles change:
+This avoids re-running `bun install` unless lockfiles change:
 
 ```dockerfile
 FROM node:22-bookworm
@@ -254,16 +254,16 @@ RUN corepack enable
 WORKDIR /app
 
 # Cache dependencies unless package metadata changes
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY package.json bun.lock .npmrc ./
 COPY ui/package.json ./ui/package.json
 COPY scripts ./scripts
 
-RUN pnpm install --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 COPY . .
-RUN pnpm build
-RUN pnpm ui:install
-RUN pnpm ui:build
+RUN bun run build
+RUN bun run ui:install
+RUN bun run ui:build
 
 ENV NODE_ENV=production
 
@@ -316,7 +316,7 @@ scripts/e2e/onboard-docker.sh
 ### QR import smoke test (Docker)
 
 ```bash
-pnpm test:docker:qr
+bun run test:docker:qr
 ```
 
 ### Notes
@@ -362,8 +362,8 @@ precedence, and troubleshooting.
 - Image: `openclaw-sandbox:bookworm-slim`
 - One container per agent
 - Agent workspace access: `workspaceAccess: "none"` (default) uses `~/.openclaw/sandboxes`
-  - `"ro"` keeps the sandbox workspace at `/workspace` and mounts the agent workspace read-only at `/agent` (disables `write`/`edit`/`apply_patch`)
-  - `"rw"` mounts the agent workspace read/write at `/workspace`
+   - `"ro"` keeps the sandbox workspace at `/workspace` and mounts the agent workspace read-only at `/agent` (disables `write`/`edit`/`apply_patch`)
+   - `"rw"` mounts the agent workspace read/write at `/workspace`
 - Auto-prune: idle > 24h OR age > 7d
 - Network: `none` by default (explicitly opt-in if you need egress)
 - Default allow: `exec`, `process`, `read`, `write`, `edit`, `sessions_list`, `sessions_history`, `sessions_send`, `sessions_spawn`, `session_status`
@@ -382,62 +382,62 @@ If you plan to install packages in `setupCommand`, note:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      sandbox: {
-        mode: "non-main", // off | non-main | all
-        scope: "agent", // session | agent | shared (agent is default)
-        workspaceAccess: "none", // none | ro | rw
-        workspaceRoot: "~/.openclaw/sandboxes",
-        docker: {
-          image: "openclaw-sandbox:bookworm-slim",
-          workdir: "/workspace",
-          readOnlyRoot: true,
-          tmpfs: ["/tmp", "/var/tmp", "/run"],
-          network: "none",
-          user: "1000:1000",
-          capDrop: ["ALL"],
-          env: { LANG: "C.UTF-8" },
-          setupCommand: "apt-get update && apt-get install -y git curl jq",
-          pidsLimit: 256,
-          memory: "1g",
-          memorySwap: "2g",
-          cpus: 1,
-          ulimits: {
-            nofile: { soft: 1024, hard: 2048 },
-            nproc: 256,
-          },
-          seccompProfile: "/path/to/seccomp.json",
-          apparmorProfile: "openclaw-sandbox",
-          dns: ["1.1.1.1", "8.8.8.8"],
-          extraHosts: ["internal.service:10.0.0.5"],
-        },
-        prune: {
-          idleHours: 24, // 0 disables idle pruning
-          maxAgeDays: 7, // 0 disables max-age pruning
-        },
-      },
-    },
-  },
-  tools: {
-    sandbox: {
-      tools: {
-        allow: [
-          "exec",
-          "process",
-          "read",
-          "write",
-          "edit",
-          "sessions_list",
-          "sessions_history",
-          "sessions_send",
-          "sessions_spawn",
-          "session_status",
-        ],
-        deny: ["browser", "canvas", "nodes", "cron", "discord", "gateway"],
-      },
-    },
-  },
+	agents: {
+		defaults: {
+			sandbox: {
+				mode: "non-main", // off | non-main | all
+				scope: "agent", // session | agent | shared (agent is default)
+				workspaceAccess: "none", // none | ro | rw
+				workspaceRoot: "~/.openclaw/sandboxes",
+				docker: {
+					image: "openclaw-sandbox:bookworm-slim",
+					workdir: "/workspace",
+					readOnlyRoot: true,
+					tmpfs: ["/tmp", "/var/tmp", "/run"],
+					network: "none",
+					user: "1000:1000",
+					capDrop: ["ALL"],
+					env: { LANG: "C.UTF-8" },
+					setupCommand: "apt-get update && apt-get install -y git curl jq",
+					pidsLimit: 256,
+					memory: "1g",
+					memorySwap: "2g",
+					cpus: 1,
+					ulimits: {
+						nofile: { soft: 1024, hard: 2048 },
+						nproc: 256,
+					},
+					seccompProfile: "/path/to/seccomp.json",
+					apparmorProfile: "openclaw-sandbox",
+					dns: ["1.1.1.1", "8.8.8.8"],
+					extraHosts: ["internal.service:10.0.0.5"],
+				},
+				prune: {
+					idleHours: 24, // 0 disables idle pruning
+					maxAgeDays: 7, // 0 disables max-age pruning
+				},
+			},
+		},
+	},
+	tools: {
+		sandbox: {
+			tools: {
+				allow: [
+					"exec",
+					"process",
+					"read",
+					"write",
+					"edit",
+					"sessions_list",
+					"sessions_history",
+					"sessions_send",
+					"sessions_spawn",
+					"session_status",
+				],
+				deny: ["browser", "canvas", "nodes", "cron", "discord", "gateway"],
+			},
+		},
+	},
 }
 ```
 
@@ -468,11 +468,11 @@ This builds `openclaw-sandbox-common:bookworm-slim`. To use it:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      sandbox: { docker: { image: "openclaw-sandbox-common:bookworm-slim" } },
-    },
-  },
+	agents: {
+		defaults: {
+			sandbox: { docker: { image: "openclaw-sandbox-common:bookworm-slim" } },
+		},
+	},
 }
 ```
 
@@ -498,13 +498,13 @@ Use config:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      sandbox: {
-        browser: { enabled: true },
-      },
-    },
-  },
+	agents: {
+		defaults: {
+			sandbox: {
+				browser: { enabled: true },
+			},
+		},
+	},
 }
 ```
 
@@ -512,11 +512,11 @@ Custom browser image:
 
 ```json5
 {
-  agents: {
-    defaults: {
-      sandbox: { browser: { image: "my-openclaw-browser" } },
-    },
-  },
+	agents: {
+		defaults: {
+			sandbox: { browser: { image: "my-openclaw-browser" } },
+		},
+	},
 }
 ```
 
@@ -539,11 +539,11 @@ docker build -t my-openclaw-sbx -f Dockerfile.sandbox .
 
 ```json5
 {
-  agents: {
-    defaults: {
-      sandbox: { docker: { image: "my-openclaw-sbx" } },
-    },
-  },
+	agents: {
+		defaults: {
+			sandbox: { docker: { image: "my-openclaw-sbx" } },
+		},
+	},
 }
 ```
 

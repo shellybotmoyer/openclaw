@@ -399,7 +399,7 @@ struct DebugSettings: View {
                         }
                         .buttonStyle(.bordered)
                     }
-                    Text("Used for pnpm/node fallback and PATH population when launching the gateway.")
+                    Text("Used for bun/node fallback and PATH population when launching the gateway.")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

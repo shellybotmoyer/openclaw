@@ -27,7 +27,7 @@ Restart the Gateway afterwards.
 ```bash
 mkdir -p ~/.openclaw/extensions
 cp -R extensions/voice-call ~/.openclaw/extensions/voice-call
-cd ~/.openclaw/extensions/voice-call && pnpm install
+cd ~/.openclaw/extensions/voice-call && bun install
 ```
 
 ## Config
@@ -36,39 +36,39 @@ Put under `plugins.entries.voice-call.config`:
 
 ```json5
 {
-  provider: "twilio", // or "telnyx" | "plivo" | "mock"
-  fromNumber: "+15550001234",
-  toNumber: "+15550005678",
+	provider: "twilio", // or "telnyx" | "plivo" | "mock"
+	fromNumber: "+15550001234",
+	toNumber: "+15550005678",
 
-  twilio: {
-    accountSid: "ACxxxxxxxx",
-    authToken: "your_token",
-  },
+	twilio: {
+		accountSid: "ACxxxxxxxx",
+		authToken: "your_token",
+	},
 
-  plivo: {
-    authId: "MAxxxxxxxxxxxxxxxxxxxx",
-    authToken: "your_token",
-  },
+	plivo: {
+		authId: "MAxxxxxxxxxxxxxxxxxxxx",
+		authToken: "your_token",
+	},
 
-  // Webhook server
-  serve: {
-    port: 3334,
-    path: "/voice/webhook",
-  },
+	// Webhook server
+	serve: {
+		port: 3334,
+		path: "/voice/webhook",
+	},
 
-  // Public exposure (pick one):
-  // publicUrl: "https://example.ngrok.app/voice/webhook",
-  // tunnel: { provider: "ngrok" },
-  // tailscale: { mode: "funnel", path: "/voice/webhook" }
+	// Public exposure (pick one):
+	// publicUrl: "https://example.ngrok.app/voice/webhook",
+	// tunnel: { provider: "ngrok" },
+	// tailscale: { mode: "funnel", path: "/voice/webhook" }
 
-  outbound: {
-    defaultMode: "notify", // or "conversation"
-  },
+	outbound: {
+		defaultMode: "notify", // or "conversation"
+	},
 
-  streaming: {
-    enabled: true,
-    streamPath: "/voice/stream",
-  },
+	streaming: {
+		enabled: true,
+		streamPath: "/voice/stream",
+	},
 }
 ```
 
@@ -86,12 +86,12 @@ same shape — overrides deep-merge with `messages.tts`.
 
 ```json5
 {
-  tts: {
-    provider: "openai",
-    openai: {
-      voice: "alloy",
-    },
-  },
+	tts: {
+		provider: "openai",
+		openai: {
+			voice: "alloy",
+		},
+	},
 }
 ```
 

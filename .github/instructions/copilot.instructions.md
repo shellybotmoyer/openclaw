@@ -4,10 +4,10 @@
 
 ## Tech Stack
 
-- **Runtime**: Node 22+ (Bun also supported for dev/scripts)
+- **Runtime**: Bun 1.3+ (Node 22+ still supported where needed)
 - **Language**: TypeScript (ESM, strict mode)
-- **Package Manager**: pnpm (keep `pnpm-lock.yaml` in sync)
-- **Lint/Format**: Oxlint, Oxfmt (`pnpm check`)
+- **Package Manager**: Bun (keep `bun.lock` in sync)
+- **Lint/Format**: Oxlint, Oxfmt (`bun run check`)
 - **Tests**: Vitest with V8 coverage
 - **CLI Framework**: Commander + clack/prompts
 - **Build**: tsdown (outputs to `dist/`)
@@ -49,16 +49,16 @@
 - TypeScript (ESM), strict typing, avoid `any`
 - Keep files under ~700 LOC - extract helpers when larger
 - Colocated tests: `*.test.ts` next to source files
-- Run `pnpm check` before commits (lint + format)
-- Run `pnpm tsgo` for type checking
+- Run `bun run check` before commits (lint + format)
+- Run `bun run tsgo` for type checking
 
 ## Stack & Commands
 
-- **Package manager**: pnpm (`pnpm install`)
-- **Dev**: `pnpm openclaw ...` or `pnpm dev`
-- **Type-check**: `pnpm tsgo`
-- **Lint/format**: `pnpm check`
-- **Tests**: `pnpm test`
-- **Build**: `pnpm build`
+- **Package manager**: bun (`bun install`)
+- **Dev**: `bun run openclaw ...` or `bun run dev`
+- **Type-check**: `bun run tsgo`
+- **Lint/format**: `bun run check`
+- **Tests**: `bun run test`
+- **Build**: `bun run build`
 
 If you are coding together with a human, do NOT use scripts/committer, but git directly and run the above commands manually to ensure quality.

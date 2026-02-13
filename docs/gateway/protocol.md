@@ -1,9 +1,9 @@
 ---
 summary: "Gateway WebSocket protocol: handshake, frames, versioning"
 read_when:
-  - Implementing or updating gateway WS clients
-  - Debugging protocol mismatches or connect failures
-  - Regenerating protocol schema/models
+   - Implementing or updating gateway WS clients
+   - Debugging protocol mismatches or connect failures
+   - Regenerating protocol schema/models
 title: "Gateway Protocol"
 ---
 
@@ -25,9 +25,9 @@ Gateway → Client (pre-connect challenge):
 
 ```json
 {
-  "type": "event",
-  "event": "connect.challenge",
-  "payload": { "nonce": "…", "ts": 1737264000000 }
+	"type": "event",
+	"event": "connect.challenge",
+	"payload": { "nonce": "…", "ts": 1737264000000 }
 }
 ```
 
@@ -35,34 +35,34 @@ Client → Gateway:
 
 ```json
 {
-  "type": "req",
-  "id": "…",
-  "method": "connect",
-  "params": {
-    "minProtocol": 3,
-    "maxProtocol": 3,
-    "client": {
-      "id": "cli",
-      "version": "1.2.3",
-      "platform": "macos",
-      "mode": "operator"
-    },
-    "role": "operator",
-    "scopes": ["operator.read", "operator.write"],
-    "caps": [],
-    "commands": [],
-    "permissions": {},
-    "auth": { "token": "…" },
-    "locale": "en-US",
-    "userAgent": "openclaw-cli/1.2.3",
-    "device": {
-      "id": "device_fingerprint",
-      "publicKey": "…",
-      "signature": "…",
-      "signedAt": 1737264000000,
-      "nonce": "…"
-    }
-  }
+	"type": "req",
+	"id": "…",
+	"method": "connect",
+	"params": {
+		"minProtocol": 3,
+		"maxProtocol": 3,
+		"client": {
+			"id": "cli",
+			"version": "1.2.3",
+			"platform": "macos",
+			"mode": "operator"
+		},
+		"role": "operator",
+		"scopes": ["operator.read", "operator.write"],
+		"caps": [],
+		"commands": [],
+		"permissions": {},
+		"auth": { "token": "…" },
+		"locale": "en-US",
+		"userAgent": "openclaw-cli/1.2.3",
+		"device": {
+			"id": "device_fingerprint",
+			"publicKey": "…",
+			"signature": "…",
+			"signedAt": 1737264000000,
+			"nonce": "…"
+		}
+	}
 }
 ```
 
@@ -70,10 +70,10 @@ Gateway → Client:
 
 ```json
 {
-  "type": "res",
-  "id": "…",
-  "ok": true,
-  "payload": { "type": "hello-ok", "protocol": 3, "policy": { "tickIntervalMs": 15000 } }
+	"type": "res",
+	"id": "…",
+	"ok": true,
+	"payload": { "type": "hello-ok", "protocol": 3, "policy": { "tickIntervalMs": 15000 } }
 }
 ```
 
@@ -81,11 +81,11 @@ When a device token is issued, `hello-ok` also includes:
 
 ```json
 {
-  "auth": {
-    "deviceToken": "…",
-    "role": "operator",
-    "scopes": ["operator.read", "operator.write"]
-  }
+	"auth": {
+		"deviceToken": "…",
+		"role": "operator",
+		"scopes": ["operator.read", "operator.write"]
+	}
 }
 ```
 
@@ -93,34 +93,34 @@ When a device token is issued, `hello-ok` also includes:
 
 ```json
 {
-  "type": "req",
-  "id": "…",
-  "method": "connect",
-  "params": {
-    "minProtocol": 3,
-    "maxProtocol": 3,
-    "client": {
-      "id": "ios-node",
-      "version": "1.2.3",
-      "platform": "ios",
-      "mode": "node"
-    },
-    "role": "node",
-    "scopes": [],
-    "caps": ["camera", "canvas", "screen", "location", "voice"],
-    "commands": ["camera.snap", "canvas.navigate", "screen.record", "location.get"],
-    "permissions": { "camera.capture": true, "screen.record": false },
-    "auth": { "token": "…" },
-    "locale": "en-US",
-    "userAgent": "openclaw-ios/1.2.3",
-    "device": {
-      "id": "device_fingerprint",
-      "publicKey": "…",
-      "signature": "…",
-      "signedAt": 1737264000000,
-      "nonce": "…"
-    }
-  }
+	"type": "req",
+	"id": "…",
+	"method": "connect",
+	"params": {
+		"minProtocol": 3,
+		"maxProtocol": 3,
+		"client": {
+			"id": "ios-node",
+			"version": "1.2.3",
+			"platform": "ios",
+			"mode": "node"
+		},
+		"role": "node",
+		"scopes": [],
+		"caps": ["camera", "canvas", "screen", "location", "voice"],
+		"commands": ["camera.snap", "canvas.navigate", "screen.record", "location.get"],
+		"permissions": { "camera.capture": true, "screen.record": false },
+		"auth": { "token": "…" },
+		"locale": "en-US",
+		"userAgent": "openclaw-ios/1.2.3",
+		"device": {
+			"id": "device_fingerprint",
+			"publicKey": "…",
+			"signature": "…",
+			"signedAt": 1737264000000,
+			"nonce": "…"
+		}
+	}
 }
 ```
 
@@ -180,9 +180,9 @@ The Gateway treats these as **claims** and enforces server-side allowlists.
 - `PROTOCOL_VERSION` lives in `src/gateway/protocol/schema.ts`.
 - Clients send `minProtocol` + `maxProtocol`; the server rejects mismatches.
 - Schemas + models are generated from TypeBox definitions:
-  - `pnpm protocol:gen`
-  - `pnpm protocol:gen:swift`
-  - `pnpm protocol:check`
+   - `bun run protocol:gen`
+   - `bun run protocol:gen:swift`
+   - `bun run protocol:check`
 
 ## Auth
 

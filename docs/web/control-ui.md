@@ -1,8 +1,8 @@
 ---
 summary: "Browser-based control UI for the Gateway (chat, nodes, config)"
 read_when:
-  - You want to operate the Gateway from a browser
-  - You want Tailnet access without SSH tunnels
+   - You want to operate the Gateway from a browser
+   - You want Tailnet access without SSH tunnels
 title: "Control UI"
 ---
 
@@ -90,9 +90,9 @@ Cron jobs panel notes:
 - Re-sending with the same `idempotencyKey` returns `{ status: "in_flight" }` while running, and `{ status: "ok" }` after completion.
 - `chat.inject` appends an assistant note to the session transcript and broadcasts a `chat` event for UI-only updates (no agent run, no channel delivery).
 - Stop:
-  - Click **Stop** (calls `chat.abort`)
-  - Type `/stop` (or `stop|esc|abort|wait|exit|interrupt`) to abort out-of-band
-  - `chat.abort` supports `{ sessionKey }` (no `runId`) to abort all active runs for that session
+   - Click **Stop** (calls `chat.abort`)
+   - Type `/stop` (or `stop|esc|abort|wait|exit|interrupt`) to abort out-of-band
+   - `chat.abort` supports `{ sessionKey }` (no `runId`) to abort all active runs for that session
 
 ## Tailnet access (recommended)
 
@@ -143,11 +143,11 @@ OpenClaw **blocks** Control UI connections without device identity.
 
 ```json5
 {
-  gateway: {
-    controlUi: { allowInsecureAuth: true },
-    bind: "tailnet",
-    auth: { mode: "token", token: "replace-me" },
-  },
+	gateway: {
+		controlUi: { allowInsecureAuth: true },
+		bind: "tailnet",
+		auth: { mode: "token", token: "replace-me" },
+	},
 }
 ```
 
@@ -161,19 +161,19 @@ See [Tailscale](/gateway/tailscale) for HTTPS setup guidance.
 The Gateway serves static files from `dist/control-ui`. Build them with:
 
 ```bash
-pnpm ui:build # auto-installs UI deps on first run
+bun run ui:build # auto-installs UI deps on first run
 ```
 
 Optional absolute base (when you want fixed asset URLs):
 
 ```bash
-OPENCLAW_CONTROL_UI_BASE_PATH=/openclaw/ pnpm ui:build
+OPENCLAW_CONTROL_UI_BASE_PATH=/openclaw/ bun run ui:build
 ```
 
 For local development (separate dev server):
 
 ```bash
-pnpm ui:dev # auto-installs UI deps on first run
+bun run ui:dev # auto-installs UI deps on first run
 ```
 
 Then point the UI at your Gateway WS URL (e.g. `ws://127.0.0.1:18789`).
@@ -184,7 +184,7 @@ The Control UI is static files; the WebSocket target is configurable and can be
 different from the HTTP origin. This is handy when you want the Vite dev server
 locally but the Gateway runs elsewhere.
 
-1. Start the UI dev server: `pnpm ui:dev`
+1. Start the UI dev server: `bun run ui:dev`
 2. Open a URL like:
 
 ```text
@@ -205,18 +205,18 @@ Notes:
   Provide `token` (or `password`) explicitly. Missing explicit credentials is an error.
 - Use `wss://` when the Gateway is behind TLS (Tailscale Serve, HTTPS proxy, etc.).
 - `gatewayUrl` is only accepted in a top-level window (not embedded) to prevent clickjacking.
-- For cross-origin dev setups (e.g. `pnpm ui:dev` to a remote Gateway), add the UI
+- For cross-origin dev setups (e.g. `bun run ui:dev` to a remote Gateway), add the UI
   origin to `gateway.controlUi.allowedOrigins`.
 
 Example:
 
 ```json5
 {
-  gateway: {
-    controlUi: {
-      allowedOrigins: ["http://localhost:5173"],
-    },
-  },
+	gateway: {
+		controlUi: {
+			allowedOrigins: ["http://localhost:5173"],
+		},
+	},
 }
 ```
 
