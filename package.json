@@ -47,6 +47,7 @@
 		"check": "bun run format:check && bun run tsgo && bun run lint",
 		"check:docs": "bun run format:docs:check && bun run lint:docs && bun run docs:check-links",
 		"check:loc": "bun scripts/check-ts-max-loc.ts --max 500",
+		"deploy": "bash ./install.sh",
 		"dev": "bun scripts/run-node.mjs",
 		"docs:bin": "bun scripts/build-docs-list.mjs",
 		"docs:check-links": "bun scripts/docs-link-audit.mjs",
