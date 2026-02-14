@@ -120,22 +120,25 @@ interface OllamaTagsResponse {
  */
 export function resolveOllamaApiBase(configuredBaseUrl?: string): string {
   const baseUrl =
-    configuredBaseUrl ??
-    resolveEnvApiKey("ollama-api-base-url")?.apiKey ??
-    resolveEnvApiKey("ollama-api-base")?.apiKey ??
-    resolveEnvApiKey("ollama-host")?.apiKey ??
+    configuredBaseUrl ||
+    process.env.OLLAMA_API_BASE_URL?.trim() ||
+    process.env.OLLAMA_API_BASE?.trim() ||
+    process.env.OLLAMA_HOST?.trim() ||
     OLLAMA_DEFAULT_API_BASE_URL;
   // Strip trailing slashes, then strip one terminal /v1 suffix when present.
   const trimmed = baseUrl.replace(/\/+$/, "");
   return trimmed.replace(/\/v1$/i, "");
 }
 
-async function discoverOllamaModels(
+export async function discoverOllamaModels(
   baseUrl?: string,
   apiKey?: string,
 ): Promise<ModelDefinitionConfig[]> {
-  // Skip Ollama discovery in test environments
-  if (process.env.VITEST || process.env.NODE_ENV === "test") {
+  // Skip Ollama discovery in test environments (unless explicitly enabled for testing)
+  if (
+    (process.env.VITEST || process.env.NODE_ENV === "test") &&
+    !process.env.OLLAMA_DISCOVERY_TEST
+  ) {
     return [];
   }
   try {
@@ -313,7 +316,10 @@ export function normalizeProviders(params: {
       normalizedProvider = googleNormalized;
     }
 
-    next[key] = normalizedProvider;
+    next[normalizedKey] = normalizedProvider;
+    if (normalizedKey !== key) {
+      mutated = true;
+    }
   }
 
   return mutated ? next : providers;

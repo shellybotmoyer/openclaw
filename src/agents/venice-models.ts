@@ -340,15 +340,19 @@ export async function discoverVeniceModels(): Promise<ModelDefinitionConfig[]> {
     });
 
     if (!response.ok) {
-      console.warn(
-        `[venice-models] Failed to discover models: HTTP ${response.status}, using static catalog`,
-      );
+      if (process.env.OPENCLAW_DEBUG) {
+        console.warn(
+          `[venice-models] Failed to discover models: HTTP ${response.status}, using static catalog`,
+        );
+      }
       return VENICE_MODEL_CATALOG.map(buildVeniceModelDefinition);
     }
 
     const data = (await response.json()) as VeniceModelsResponse;
     if (!Array.isArray(data.data) || data.data.length === 0) {
-      console.warn("[venice-models] No models found from API, using static catalog");
+      if (process.env.OPENCLAW_DEBUG) {
+        console.warn("[venice-models] No models found from API, using static catalog");
+      }
       return VENICE_MODEL_CATALOG.map(buildVeniceModelDefinition);
     }
 
@@ -387,7 +391,9 @@ export async function discoverVeniceModels(): Promise<ModelDefinitionConfig[]> {
 
     return models.length > 0 ? models : VENICE_MODEL_CATALOG.map(buildVeniceModelDefinition);
   } catch (error) {
-    console.warn(`[venice-models] Discovery failed: ${String(error)}, using static catalog`);
+    if (process.env.OPENCLAW_DEBUG) {
+      console.warn(`[venice-models] Discovery failed: ${String(error)}, using static catalog`);
+    }
     return VENICE_MODEL_CATALOG.map(buildVeniceModelDefinition);
   }
 }

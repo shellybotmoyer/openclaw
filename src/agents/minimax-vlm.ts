@@ -1,6 +1,8 @@
 import { isRecord } from "../utils.js";
 import { normalizeSecretInput } from "../utils/normalize-secret-input.js";
 
+const MINIMAX_DEFAULT_API_HOST = "https://api.minimax.io";
+
 type MinimaxBaseResp = {
   status_code?: number;
   status_msg?: string;
@@ -16,7 +18,7 @@ function coerceApiHost(params: {
     params.apiHost?.trim() ||
     env.MINIMAX_API_HOST?.trim() ||
     params.modelBaseUrl?.trim() ||
-    "https://api.minimax.io";
+    MINIMAX_DEFAULT_API_HOST;
 
   try {
     const url = new URL(raw);
@@ -27,7 +29,7 @@ function coerceApiHost(params: {
     const url = new URL(`https://${raw}`);
     return url.origin;
   } catch {
-    return "https://api.minimax.io";
+    return MINIMAX_DEFAULT_API_HOST;
   }
 }
 

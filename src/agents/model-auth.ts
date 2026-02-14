@@ -305,13 +305,9 @@ export function resolveEnvApiKey(provider: string): EnvApiKeyResult | null {
     synthetic: "SYNTHETIC_API_KEY",
     venice: "VENICE_API_KEY",
     mistral: "MISTRAL_API_KEY",
-    opencode: "OPENCODE_API_KEY",
     together: "TOGETHER_API_KEY",
     qianfan: "QIANFAN_API_KEY",
     ollama: "OLLAMA_API_KEY",
-    "ollama-api-base-url": "OLLAMA_API_BASE_URL",
-    "ollama-host": "OLLAMA_HOST",
-    "ollama-api-base": "OLLAMA_API_BASE",
   };
   const envVar = envMap[normalized];
   if (!envVar) {
