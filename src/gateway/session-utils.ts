@@ -9,6 +9,7 @@ import type {
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope.js";
 import { lookupContextTokens } from "../agents/context.js";
 import { DEFAULT_CONTEXT_TOKENS, DEFAULT_MODEL, DEFAULT_PROVIDER } from "../agents/defaults.js";
+import { resolveIdentityName } from "../agents/identity.js";
 import {
   resolveConfiguredModelRef,
   resolveDefaultModelForAgent,
@@ -619,20 +620,34 @@ export function listSessionsFromStore(params: {
       const id = parsed?.id;
       const origin = entry?.origin;
       const originLabel = origin?.label;
-      const displayName =
-        entry?.displayName ??
-        (channel
-          ? buildGroupDisplayName({
-              provider: channel,
-              subject,
-              groupChannel,
-              space,
-              id,
-              key,
-            })
-          : undefined) ??
-        entry?.label ??
-        originLabel;
+      const parsedAgentForDisplay = parseAgentSessionKey(key);
+      const displayName = (() => {
+        if (entry?.displayName) {
+          return entry.displayName;
+        }
+        if (parsedAgentForDisplay?.agentId) {
+          // Agent session: use identity name like "Shellybot (shellybot)"
+          const agentId = normalizeAgentId(parsedAgentForDisplay.agentId);
+          const identityName = resolveIdentityName(cfg, agentId);
+          if (identityName) {
+            return `${identityName} (${agentId})`;
+          }
+          return agentId;
+        }
+        if (channel) {
+          // Group/channel session: use channel-based naming (but NOT whatsapp)
+          const safeChannel = channel === "whatsapp" ? "agent" : channel;
+          return buildGroupDisplayName({
+            provider: safeChannel,
+            subject,
+            groupChannel,
+            space,
+            id,
+            key,
+          });
+        }
+        return entry?.label ?? originLabel ?? key;
+      })();
       const deliveryFields = normalizeSessionDeliveryFields(entry);
       const parsedAgent = parseAgentSessionKey(key);
       const sessionAgentId = normalizeAgentId(parsedAgent?.agentId ?? resolveDefaultAgentId(cfg));
