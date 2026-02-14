@@ -47,12 +47,35 @@ const tryImport = async (specifier) => {
   }
 };
 
-if (await tryImport("./dist/entry.js")) {
-  // OK
-} else if (await tryImport("./dist/entry.mjs")) {
-  // OK
-} else if (await tryImport("./src/entry.ts")) {
-  // OK – run directly from TypeScript source (bun)
+// Bun Direct-TS Mode: Check if OPENCLAW_BUN_DIRECT is set
+const useDirectMode = process.env.OPENCLAW_BUN_DIRECT === "1";
+
+if (useDirectMode) {
+  // Direct mode: try TypeScript source files first
+  if (await tryImport("./src/entry-bun.ts")) {
+    // OK - Bun-native TypeScript entry
+  } else if (await tryImport("./src/entry.ts")) {
+    // OK - fallback entry
+  } else if (await tryImport("./dist/entry.js")) {
+    // OK - compiled fallback
+  } else if (await tryImport("./dist/entry.mjs")) {
+    // OK - compiled fallback
+  } else {
+    throw new Error(
+      "openclaw: OPENCLAW_BUN_DIRECT=1 set but no TypeScript or compiled entry found.",
+    );
+  }
 } else {
-  throw new Error("openclaw: missing dist/entry.(m)js (build output) or src/entry.ts (source).");
+  // Standard mode: try compiled first, then source
+  if (await tryImport("./dist/entry.js")) {
+    // OK - standard compiled entry
+  } else if (await tryImport("./dist/entry.mjs")) {
+    // OK - compiled fallback
+  } else if (await tryImport("./src/entry.ts")) {
+    // OK - source fallback (for bun users without build)
+  } else if (await tryImport("./src/entry-bun.ts")) {
+    // OK - bun-native source entry
+  } else {
+    throw new Error("openclaw: missing dist/entry.(m)js (build output) or src/entry.ts (source).");
+  }
 }
