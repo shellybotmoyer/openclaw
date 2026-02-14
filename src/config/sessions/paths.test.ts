@@ -32,6 +32,9 @@ describe("session path safety", () => {
   it("validates safe session IDs", () => {
     expect(validateSessionId("sess-1")).toBe("sess-1");
     expect(validateSessionId("ABC_123.hello")).toBe("ABC_123.hello");
+    expect(validateSessionId("agent:shellybot:mobile:rollcall:shellybot")).toBe(
+      "agent:shellybot:mobile:rollcall:shellybot",
+    );
   });
 
   it("rejects unsafe session IDs", () => {

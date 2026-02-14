@@ -51,6 +51,8 @@ if (await tryImport("./dist/entry.js")) {
   // OK
 } else if (await tryImport("./dist/entry.mjs")) {
   // OK
+} else if (await tryImport("./src/entry.ts")) {
+  // OK – run directly from TypeScript source (bun)
 } else {
-  throw new Error("openclaw: missing dist/entry.(m)js (build output).");
+  throw new Error("openclaw: missing dist/entry.(m)js (build output) or src/entry.ts (source).");
 }
