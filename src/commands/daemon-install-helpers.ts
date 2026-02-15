@@ -17,6 +17,8 @@ export type GatewayInstallPlan = {
   programArguments: string[];
   workingDirectory?: string;
   environment: Record<string, string | undefined>;
+  /** Paths to environment files (systemd EnvironmentFile= directives). */
+  environmentFiles?: string[];
 };
 
 export function resolveGatewayDevMode(argv: string[] = process.argv): boolean {
@@ -73,7 +75,9 @@ export async function buildGatewayInstallPlan(params: {
   };
   Object.assign(environment, serviceEnvironment);
 
-  return { programArguments, workingDirectory, environment };
+  const environmentFiles = params.config?.gateway?.environmentFiles;
+
+  return { programArguments, workingDirectory, environment, environmentFiles };
 }
 
 export function gatewayInstallErrorHint(platform = process.platform): string {

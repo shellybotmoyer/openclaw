@@ -25,17 +25,23 @@ export function buildSystemdUnit({
   programArguments,
   workingDirectory,
   environment,
+  environmentFiles,
 }: {
   description?: string;
   programArguments: string[];
   workingDirectory?: string;
   environment?: Record<string, string | undefined>;
+  /** Paths to load as systemd EnvironmentFile= directives (before inline Environment= lines). */
+  environmentFiles?: string[];
 }): string {
   const execStart = programArguments.map(systemdEscapeArg).join(" ");
   const descriptionLine = `Description=${description?.trim() || "OpenClaw Gateway"}`;
   const workingDirLine = workingDirectory
     ? `WorkingDirectory=${systemdEscapeArg(workingDirectory)}`
     : null;
+  const envFileLines = (environmentFiles ?? [])
+    .filter((f) => f.trim())
+    .map((f) => `EnvironmentFile=${f.trim()}`);
   const envLines = renderEnvLines(environment);
   return [
     "[Unit]",
@@ -52,6 +58,7 @@ export function buildSystemdUnit({
     // since they run as children of the gateway and stay in the same cgroup.
     "KillMode=process",
     workingDirLine,
+    ...envFileLines,
     ...envLines,
     "",
     "[Install]",

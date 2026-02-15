@@ -172,14 +172,15 @@ export async function maybeRepairGatewayDaemon(params: {
           DEFAULT_GATEWAY_DAEMON_RUNTIME,
         );
         const port = resolveGatewayPort(params.cfg, process.env);
-        const { programArguments, workingDirectory, environment } = await buildGatewayInstallPlan({
-          env: process.env,
-          port,
-          token: params.cfg.gateway?.auth?.token ?? process.env.OPENCLAW_GATEWAY_TOKEN,
-          runtime: daemonRuntime,
-          warn: (message, title) => note(message, title),
-          config: params.cfg,
-        });
+        const { programArguments, workingDirectory, environment, environmentFiles } =
+          await buildGatewayInstallPlan({
+            env: process.env,
+            port,
+            token: params.cfg.gateway?.auth?.token ?? process.env.OPENCLAW_GATEWAY_TOKEN,
+            runtime: daemonRuntime,
+            warn: (message, title) => note(message, title),
+            config: params.cfg,
+          });
         try {
           await service.install({
             env: process.env,
@@ -187,6 +188,7 @@ export async function maybeRepairGatewayDaemon(params: {
             programArguments,
             workingDirectory,
             environment,
+            environmentFiles,
           });
         } catch (err) {
           note(`Gateway service install failed: ${String(err)}`, "Gateway");

@@ -168,20 +168,21 @@ export async function runDaemonInstall(opts: DaemonInstallOptions) {
     }
   }
 
-  const { programArguments, workingDirectory, environment } = await buildGatewayInstallPlan({
-    env: process.env,
-    port,
-    token,
-    runtime: runtimeRaw,
-    warn: (message) => {
-      if (json) {
-        warnings.push(message);
-      } else {
-        defaultRuntime.log(message);
-      }
-    },
-    config: cfg,
-  });
+  const { programArguments, workingDirectory, environment, environmentFiles } =
+    await buildGatewayInstallPlan({
+      env: process.env,
+      port,
+      token,
+      runtime: runtimeRaw,
+      warn: (message) => {
+        if (json) {
+          warnings.push(message);
+        } else {
+          defaultRuntime.log(message);
+        }
+      },
+      config: cfg,
+    });
 
   try {
     await service.install({
@@ -190,6 +191,7 @@ export async function runDaemonInstall(opts: DaemonInstallOptions) {
       programArguments,
       workingDirectory,
       environment,
+      environmentFiles,
     });
   } catch (err) {
     fail(`Gateway install failed: ${String(err)}`);

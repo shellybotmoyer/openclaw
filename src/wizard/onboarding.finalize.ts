@@ -164,14 +164,15 @@ export async function finalizeOnboardingWizard(
       let installError: string | null = null;
       try {
         progress.update("Preparing Gateway service…");
-        const { programArguments, workingDirectory, environment } = await buildGatewayInstallPlan({
-          env: process.env,
-          port: settings.port,
-          token: settings.gatewayToken,
-          runtime: daemonRuntime,
-          warn: (message, title) => prompter.note(message, title),
-          config: nextConfig,
-        });
+        const { programArguments, workingDirectory, environment, environmentFiles } =
+          await buildGatewayInstallPlan({
+            env: process.env,
+            port: settings.port,
+            token: settings.gatewayToken,
+            runtime: daemonRuntime,
+            warn: (message, title) => prompter.note(message, title),
+            config: nextConfig,
+          });
 
         progress.update("Installing Gateway service…");
         await service.install({
@@ -180,6 +181,7 @@ export async function finalizeOnboardingWizard(
           programArguments,
           workingDirectory,
           environment,
+          environmentFiles,
         });
       } catch (err) {
         installError = err instanceof Error ? err.message : String(err);

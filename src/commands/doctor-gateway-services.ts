@@ -137,15 +137,16 @@ export async function maybeRepairGatewayServiceConfig(
 
   const port = resolveGatewayPort(cfg, process.env);
   const runtimeChoice = detectGatewayRuntime(command.programArguments);
-  const { programArguments, workingDirectory, environment } = await buildGatewayInstallPlan({
-    env: process.env,
-    port,
-    token: cfg.gateway?.auth?.token ?? process.env.OPENCLAW_GATEWAY_TOKEN,
-    runtime: needsNodeRuntime && systemNodePath ? "node" : runtimeChoice,
-    nodePath: systemNodePath ?? undefined,
-    warn: (message, title) => note(message, title),
-    config: cfg,
-  });
+  const { programArguments, workingDirectory, environment, environmentFiles } =
+    await buildGatewayInstallPlan({
+      env: process.env,
+      port,
+      token: cfg.gateway?.auth?.token ?? process.env.OPENCLAW_GATEWAY_TOKEN,
+      runtime: needsNodeRuntime && systemNodePath ? "node" : runtimeChoice,
+      nodePath: systemNodePath ?? undefined,
+      warn: (message, title) => note(message, title),
+      config: cfg,
+    });
   const expectedEntrypoint = findGatewayEntrypoint(programArguments);
   const currentEntrypoint = findGatewayEntrypoint(command.programArguments);
   if (
@@ -203,6 +204,7 @@ export async function maybeRepairGatewayServiceConfig(
       programArguments,
       workingDirectory,
       environment,
+      environmentFiles,
     });
   } catch (err) {
     runtime.error(`Gateway service update failed: ${String(err)}`);

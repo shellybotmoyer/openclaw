@@ -88,14 +88,15 @@ export async function maybeInstallDaemon(params: {
         progress.setLabel("Preparing Gateway service…");
 
         const cfg = loadConfig();
-        const { programArguments, workingDirectory, environment } = await buildGatewayInstallPlan({
-          env: process.env,
-          port: params.port,
-          token: params.gatewayToken,
-          runtime: daemonRuntime,
-          warn: (message, title) => note(message, title),
-          config: cfg,
-        });
+        const { programArguments, workingDirectory, environment, environmentFiles } =
+          await buildGatewayInstallPlan({
+            env: process.env,
+            port: params.port,
+            token: params.gatewayToken,
+            runtime: daemonRuntime,
+            warn: (message, title) => note(message, title),
+            config: cfg,
+          });
 
         progress.setLabel("Installing Gateway service…");
         try {
@@ -105,6 +106,7 @@ export async function maybeInstallDaemon(params: {
             programArguments,
             workingDirectory,
             environment,
+            environmentFiles,
           });
           progress.setLabel("Gateway service installed.");
         } catch (err) {

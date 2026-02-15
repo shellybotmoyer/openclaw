@@ -33,6 +33,8 @@ export type GatewayServiceInstallArgs = {
   programArguments: string[];
   workingDirectory?: string;
   environment?: Record<string, string | undefined>;
+  /** Paths to environment files (systemd EnvironmentFile= directives). */
+  environmentFiles?: string[];
   description?: string;
 };
 

@@ -218,6 +218,7 @@ export async function installSystemdService({
   programArguments,
   workingDirectory,
   environment,
+  environmentFiles,
   description,
 }: {
   env: Record<string, string | undefined>;
@@ -225,6 +226,8 @@ export async function installSystemdService({
   programArguments: string[];
   workingDirectory?: string;
   environment?: Record<string, string | undefined>;
+  /** Paths to load as systemd EnvironmentFile= directives. */
+  environmentFiles?: string[];
   description?: string;
 }): Promise<{ unitPath: string }> {
   await assertSystemdAvailable();
@@ -242,6 +245,7 @@ export async function installSystemdService({
     programArguments,
     workingDirectory,
     environment,
+    environmentFiles,
   });
   await fs.writeFile(unitPath, unit, "utf8");
 
