@@ -56,33 +56,31 @@ function resolveRunner() {
 }
 
 function run(cmd, args) {
-	const child = spawn(cmd, args, {
-		cwd: uiDir,
-		stdio: "inherit",
-		env: process.env,
-		shell: process.platform === "win32",
-	});
-	child.on("exit", (code, signal) => {
-		if (signal) {
-			process.exit(1);
-		}
-		process.exit(code ?? 1);
-	});
+  const child = spawn(cmd, args, {
+    cwd: uiDir,
+    stdio: "inherit",
+    env: process.env,
+  });
+  child.on("exit", (code, signal) => {
+    if (signal) {
+      process.exit(1);
+    }
+    process.exit(code ?? 1);
+  });
 }
 
 function runSync(cmd, args, envOverride) {
-	const result = spawnSync(cmd, args, {
-		cwd: uiDir,
-		stdio: "inherit",
-		env: envOverride ?? process.env,
-		shell: process.platform === "win32",
-	});
-	if (result.signal) {
-		process.exit(1);
-	}
-	if ((result.status ?? 1) !== 0) {
-		process.exit(result.status ?? 1);
-	}
+  const result = spawnSync(cmd, args, {
+    cwd: uiDir,
+    stdio: "inherit",
+    env: envOverride ?? process.env,
+  });
+  if (result.signal) {
+    process.exit(1);
+  }
+  if ((result.status ?? 1) !== 0) {
+    process.exit(result.status ?? 1);
+  }
 }
 
 function depsInstalled(kind) {

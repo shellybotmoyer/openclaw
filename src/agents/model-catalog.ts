@@ -27,6 +27,35 @@ let hasLoggedModelCatalogError = false;
 const defaultImportPiSdk = () => import("./pi-model-discovery.js");
 let importPiSdk = defaultImportPiSdk;
 
+const CODEX_PROVIDER = "openai-codex";
+const OPENAI_CODEX_GPT53_MODEL_ID = "gpt-5.3-codex";
+const OPENAI_CODEX_GPT53_SPARK_MODEL_ID = "gpt-5.3-codex-spark";
+
+function applyOpenAICodexSparkFallback(models: ModelCatalogEntry[]): void {
+  const hasSpark = models.some(
+    (entry) =>
+      entry.provider === CODEX_PROVIDER &&
+      entry.id.toLowerCase() === OPENAI_CODEX_GPT53_SPARK_MODEL_ID,
+  );
+  if (hasSpark) {
+    return;
+  }
+
+  const baseModel = models.find(
+    (entry) =>
+      entry.provider === CODEX_PROVIDER && entry.id.toLowerCase() === OPENAI_CODEX_GPT53_MODEL_ID,
+  );
+  if (!baseModel) {
+    return;
+  }
+
+  models.push({
+    ...baseModel,
+    id: OPENAI_CODEX_GPT53_SPARK_MODEL_ID,
+    name: OPENAI_CODEX_GPT53_SPARK_MODEL_ID,
+  });
+}
+
 export function resetModelCatalogCacheForTest() {
 	modelCatalogPromise = null;
 	hasLoggedModelCatalogError = false;
@@ -49,51 +78,55 @@ export async function loadModelCatalog(params?: {
 		return modelCatalogPromise;
 	}
 
-	modelCatalogPromise = (async () => {
-		const models: ModelCatalogEntry[] = [];
-		const sortModels = (entries: ModelCatalogEntry[]) =>
-			entries.sort((a, b) => {
-				const p = a.provider.localeCompare(b.provider);
-				if (p !== 0) {
-					return p;
-				}
-				return a.name.localeCompare(b.name);
-			});
-		try {
-			const cfg = params?.config ?? loadConfig();
-			await ensureOpenClawModelsJson(cfg);
-			// IMPORTANT: keep the dynamic import *inside* the try/catch.
-			// If this fails once (e.g. during a bun install that temporarily swaps node_modules),
-			// we must not poison the cache with a rejected promise (otherwise all channel handlers
-			// will keep failing until restart).
-			const piSdk = await importPiSdk();
-			const agentDir = resolveOpenClawAgentDir();
-			const { join } = await import("node:path");
-			const authStorage = new piSdk.AuthStorage(join(agentDir, "auth.json"));
-			const registry = new piSdk.ModelRegistry(authStorage, join(agentDir, "models.json")) as
-				| {
-						getAll: () => Array<DiscoveredModel>;
-				  }
-				| Array<DiscoveredModel>;
-			const entries = Array.isArray(registry) ? registry : registry.getAll();
-			for (const entry of entries) {
-				const id = String(entry?.id ?? "").trim();
-				if (!id) {
-					continue;
-				}
-				const provider = String(entry?.provider ?? "").trim();
-				if (!provider) {
-					continue;
-				}
-				const name = String(entry?.name ?? id).trim() || id;
-				const contextWindow =
-					typeof entry?.contextWindow === "number" && entry.contextWindow > 0
-						? entry.contextWindow
-						: undefined;
-				const reasoning = typeof entry?.reasoning === "boolean" ? entry.reasoning : undefined;
-				const input = Array.isArray(entry?.input) ? entry.input : undefined;
-				models.push({ id, name, provider, contextWindow, reasoning, input });
-			}
+  modelCatalogPromise = (async () => {
+    const models: ModelCatalogEntry[] = [];
+    const sortModels = (entries: ModelCatalogEntry[]) =>
+      entries.sort((a, b) => {
+        const p = a.provider.localeCompare(b.provider);
+        if (p !== 0) {
+          return p;
+        }
+        return a.name.localeCompare(b.name);
+      });
+    try {
+      const cfg = params?.config ?? loadConfig();
+      await ensureOpenClawModelsJson(cfg);
+      await (
+        await import("./pi-auth-json.js")
+      ).ensurePiAuthJsonFromAuthProfiles(resolveOpenClawAgentDir());
+      // IMPORTANT: keep the dynamic import *inside* the try/catch.
+      // If this fails once (e.g. during a pnpm install that temporarily swaps node_modules),
+      // we must not poison the cache with a rejected promise (otherwise all channel handlers
+      // will keep failing until restart).
+      const piSdk = await importPiSdk();
+      const agentDir = resolveOpenClawAgentDir();
+      const { join } = await import("node:path");
+      const authStorage = new piSdk.AuthStorage(join(agentDir, "auth.json"));
+      const registry = new piSdk.ModelRegistry(authStorage, join(agentDir, "models.json")) as
+        | {
+            getAll: () => Array<DiscoveredModel>;
+          }
+        | Array<DiscoveredModel>;
+      const entries = Array.isArray(registry) ? registry : registry.getAll();
+      for (const entry of entries) {
+        const id = String(entry?.id ?? "").trim();
+        if (!id) {
+          continue;
+        }
+        const provider = String(entry?.provider ?? "").trim();
+        if (!provider) {
+          continue;
+        }
+        const name = String(entry?.name ?? id).trim() || id;
+        const contextWindow =
+          typeof entry?.contextWindow === "number" && entry.contextWindow > 0
+            ? entry.contextWindow
+            : undefined;
+        const reasoning = typeof entry?.reasoning === "boolean" ? entry.reasoning : undefined;
+        const input = Array.isArray(entry?.input) ? entry.input : undefined;
+        models.push({ id, name, provider, contextWindow, reasoning, input });
+      }
+      applyOpenAICodexSparkFallback(models);
 
 			if (models.length === 0) {
 				// If we found nothing, don't cache this result so we can try again.

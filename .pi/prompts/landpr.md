@@ -40,12 +40,13 @@ Goal: PR must end in GitHub state = MERGED (never CLOSED). Use `gh pr merge` wit
    - Rebase if we want to preserve commit history
    - Squash if we want a single clean commit
    - If unclear, ask
-10.   Full gate (BEFORE commit):
-      - `bun run lint && bun run build && bun run test`
-11.   Commit via committer (include # + contributor in commit message):
-      - `committer "fix: <summary> (#<PR>) (thanks @$contrib)" CHANGELOG.md <changed files>`
-      - `land_sha=$(git rev-parse HEAD)`
-12.   Push updated PR branch (rebase => usually needs force):
+10. Full gate (BEFORE commit):
+    - `pnpm lint && pnpm build && pnpm test`
+11. Commit via committer (final merge commit only includes PR # + thanks):
+    - For the final merge-ready commit: `committer "fix: <summary> (#<PR>) (thanks @$contrib)" CHANGELOG.md <changed files>`
+    - If you need intermediate fix commits before the final merge commit, keep those messages concise and **omit** PR number/thanks.
+    - `land_sha=$(git rev-parse HEAD)`
+12. Push updated PR branch (rebase => usually needs force):
 
       ```sh
       git remote add prhead "$head_repo_url.git" 2>/dev/null || git remote set-url prhead "$head_repo_url.git"

@@ -55,28 +55,31 @@ export type RouteReplyResult = {
  * are set.
  */
 export async function routeReply(params: RouteReplyParams): Promise<RouteReplyResult> {
-	const { payload, channel, to, accountId, threadId, cfg, abortSignal } = params;
-	const normalizedChannel = normalizeMessageChannel(channel);
+  const { payload, channel, to, accountId, threadId, cfg, abortSignal } = params;
+  const normalizedChannel = normalizeMessageChannel(channel);
+  const resolvedAgentId = params.sessionKey
+    ? resolveSessionAgentId({
+        sessionKey: params.sessionKey,
+        config: cfg,
+      })
+    : undefined;
 
-	// Debug: `bun run test src/auto-reply/reply/route-reply.test.ts`
-	const responsePrefix = params.sessionKey
-		? resolveEffectiveMessagesConfig(
-				cfg,
-				resolveSessionAgentId({
-					sessionKey: params.sessionKey,
-					config: cfg,
-				}),
-				{ channel: normalizedChannel, accountId },
-			).responsePrefix
-		: cfg.messages?.responsePrefix === "auto"
-			? undefined
-			: cfg.messages?.responsePrefix;
-	const normalized = normalizeReplyPayload(payload, {
-		responsePrefix,
-	});
-	if (!normalized) {
-		return { ok: true };
-	}
+  // Debug: `pnpm test src/auto-reply/reply/route-reply.test.ts`
+  const responsePrefix = params.sessionKey
+    ? resolveEffectiveMessagesConfig(
+        cfg,
+        resolvedAgentId ?? resolveSessionAgentId({ config: cfg }),
+        { channel: normalizedChannel, accountId },
+      ).responsePrefix
+    : cfg.messages?.responsePrefix === "auto"
+      ? undefined
+      : cfg.messages?.responsePrefix;
+  const normalized = normalizeReplyPayload(payload, {
+    responsePrefix,
+  });
+  if (!normalized) {
+    return { ok: true };
+  }
 
 	let text = normalized.text ?? "";
 	let mediaUrls = (normalized.mediaUrls?.filter(Boolean) ?? []).length
@@ -111,29 +114,30 @@ export async function routeReply(params: RouteReplyParams): Promise<RouteReplyRe
 		(channelId === "slack" && threadId != null && threadId !== "" ? String(threadId) : undefined);
 	const resolvedThreadId = channelId === "slack" ? null : (threadId ?? null);
 
-	try {
-		// Provider docking: this is an execution boundary (we're about to send).
-		// Keep the module cheap to import by loading outbound plumbing lazily.
-		const { deliverOutboundPayloads } = await import("../../infra/outbound/deliver.js");
-		const results = await deliverOutboundPayloads({
-			cfg,
-			channel: channelId,
-			to,
-			accountId: accountId ?? undefined,
-			payloads: [normalized],
-			replyToId: resolvedReplyToId ?? null,
-			threadId: resolvedThreadId,
-			abortSignal,
-			mirror:
-				params.mirror !== false && params.sessionKey
-					? {
-							sessionKey: params.sessionKey,
-							agentId: resolveSessionAgentId({ sessionKey: params.sessionKey, config: cfg }),
-							text,
-							mediaUrls,
-						}
-					: undefined,
-		});
+  try {
+    // Provider docking: this is an execution boundary (we're about to send).
+    // Keep the module cheap to import by loading outbound plumbing lazily.
+    const { deliverOutboundPayloads } = await import("../../infra/outbound/deliver.js");
+    const results = await deliverOutboundPayloads({
+      cfg,
+      channel: channelId,
+      to,
+      accountId: accountId ?? undefined,
+      payloads: [normalized],
+      replyToId: resolvedReplyToId ?? null,
+      threadId: resolvedThreadId,
+      agentId: resolvedAgentId,
+      abortSignal,
+      mirror:
+        params.mirror !== false && params.sessionKey
+          ? {
+              sessionKey: params.sessionKey,
+              agentId: resolvedAgentId,
+              text,
+              mediaUrls,
+            }
+          : undefined,
+    });
 
 		const last = results.at(-1);
 		return { ok: true, messageId: last?.messageId };

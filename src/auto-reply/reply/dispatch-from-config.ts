@@ -250,43 +250,42 @@ export async function dispatchReplyFromConfig(params: {
 
 	markProcessing();
 
-	try {
-		const fastAbort = await tryFastAbortFromMessage({ ctx, cfg });
-		if (fastAbort.handled) {
-			const payload = {
-				text: formatAbortReplyText(fastAbort.stoppedSubagents),
-			} satisfies ReplyPayload;
-			let queuedFinal = false;
-			let routedFinalCount = 0;
-			if (shouldRouteToOriginating && originatingChannel && originatingTo) {
-				const result = await routeReply({
-					payload,
-					channel: originatingChannel,
-					to: originatingTo,
-					sessionKey: ctx.SessionKey,
-					accountId: ctx.AccountId,
-					threadId: ctx.MessageThreadId,
-					cfg,
-				});
-				queuedFinal = result.ok;
-				if (result.ok) {
-					routedFinalCount += 1;
-				}
-				if (!result.ok) {
-					logVerbose(
-						`dispatch-from-config: route-reply (abort) failed: ${result.error ?? "unknown error"}`,
-					);
-				}
-			} else {
-				queuedFinal = dispatcher.sendFinalReply(payload);
-			}
-			await dispatcher.waitForIdle();
-			const counts = dispatcher.getQueuedCounts();
-			counts.final += routedFinalCount;
-			recordProcessed("completed", { reason: "fast_abort" });
-			markIdle("message_completed");
-			return { queuedFinal, counts };
-		}
+  try {
+    const fastAbort = await tryFastAbortFromMessage({ ctx, cfg });
+    if (fastAbort.handled) {
+      const payload = {
+        text: formatAbortReplyText(fastAbort.stoppedSubagents),
+      } satisfies ReplyPayload;
+      let queuedFinal = false;
+      let routedFinalCount = 0;
+      if (shouldRouteToOriginating && originatingChannel && originatingTo) {
+        const result = await routeReply({
+          payload,
+          channel: originatingChannel,
+          to: originatingTo,
+          sessionKey: ctx.SessionKey,
+          accountId: ctx.AccountId,
+          threadId: ctx.MessageThreadId,
+          cfg,
+        });
+        queuedFinal = result.ok;
+        if (result.ok) {
+          routedFinalCount += 1;
+        }
+        if (!result.ok) {
+          logVerbose(
+            `dispatch-from-config: route-reply (abort) failed: ${result.error ?? "unknown error"}`,
+          );
+        }
+      } else {
+        queuedFinal = dispatcher.sendFinalReply(payload);
+      }
+      const counts = dispatcher.getQueuedCounts();
+      counts.final += routedFinalCount;
+      recordProcessed("completed", { reason: "fast_abort" });
+      markIdle("message_completed");
+      return { queuedFinal, counts };
+    }
 
 		// Track accumulated block text for TTS generation after streaming completes.
 		// When block streaming succeeds, there's no final reply, so we need to generate
@@ -445,16 +444,14 @@ export async function dispatchReplyFromConfig(params: {
 			}
 		}
 
-		await dispatcher.waitForIdle();
-
-		const counts = dispatcher.getQueuedCounts();
-		counts.final += routedFinalCount;
-		recordProcessed("completed");
-		markIdle("message_completed");
-		return { queuedFinal, counts };
-	} catch (err) {
-		recordProcessed("error", { error: String(err) });
-		markIdle("message_error");
-		throw err;
-	}
+    const counts = dispatcher.getQueuedCounts();
+    counts.final += routedFinalCount;
+    recordProcessed("completed");
+    markIdle("message_completed");
+    return { queuedFinal, counts };
+  } catch (err) {
+    recordProcessed("error", { error: String(err) });
+    markIdle("message_error");
+    throw err;
+  }
 }

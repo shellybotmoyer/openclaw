@@ -10,7 +10,14 @@ import {
   buildCloudflareAiGatewayModelDefinition,
   resolveCloudflareAiGatewayBaseUrl,
 } from "./cloudflare-ai-gateway.js";
+import {
+  discoverHuggingfaceModels,
+  HUGGINGFACE_BASE_URL,
+  HUGGINGFACE_MODEL_CATALOG,
+  buildHuggingfaceModelDefinition,
+} from "./huggingface-models.js";
 import { resolveAwsSdkEnvVarName, resolveEnvApiKey } from "./model-auth.js";
+import { OLLAMA_NATIVE_BASE_URL } from "./ollama-stream.js";
 import {
   buildSyntheticModelDefinition,
   SYNTHETIC_BASE_URL,
@@ -26,7 +33,6 @@ import { discoverVeniceModels, VENICE_BASE_URL } from "./venice-models.js";
 type ModelsConfig = NonNullable<OpenClawConfig["models"]>;
 export type ProviderConfig = NonNullable<ModelsConfig["providers"]>[string];
 
-const MINIMAX_API_BASE_URL = "https://api.minimax.chat/v1";
 const MINIMAX_PORTAL_BASE_URL = "https://api.minimax.io/anthropic";
 const MINIMAX_DEFAULT_MODEL_ID = "MiniMax-M2.1";
 const MINIMAX_DEFAULT_VISION_MODEL_ID = "MiniMax-VL-01";
@@ -40,6 +46,33 @@ const MINIMAX_API_COST = {
   cacheRead: 2,
   cacheWrite: 10,
 };
+
+type ProviderModelConfig = NonNullable<ProviderConfig["models"]>[number];
+
+function buildMinimaxModel(params: {
+  id: string;
+  name: string;
+  reasoning: boolean;
+  input: ProviderModelConfig["input"];
+}): ProviderModelConfig {
+  return {
+    id: params.id,
+    name: params.name,
+    reasoning: params.reasoning,
+    input: params.input,
+    cost: MINIMAX_API_COST,
+    contextWindow: MINIMAX_DEFAULT_CONTEXT_WINDOW,
+    maxTokens: MINIMAX_DEFAULT_MAX_TOKENS,
+  };
+}
+
+function buildMinimaxTextModel(params: {
+  id: string;
+  name: string;
+  reasoning: boolean;
+}): ProviderModelConfig {
+  return buildMinimaxModel({ ...params, input: ["text"] });
+}
 
 const XIAOMI_BASE_URL = "https://api.xiaomimimo.com/anthropic";
 export const XIAOMI_DEFAULT_MODEL_ID = "mimo-v2-flash";
@@ -74,10 +107,21 @@ const QWEN_PORTAL_DEFAULT_COST = {
   cacheWrite: 0,
 };
 
-const OLLAMA_DEFAULT_API_BASE_URL = "http://127.0.0.1:11434";
+const OLLAMA_BASE_URL = OLLAMA_NATIVE_BASE_URL;
+const OLLAMA_API_BASE_URL = OLLAMA_BASE_URL;
 const OLLAMA_DEFAULT_CONTEXT_WINDOW = 128000;
 const OLLAMA_DEFAULT_MAX_TOKENS = 8192;
 const OLLAMA_DEFAULT_COST = {
+  input: 0,
+  output: 0,
+  cacheRead: 0,
+  cacheWrite: 0,
+};
+
+const VLLM_BASE_URL = "http://127.0.0.1:8000/v1";
+const VLLM_DEFAULT_CONTEXT_WINDOW = 128000;
+const VLLM_DEFAULT_MAX_TOKENS = 8192;
+const VLLM_DEFAULT_COST = {
   input: 0,
   output: 0,
   cacheRead: 0,
@@ -89,6 +133,17 @@ export const QIANFAN_DEFAULT_MODEL_ID = "deepseek-v3.2";
 const QIANFAN_DEFAULT_CONTEXT_WINDOW = 98304;
 const QIANFAN_DEFAULT_MAX_TOKENS = 32768;
 const QIANFAN_DEFAULT_COST = {
+  input: 0,
+  output: 0,
+  cacheRead: 0,
+  cacheWrite: 0,
+};
+
+const NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
+const NVIDIA_DEFAULT_MODEL_ID = "nvidia/llama-3.1-nemotron-70b-instruct";
+const NVIDIA_DEFAULT_CONTEXT_WINDOW = 131072;
+const NVIDIA_DEFAULT_MAX_TOKENS = 4096;
+const NVIDIA_DEFAULT_COST = {
   input: 0,
   output: 0,
   cacheRead: 0,
@@ -109,6 +164,12 @@ interface OllamaModel {
 interface OllamaTagsResponse {
   models: OllamaModel[];
 }
+
+type VllmModelsResponse = {
+  data?: Array<{
+    id?: string;
+  }>;
+};
 
 /**
  * Derive the Ollama native API base URL from a configured base URL.
@@ -507,6 +568,18 @@ function buildTogetherProvider(): ProviderConfig {
   };
 }
 
+async function buildVllmProvider(params?: {
+  baseUrl?: string;
+  apiKey?: string;
+}): Promise<ProviderConfig> {
+  const baseUrl = (params?.baseUrl?.trim() || VLLM_BASE_URL).replace(/\/+$/, "");
+  const models = await discoverVllmModels(baseUrl, params?.apiKey);
+  return {
+    baseUrl,
+    api: "openai-completions",
+    models,
+  };
+}
 export function buildQianfanProvider(): ProviderConfig {
   return {
     baseUrl: QIANFAN_BASE_URL,
@@ -529,6 +602,42 @@ export function buildQianfanProvider(): ProviderConfig {
         cost: QIANFAN_DEFAULT_COST,
         contextWindow: 119000,
         maxTokens: 64000,
+      },
+    ],
+  };
+}
+
+export function buildNvidiaProvider(): ProviderConfig {
+  return {
+    baseUrl: NVIDIA_BASE_URL,
+    api: "openai-completions",
+    models: [
+      {
+        id: NVIDIA_DEFAULT_MODEL_ID,
+        name: "NVIDIA Llama 3.1 Nemotron 70B Instruct",
+        reasoning: false,
+        input: ["text"],
+        cost: NVIDIA_DEFAULT_COST,
+        contextWindow: NVIDIA_DEFAULT_CONTEXT_WINDOW,
+        maxTokens: NVIDIA_DEFAULT_MAX_TOKENS,
+      },
+      {
+        id: "meta/llama-3.3-70b-instruct",
+        name: "Meta Llama 3.3 70B Instruct",
+        reasoning: false,
+        input: ["text"],
+        cost: NVIDIA_DEFAULT_COST,
+        contextWindow: 131072,
+        maxTokens: 4096,
+      },
+      {
+        id: "nvidia/mistral-nemo-minitron-8b-8k-instruct",
+        name: "NVIDIA Mistral NeMo Minitron 8B Instruct",
+        reasoning: false,
+        input: ["text"],
+        cost: NVIDIA_DEFAULT_COST,
+        contextWindow: 8192,
+        maxTokens: 2048,
       },
     ],
   };
