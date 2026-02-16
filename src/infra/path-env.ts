@@ -5,11 +5,12 @@ import { resolveBrewPathDirs } from "./brew.js";
 import { isTruthyEnvValue } from "./env.js";
 
 type EnsureOpenClawPathOpts = {
-	execPath?: string;
-	cwd?: string;
-	homeDir?: string;
-	platform?: NodeJS.Platform;
-	pathEnv?: string;
+  execPath?: string;
+  cwd?: string;
+  homeDir?: string;
+  platform?: NodeJS.Platform;
+  pathEnv?: string;
+  allowProjectLocalBin?: boolean;
 };
 
 function isExecutable(filePath: string): boolean {
@@ -29,71 +30,79 @@ function isDirectory(dirPath: string): boolean {
 	}
 }
 
-function mergePath(params: { existing: string; prepend: string[] }): string {
-	const partsExisting = params.existing
-		.split(path.delimiter)
-		.map((part) => part.trim())
-		.filter(Boolean);
-	const partsPrepend = params.prepend.map((part) => part.trim()).filter(Boolean);
+function mergePath(params: { existing: string; prepend?: string[]; append?: string[] }): string {
+  const partsExisting = params.existing
+    .split(path.delimiter)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const partsPrepend = (params.prepend ?? []).map((part) => part.trim()).filter(Boolean);
+  const partsAppend = (params.append ?? []).map((part) => part.trim()).filter(Boolean);
 
-	const seen = new Set<string>();
-	const merged: string[] = [];
-	for (const part of [...partsPrepend, ...partsExisting]) {
-		if (!seen.has(part)) {
-			seen.add(part);
-			merged.push(part);
-		}
-	}
-	return merged.join(path.delimiter);
+  const seen = new Set<string>();
+  const merged: string[] = [];
+  for (const part of [...partsPrepend, ...partsExisting, ...partsAppend]) {
+    if (!seen.has(part)) {
+      seen.add(part);
+      merged.push(part);
+    }
+  }
+  return merged.join(path.delimiter);
 }
 
-function candidateBinDirs(opts: EnsureOpenClawPathOpts): string[] {
-	const execPath = opts.execPath ?? process.execPath;
-	const cwd = opts.cwd ?? process.cwd();
-	const homeDir = opts.homeDir ?? os.homedir();
-	const platform = opts.platform ?? process.platform;
+function candidateBinDirs(opts: EnsureOpenClawPathOpts): { prepend: string[]; append: string[] } {
+  const execPath = opts.execPath ?? process.execPath;
+  const cwd = opts.cwd ?? process.cwd();
+  const homeDir = opts.homeDir ?? os.homedir();
+  const platform = opts.platform ?? process.platform;
 
-	const candidates: string[] = [];
+  const prepend: string[] = [];
+  const append: string[] = [];
 
-	// Bundled macOS app: `openclaw` lives next to the executable (process.execPath).
-	try {
-		const execDir = path.dirname(execPath);
-		const siblingCli = path.join(execDir, "openclaw");
-		if (isExecutable(siblingCli)) {
-			candidates.push(execDir);
-		}
-	} catch {
-		// ignore
-	}
+  // Bundled macOS app: `openclaw` lives next to the executable (process.execPath).
+  try {
+    const execDir = path.dirname(execPath);
+    const siblingCli = path.join(execDir, "openclaw");
+    if (isExecutable(siblingCli)) {
+      prepend.push(execDir);
+    }
+  } catch {
+    // ignore
+  }
 
-	// Project-local installs (best effort): if a `node_modules/.bin/openclaw` exists near cwd,
-	// include it. This helps when running under launchd or other minimal PATH environments.
-	const localBinDir = path.join(cwd, "node_modules", ".bin");
-	if (isExecutable(path.join(localBinDir, "openclaw"))) {
-		candidates.push(localBinDir);
-	}
+  // Project-local installs are a common repo-based attack vector (bin hijacking). Keep this
+  // disabled by default; if an operator explicitly enables it, only append (never prepend).
+  const allowProjectLocalBin =
+    opts.allowProjectLocalBin === true ||
+    isTruthyEnvValue(process.env.OPENCLAW_ALLOW_PROJECT_LOCAL_BIN);
+  if (allowProjectLocalBin) {
+    const localBinDir = path.join(cwd, "node_modules", ".bin");
+    if (isExecutable(path.join(localBinDir, "openclaw"))) {
+      append.push(localBinDir);
+    }
+  }
 
-	const miseDataDir = process.env.MISE_DATA_DIR ?? path.join(homeDir, ".local", "share", "mise");
-	const miseShims = path.join(miseDataDir, "shims");
-	if (isDirectory(miseShims)) {
-		candidates.push(miseShims);
-	}
+  const miseDataDir = process.env.MISE_DATA_DIR ?? path.join(homeDir, ".local", "share", "mise");
+  const miseShims = path.join(miseDataDir, "shims");
+  if (isDirectory(miseShims)) {
+    prepend.push(miseShims);
+  }
 
-	candidates.push(...resolveBrewPathDirs({ homeDir }));
+  prepend.push(...resolveBrewPathDirs({ homeDir }));
 
-	// Common global install locations (macOS first).
-	if (platform === "darwin") {
-		candidates.push(path.join(homeDir, ".bun", "bin"));
-	}
-	if (process.env.XDG_BIN_HOME) {
-		candidates.push(process.env.XDG_BIN_HOME);
-	}
-	candidates.push(path.join(homeDir, ".local", "bin"));
-	candidates.push(path.join(homeDir, ".bun", "bin"));
-	candidates.push(path.join(homeDir, ".yarn", "bin"));
-	candidates.push("/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin");
+  // Common global install locations (macOS first).
+  if (platform === "darwin") {
+    prepend.push(path.join(homeDir, "Library", "pnpm"));
+  }
+  if (process.env.XDG_BIN_HOME) {
+    prepend.push(process.env.XDG_BIN_HOME);
+  }
+  prepend.push(path.join(homeDir, ".local", "bin"));
+  prepend.push(path.join(homeDir, ".local", "share", "pnpm"));
+  prepend.push(path.join(homeDir, ".bun", "bin"));
+  prepend.push(path.join(homeDir, ".yarn", "bin"));
+  prepend.push("/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin");
 
-	return candidates.filter(isDirectory);
+  return { prepend: prepend.filter(isDirectory), append: append.filter(isDirectory) };
 }
 
 /**
@@ -106,14 +115,14 @@ export function ensureOpenClawCliOnPath(opts: EnsureOpenClawPathOpts = {}) {
 	}
 	process.env.OPENCLAW_PATH_BOOTSTRAPPED = "1";
 
-	const existing = opts.pathEnv ?? process.env.PATH ?? "";
-	const prepend = candidateBinDirs(opts);
-	if (prepend.length === 0) {
-		return;
-	}
+  const existing = opts.pathEnv ?? process.env.PATH ?? "";
+  const { prepend, append } = candidateBinDirs(opts);
+  if (prepend.length === 0 && append.length === 0) {
+    return;
+  }
 
-	const merged = mergePath({ existing, prepend });
-	if (merged) {
-		process.env.PATH = merged;
-	}
+  const merged = mergePath({ existing, prepend, append });
+  if (merged) {
+    process.env.PATH = merged;
+  }
 }

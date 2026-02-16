@@ -243,43 +243,39 @@ Create or update `docker-compose.yml`.
 
 ```yaml
 services:
-   openclaw-gateway:
-      image: ${OPENCLAW_IMAGE}
-      build: .
-      restart: unless-stopped
-      env_file:
-         - .env
-      environment:
-         - HOME=/home/node
-         - NODE_ENV=production
-         - TERM=xterm-256color
-         - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND}
-         - OPENCLAW_GATEWAY_PORT=${OPENCLAW_GATEWAY_PORT}
-         - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
-         - GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD}
-         - XDG_CONFIG_HOME=${XDG_CONFIG_HOME}
-         - PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      volumes:
-         - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
-         - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
-      ports:
-         # Recommended: keep the Gateway loopback-only on the VM; access via SSH tunnel.
-         # To expose it publicly, remove the `127.0.0.1:` prefix and firewall accordingly.
-         - "127.0.0.1:${OPENCLAW_GATEWAY_PORT}:18789"
-
-         # Optional: only if you run iOS/Android nodes against this VM and need Canvas host.
-         # If you expose this publicly, read /gateway/security and firewall accordingly.
-         # - "18793:18793"
-      command:
-         [
-            "node",
-            "dist/index.js",
-            "gateway",
-            "--bind",
-            "${OPENCLAW_GATEWAY_BIND}",
-            "--port",
-            "${OPENCLAW_GATEWAY_PORT}",
-         ]
+  openclaw-gateway:
+    image: ${OPENCLAW_IMAGE}
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - HOME=/home/node
+      - NODE_ENV=production
+      - TERM=xterm-256color
+      - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND}
+      - OPENCLAW_GATEWAY_PORT=${OPENCLAW_GATEWAY_PORT}
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+      - GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD}
+      - XDG_CONFIG_HOME=${XDG_CONFIG_HOME}
+      - PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    volumes:
+      - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
+      - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
+    ports:
+      # Recommended: keep the Gateway loopback-only on the VM; access via SSH tunnel.
+      # To expose it publicly, remove the `127.0.0.1:` prefix and firewall accordingly.
+      - "127.0.0.1:${OPENCLAW_GATEWAY_PORT}:18789"
+    command:
+      [
+        "node",
+        "dist/index.js",
+        "gateway",
+        "--bind",
+        "${OPENCLAW_GATEWAY_BIND}",
+        "--port",
+        "${OPENCLAW_GATEWAY_PORT}",
+      ]
 ```
 
 ---

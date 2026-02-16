@@ -1,14 +1,21 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import * as SlackBolt from "@slack/bolt";
 import type { SessionScope } from "../../config/sessions.js";
-import type { RuntimeEnv } from "../../runtime.js";
 import type { MonitorSlackOpts } from "./types.js";
 import { resolveTextChunkLimit } from "../../auto-reply/chunk.js";
 import { DEFAULT_GROUP_HISTORY_LIMIT } from "../../auto-reply/reply/history.js";
-import { mergeAllowlist, summarizeMapping } from "../../channels/allowlists/resolve-utils.js";
+import {
+  addAllowlistUserEntriesFromConfigEntry,
+  buildAllowlistResolutionSummary,
+  mergeAllowlist,
+  patchAllowlistUsersInConfigEntries,
+  summarizeMapping,
+} from "../../channels/allowlists/resolve-utils.js";
 import { loadConfig } from "../../config/config.js";
 import { warn } from "../../globals.js";
+import { installRequestBodyLimitGuard } from "../../infra/http-body.js";
 import { normalizeMainKey } from "../../routing/session-key.js";
+import { createNonExitingRuntime, type RuntimeEnv } from "../../runtime.js";
 import { resolveSlackAccount } from "../accounts.js";
 import { resolveSlackWebClientOptions } from "../client.js";
 import { normalizeSlackWebhookPath, registerSlackHttpHandler } from "../http/index.js";
@@ -22,54 +29,18 @@ import { registerSlackMonitorEvents } from "./events.js";
 import { createSlackMessageHandler } from "./message-handler.js";
 import { registerSlackMonitorSlashCommands } from "./slash.js";
 
-type SlackBoltCtors = Pick<typeof import("@slack/bolt"), "App" | "HTTPReceiver">;
+const slackBoltModule = SlackBolt as typeof import("@slack/bolt") & {
+  default?: typeof import("@slack/bolt");
+};
+// Bun allows named imports from CJS; Node ESM doesn't. Use default+fallback for compatibility.
+// Fix: Check if module has App property directly (Node 25.x ESM/CJS compat issue)
+const slackBolt =
+  (slackBoltModule.App ? slackBoltModule : slackBoltModule.default) ?? slackBoltModule;
+const { App, HTTPReceiver } = slackBolt;
 
-function asRecord(value: unknown): Record<string, unknown> | null {
-	if ((typeof value === "object" && value !== null) || typeof value === "function") {
-		return value as Record<string, unknown>;
-	}
-	return null;
-}
+const SLACK_WEBHOOK_MAX_BODY_BYTES = 1024 * 1024;
+const SLACK_WEBHOOK_BODY_TIMEOUT_MS = 30_000;
 
-export function resolveSlackBoltCtorsForRuntime(moduleLike: unknown): SlackBoltCtors {
-	const candidates: Array<Record<string, unknown>> = [];
-	const seen = new Set<Record<string, unknown>>();
-
-	const push = (value: unknown) => {
-		const candidate = asRecord(value);
-		if (!candidate || seen.has(candidate)) {
-			return;
-		}
-		seen.add(candidate);
-		candidates.push(candidate);
-	};
-
-	// Node ESM: namespace object exposes App/HTTPReceiver directly.
-	// CJS interop: constructors may be nested under .default.
-	// Bun: importing CJS can yield a callable object with constructors on namespace.
-	push(moduleLike);
-	const level1 = asRecord(moduleLike);
-	push(level1?.default);
-	const level2 = asRecord(level1?.default);
-	push(level2?.default);
-
-	for (const candidate of candidates) {
-		const appCtor = candidate.App;
-		const receiverCtor = candidate.HTTPReceiver;
-		if (typeof appCtor === "function" && typeof receiverCtor === "function") {
-			return {
-				App: appCtor as SlackBoltCtors["App"],
-				HTTPReceiver: receiverCtor as SlackBoltCtors["HTTPReceiver"],
-			};
-		}
-	}
-
-	throw new Error(
-		"slack: unable to resolve @slack/bolt constructors (App/HTTPReceiver) for this runtime",
-	);
-}
-
-const { App, HTTPReceiver } = resolveSlackBoltCtorsForRuntime(SlackBolt);
 function parseApiAppIdFromAppToken(raw?: string) {
 	const token = raw?.trim();
 	if (!token) {
@@ -116,37 +87,31 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
 		);
 	}
 
-	const runtime: RuntimeEnv = opts.runtime ?? {
-		log: console.log,
-		error: console.error,
-		exit: (code: number): never => {
-			throw new Error(`exit ${code}`);
-		},
-	};
+  const runtime: RuntimeEnv = opts.runtime ?? createNonExitingRuntime();
 
 	const slackCfg = account.config;
 	const dmConfig = slackCfg.dm;
 
-	const dmEnabled = dmConfig?.enabled ?? true;
-	const dmPolicy = dmConfig?.policy ?? "pairing";
-	let allowFrom = dmConfig?.allowFrom;
-	const groupDmEnabled = dmConfig?.groupEnabled ?? false;
-	const groupDmChannels = dmConfig?.groupChannels;
-	let channelsConfig = slackCfg.channels;
-	const defaultGroupPolicy = cfg.channels?.defaults?.groupPolicy;
-	const groupPolicy = slackCfg.groupPolicy ?? defaultGroupPolicy ?? "open";
-	if (
-		slackCfg.groupPolicy === undefined &&
-		slackCfg.channels === undefined &&
-		defaultGroupPolicy === undefined &&
-		groupPolicy === "open"
-	) {
-		runtime.log?.(
-			warn(
-				'slack: groupPolicy defaults to "open" when channels.slack is missing; set channels.slack.groupPolicy (or channels.defaults.groupPolicy) or add channels.slack.channels to restrict access.',
-			),
-		);
-	}
+  const dmEnabled = dmConfig?.enabled ?? true;
+  const dmPolicy = slackCfg.dmPolicy ?? dmConfig?.policy ?? "pairing";
+  let allowFrom = slackCfg.allowFrom ?? dmConfig?.allowFrom;
+  const groupDmEnabled = dmConfig?.groupEnabled ?? false;
+  const groupDmChannels = dmConfig?.groupChannels;
+  let channelsConfig = slackCfg.channels;
+  const defaultGroupPolicy = cfg.channels?.defaults?.groupPolicy;
+  const groupPolicy = slackCfg.groupPolicy ?? defaultGroupPolicy ?? "open";
+  if (
+    slackCfg.groupPolicy === undefined &&
+    slackCfg.channels === undefined &&
+    defaultGroupPolicy === undefined &&
+    groupPolicy === "open"
+  ) {
+    runtime.log?.(
+      warn(
+        'slack: groupPolicy defaults to "open" when channels.slack is missing; set channels.slack.groupPolicy (or channels.defaults.groupPolicy) or add channels.slack.channels to restrict access.',
+      ),
+    );
+  }
 
 	const resolveToken = slackCfg.userToken?.trim() || botToken;
 	const useAccessGroups = cfg.commands?.useAccessGroups !== false;
@@ -161,35 +126,51 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
 	const mediaMaxBytes = (opts.mediaMaxMb ?? slackCfg.mediaMaxMb ?? 20) * 1024 * 1024;
 	const removeAckAfterReply = cfg.messages?.removeAckAfterReply ?? false;
 
-	const receiver =
-		slackMode === "http"
-			? new HTTPReceiver({
-					signingSecret: signingSecret ?? "",
-					endpoints: slackWebhookPath,
-				})
-			: null;
-	const clientOptions = resolveSlackWebClientOptions();
-	const app = new App(
-		slackMode === "socket"
-			? {
-					token: botToken,
-					appToken,
-					socketMode: true,
-					clientOptions,
-				}
-			: {
-					token: botToken,
-					receiver: receiver ?? undefined,
-					clientOptions,
-				},
-	);
-	const slackHttpHandler =
-		slackMode === "http" && receiver
-			? async (req: IncomingMessage, res: ServerResponse) => {
-					await Promise.resolve(receiver.requestListener(req, res));
-				}
-			: null;
-	let unregisterHttpHandler: (() => void) | null = null;
+  const receiver =
+    slackMode === "http"
+      ? new HTTPReceiver({
+          signingSecret: signingSecret ?? "",
+          endpoints: slackWebhookPath,
+        })
+      : null;
+  const clientOptions = resolveSlackWebClientOptions();
+  const app = new App(
+    slackMode === "socket"
+      ? {
+          token: botToken,
+          appToken,
+          socketMode: true,
+          clientOptions,
+        }
+      : {
+          token: botToken,
+          receiver: receiver ?? undefined,
+          clientOptions,
+        },
+  );
+  const slackHttpHandler =
+    slackMode === "http" && receiver
+      ? async (req: IncomingMessage, res: ServerResponse) => {
+          const guard = installRequestBodyLimitGuard(req, res, {
+            maxBytes: SLACK_WEBHOOK_MAX_BODY_BYTES,
+            timeoutMs: SLACK_WEBHOOK_BODY_TIMEOUT_MS,
+            responseFormat: "text",
+          });
+          if (guard.isTripped()) {
+            return;
+          }
+          try {
+            await Promise.resolve(receiver.requestListener(req, res));
+          } catch (err) {
+            if (!guard.isTripped()) {
+              throw err;
+            }
+          } finally {
+            guard.dispose();
+          }
+        }
+      : null;
+  let unregisterHttpHandler: (() => void) | null = null;
 
 	let botUserId = "";
 	let teamId = "";
@@ -245,16 +226,16 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
 
 	const handleSlackMessage = createSlackMessageHandler({ ctx, account });
 
-	registerSlackMonitorEvents({ ctx, account, handleSlackMessage });
-	registerSlackMonitorSlashCommands({ ctx, account });
-	if (slackMode === "http" && slackHttpHandler) {
-		unregisterHttpHandler = registerSlackHttpHandler({
-			path: slackWebhookPath,
-			handler: slackHttpHandler,
-			log: runtime.log,
-			accountId: account.accountId,
-		});
-	}
+  registerSlackMonitorEvents({ ctx, account, handleSlackMessage });
+  await registerSlackMonitorSlashCommands({ ctx, account });
+  if (slackMode === "http" && slackHttpHandler) {
+    unregisterHttpHandler = registerSlackHttpHandler({
+      path: slackWebhookPath,
+      handler: slackHttpHandler,
+      log: runtime.log,
+      accountId: account.accountId,
+    });
+  }
 
 	if (resolveToken) {
 		void (async () => {
@@ -297,102 +278,64 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
 				}
 			}
 
-			const allowEntries =
-				allowFrom?.filter((entry) => String(entry).trim() && String(entry).trim() !== "*") ??
-				[];
-			if (allowEntries.length > 0) {
-				try {
-					const resolvedUsers = await resolveSlackUserAllowlist({
-						token: resolveToken,
-						entries: allowEntries.map((entry) => String(entry)),
-					});
-					const mapping: string[] = [];
-					const unresolved: string[] = [];
-					const additions: string[] = [];
-					for (const entry of resolvedUsers) {
-						if (entry.resolved && entry.id) {
-							const note = entry.note ? ` (${entry.note})` : "";
-							mapping.push(`${entry.input}→${entry.id}${note}`);
-							additions.push(entry.id);
-						} else {
-							unresolved.push(entry.input);
-						}
-					}
-					allowFrom = mergeAllowlist({ existing: allowFrom, additions });
-					ctx.allowFrom = normalizeAllowList(allowFrom);
-					summarizeMapping("slack users", mapping, unresolved, runtime);
-				} catch (err) {
-					runtime.log?.(`slack user resolve failed; using config entries. ${String(err)}`);
-				}
-			}
+      const allowEntries =
+        allowFrom?.filter((entry) => String(entry).trim() && String(entry).trim() !== "*") ?? [];
+      if (allowEntries.length > 0) {
+        try {
+          const resolvedUsers = await resolveSlackUserAllowlist({
+            token: resolveToken,
+            entries: allowEntries.map((entry) => String(entry)),
+          });
+          const { mapping, unresolved, additions } = buildAllowlistResolutionSummary(
+            resolvedUsers,
+            {
+              formatResolved: (entry) => {
+                const note = (entry as { note?: string }).note
+                  ? ` (${(entry as { note?: string }).note})`
+                  : "";
+                return `${entry.input}→${entry.id}${note}`;
+              },
+            },
+          );
+          allowFrom = mergeAllowlist({ existing: allowFrom, additions });
+          ctx.allowFrom = normalizeAllowList(allowFrom);
+          summarizeMapping("slack users", mapping, unresolved, runtime);
+        } catch (err) {
+          runtime.log?.(`slack user resolve failed; using config entries. ${String(err)}`);
+        }
+      }
 
-			if (channelsConfig && Object.keys(channelsConfig).length > 0) {
-				const userEntries = new Set<string>();
-				for (const channel of Object.values(channelsConfig)) {
-					if (!channel || typeof channel !== "object") {
-						continue;
-					}
-					const channelUsers = (channel as { users?: Array<string | number> }).users;
-					if (!Array.isArray(channelUsers)) {
-						continue;
-					}
-					for (const entry of channelUsers) {
-						const trimmed = String(entry).trim();
-						if (trimmed && trimmed !== "*") {
-							userEntries.add(trimmed);
-						}
-					}
-				}
+      if (channelsConfig && Object.keys(channelsConfig).length > 0) {
+        const userEntries = new Set<string>();
+        for (const channel of Object.values(channelsConfig)) {
+          addAllowlistUserEntriesFromConfigEntry(userEntries, channel);
+        }
 
-				if (userEntries.size > 0) {
-					try {
-						const resolvedUsers = await resolveSlackUserAllowlist({
-							token: resolveToken,
-							entries: Array.from(userEntries),
-						});
-						const resolvedMap = new Map(resolvedUsers.map((entry) => [entry.input, entry]));
-						const mapping = resolvedUsers
-							.filter((entry) => entry.resolved && entry.id)
-							.map((entry) => `${entry.input}→${entry.id}`);
-						const unresolved = resolvedUsers
-							.filter((entry) => !entry.resolved)
-							.map((entry) => entry.input);
+        if (userEntries.size > 0) {
+          try {
+            const resolvedUsers = await resolveSlackUserAllowlist({
+              token: resolveToken,
+              entries: Array.from(userEntries),
+            });
+            const { resolvedMap, mapping, unresolved } =
+              buildAllowlistResolutionSummary(resolvedUsers);
 
-						const nextChannels = { ...channelsConfig };
-						for (const [channelKey, channelConfig] of Object.entries(channelsConfig)) {
-							if (!channelConfig || typeof channelConfig !== "object") {
-								continue;
-							}
-							const channelUsers = (channelConfig as { users?: Array<string | number> })
-								.users;
-							if (!Array.isArray(channelUsers) || channelUsers.length === 0) {
-								continue;
-							}
-							const additions: string[] = [];
-							for (const entry of channelUsers) {
-								const trimmed = String(entry).trim();
-								const resolved = resolvedMap.get(trimmed);
-								if (resolved?.resolved && resolved.id) {
-									additions.push(resolved.id);
-								}
-							}
-							nextChannels[channelKey] = {
-								...channelConfig,
-								users: mergeAllowlist({ existing: channelUsers, additions }),
-							};
-						}
-						channelsConfig = nextChannels;
-						ctx.channelsConfig = nextChannels;
-						summarizeMapping("slack channel users", mapping, unresolved, runtime);
-					} catch (err) {
-						runtime.log?.(
-							`slack channel user resolve failed; using config entries. ${String(err)}`,
-						);
-					}
-				}
-			}
-		})();
-	}
+            const nextChannels = patchAllowlistUsersInConfigEntries({
+              entries: channelsConfig,
+              resolvedMap,
+            });
+            channelsConfig = nextChannels;
+            ctx.channelsConfig = nextChannels;
+            summarizeMapping("slack channel users", mapping, unresolved, runtime);
+          } catch (err) {
+            runtime.log?.(
+              `slack channel user resolve failed; using config entries. ${String(err)}`,
+            );
+          }
+        }
+      }
+    })();
+  }
 
 	const stopOnAbort = () => {
 		if (opts.abortSignal?.aborted && slackMode === "socket") {
